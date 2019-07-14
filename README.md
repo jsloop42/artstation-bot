@@ -11,7 +11,7 @@ There are two input to the script,
 
 both in the same working directory as of the script.
 
-Run the `ArtStationBot.app`, which will first sign-in and then send message to each user from the list. Once the task completes, the bot produces a log file `artstationbot-{date}.log` with the status containing success and failure details.
+Run the `ArtStationBot.app` found under `Releases` folder, which will first sign-in and then send message to each user from the list. Once the task completes, the bot produces a log file `artstationbot-{date}.log` with the status containing success and failure details.
 
 ### File Format
 
