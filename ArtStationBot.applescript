@@ -8,6 +8,8 @@ global pass -- Sender's password
 global baseURL -- The base url of the website
 global cwURL -- Holds the current user's profile link
 global failxs -- A list of user urls for which message sending failed
+global okxs -- A list of user urls for which message sending succeeded
+global logPath -- The log file path
 
 set cwd to ""
 set js to ""
@@ -16,6 +18,8 @@ set pass to ""
 set baseURL to "https://artstation.com"
 set cwURL to ""
 set failxs to {}
+set okxs to {}
+set logPath to ""
 
 -- Get current working directory.
 to getCurrentDirectory()
@@ -81,7 +85,7 @@ on readFile(aFile)
 	return para
 end readFile
 
--- Display a file picker dialog to get the input file from ther user.
+-- Display a file picker dialog to get the input file from the user.
 on getInputFile(msg)
 	set inpFile to choose file of type "txt" with prompt msg
 	set xs to readFile(inpFile)
@@ -92,7 +96,7 @@ end getInputFile
 -- Wait till the home page loads.
 to waitForHomePageLoad()
 	tell application "Safari"
-		tell front document to repeat until (do JavaScript Â
+		tell front document to repeat until (do JavaScript Â¬
 			"document.querySelector('div.wrapper div.wrapper-main') != null") is true
 		end repeat
 		log "Home page loaded"
@@ -102,7 +106,7 @@ end waitForHomePageLoad
 -- Wait until Safari loads the profile page.
 to waitForProfilePageLoad()
 	tell application "Safari"
-		tell front document to repeat until (do JavaScript Â
+		tell front document to repeat until (do JavaScript Â¬
 			"document.querySelector('.artist-name').innerText") as text is not ""
 		end repeat
 		log "Profile page loaded"
@@ -134,14 +138,14 @@ on openSafariDoc(link, msg)
 	end tell
 end openSafariDoc
 
--- Close all Safari tabs
+-- Close all Safari tabs.
 to closeSafariTabs()
 	tell application "Safari"
 		close (every tab of every window)
 	end tell
 end closeSafariTabs
 
--- Close all Safari windows
+-- Close all Safari windows.
 to closeSafari()
 	tell application "Safari"
 		close every window
@@ -167,7 +171,7 @@ end processInput
 
 -- Set variables in the JS script.
 on constructVars(msg)
-	return js & "DL.username = '" & username & "'; DL.password = '" & pass & Â
+	return js & "DL.username = '" & username & "'; DL.password = '" & pass & Â¬
 		"'; DL.message = '" & msg & "';" & js
 end constructVars
 
@@ -182,10 +186,12 @@ to execJS(msg)
 			set end of failxs to cwURL
 		else
 			log "Message sent successfully"
+			set end of okxs to cwURL
 		end if
 	end tell
 end execJS
 
+-- Sign in to the website.
 to signIn()
 	set artjs to constructVars("")
 	tell application "Safari"
@@ -198,18 +204,72 @@ to signIn()
 	end tell
 end signIn
 
--- Display message sending failures if any
-on displayFailList()
-	if (count of failxs) > 0 then
-		log "Sending message failed for "
-		repeat with n from 1 to count of failxs
-			log (item n of failxs)
-		end repeat
-	end if
-end displayFailList
+-- Get current date.
+on getDate()
+	set {year:y, month:m, day:d, hours:h, minutes:min, seconds:s} to (current date)
+	return y & "-" & m & "-" & d & "-" & h & "-" & min & "-" & s
+end getDate
 
--- Begin processing
+-- Write the given data to the file.
+on writeToFile(fileData, filePath, isAppend)
+	try
+		set filePath to filePath as text
+		set fileRef to Â¬
+			open for access file filePath with write permission
+		if isAppend is false then Â¬
+			set eof of fileRef to 0
+		write fileData to fileRef starting at eof
+		close access fileRef
+		return true
+	on error
+		try
+			close access file filePath
+		end try
+		return false
+	end try
+end writeToFile
+
+-- Sets the log path.
+on configureLogFile()
+	set logPath to (cwd as text) & "artstationbot" & getDate() & ".log"
+	return logPath
+end configureLogFile
+
+-- Append log to the given file.
+on writeLog(aText, filePath)
+	my writeToFile(aText, filePath, true)
+end writeLog
+
+-- Logs and displays message sending status.
+to logStatus(msg, xs)
+	if (count of xs) > 0 then
+		log msg
+		writeLog(msg, logPath)
+		repeat with n from 1 to count of xs
+			set elem to (item n of xs) & " " & {return}
+			log elem
+			writeLog(elem, logPath)
+		end repeat
+		writeLog("" & {return}, logPath)
+	end if
+end logStatus
+
+-- Process status list to log the details.
+to processStatusList()
+	writeLog(((current date) as string) & {return} & {return}, logPath)
+	-- Failure list
+	if (count of failxs) > 0 then
+		logStatus("Sending message failed for " & {return}, failxs)
+	end if
+	-- Success list
+	if (count of okxs) > 0 then
+		logStatus("Sending message succeeded for " & {return}, okxs)
+	end if
+end processStatusList
+
+-- Begin processing.
 getCurrentDirectory()
+configureLogFile()
 enableAppleEvents()
 readCreds()
 readScript()
@@ -217,6 +277,6 @@ set inp to readInputFile()
 signIn()
 delay 2
 processInput(inp)
-displayFailList()
 closeSafari()
+processStatusList()
 log "Done"

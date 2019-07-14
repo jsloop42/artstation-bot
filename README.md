@@ -11,6 +11,8 @@ There are two input to the script,
 
 both in the same working directory as of the script.
 
+Run the `ArtStationBot.app`, which will first sign-in and then send message to each user from the list. Once the task completes, the bot produces a log file `artstationbot-{date}.log` with the status containing success and failure details.
+
 ### File Format
 
 #### User List
@@ -20,6 +22,10 @@ User list expects the url in first line, followed by the message and an empty li
 #### Credential
 
 The credential file expects the first line to be the username, followed by password on the second line and an empty line.
+
+### Side Note
+
+Using AppleScript with Safari requires enabling Apple Events, which the script does. This can be done manually by enabling the option `Allow JavaScript from Apple Events` under `Develop` menu, which can be enabled from `Advanced` settings under `Preferences`.
 
 ---
 
