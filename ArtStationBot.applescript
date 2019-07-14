@@ -1,5 +1,6 @@
 -- A bot to send messages to users at artstation.com website.
 -- Author: jsloop42@gmail.com
+-- Version: 1.0
 
 global cwd -- The current working directory
 global js -- The accompanying JavaScript source
@@ -147,11 +148,8 @@ end closeSafariTabs
 
 -- Close all Safari windows.
 to closeSafari()
-    tell application "Safari"
-        close every window
-    end tell
+    tell application "Safari" to quit
 end closeSafari
-
 
 -- Process the input file.
 on processInput(xs)
@@ -267,6 +265,11 @@ to processStatusList()
     end if
 end processStatusList
 
+-- Display local notification with sound
+to displayNotification(atitle, msg)
+    display notification msg with title atitle sound name "Ping"
+end displayNotification
+
 -- Begin processing.
 getCurrentDirectory()
 configureLogFile()
@@ -279,4 +282,5 @@ delay 2
 processInput(inp)
 closeSafari()
 processStatusList()
+displayNotification("ArtStation Bot", "Completed processing the list")
 log "Done"
