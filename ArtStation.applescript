@@ -1,3 +1,6 @@
+-- A bot to send messages to users at artstation.com website.
+-- Author: jsloop42@gmail.com
+
 global cwd
 global js
 global username
@@ -8,7 +11,7 @@ set js to ""
 set username to ""
 set pass to ""
 
--- Get current working directory
+-- Get current working directory.
 to getCurrentDirectory()
 	tell application "Finder"
 		get path to me
@@ -18,7 +21,7 @@ to getCurrentDirectory()
 	end tell
 end getCurrentDirectory
 
--- Check if the file exists in the given path
+-- Check if the file exists in the given path.
 on fileExists(thePath)
 	try
 		set thePath to thePath as alias
@@ -28,7 +31,7 @@ on fileExists(thePath)
 	return true
 end fileExists
 
--- Read JS script file
+-- Read JS script file.
 to readScript()
 	set scriptFile to (cwd as text) & "artstation.js"
 	set js to (read file scriptFile)
@@ -36,7 +39,7 @@ to readScript()
 	return js as text
 end readScript
 
--- Read the input file if exists, else display file picker
+-- Read the input file if exists, else display file picker to choose input the file.
 to readInputFile()
 	set inpFile to (cwd as text) & "artstation-users.txt"
 	if fileExists(inpFile) then
@@ -47,6 +50,7 @@ to readInputFile()
 	return inp
 end readInputFile
 
+-- Read credentials from creds.txt if present or display file picker to input the credentials file.
 to readCreds()
 	set inpFile to (cwd as text) & "creds.txt"
 	if fileExists(inpFile) then
@@ -57,22 +61,21 @@ to readCreds()
 		set inp to getInputFile("Please select the credentials file")
 	end if
 	return inp
-	
 end readCreds
 
--- Enable Apple Events if not enabled in Safari
+-- Enable Apple Events if not enabled in Safari.
 to enableAppleEvents()
 	do shell script "defaults write -app Safari AllowJavaScriptFromAppleEvents 1"
 end enableAppleEvents
 
--- Read the input file containing user details
+-- Read the input file containing user details.
 on readFile(aFile)
 	set inp to aFile as string
 	set para to paragraphs of (read file inp)
 	return para
 end readFile
 
--- Display a dialog to get the input file from user
+-- Display a file picker dialog to get the input file from ther user.
 on getInputFile(msg)
 	set inpFile to choose file of type "txt" with prompt msg
 	set xs to readFile(inpFile)
@@ -80,7 +83,7 @@ on getInputFile(msg)
 	return xs
 end getInputFile
 
--- Wait until Safari loads the profile page
+-- Wait until Safari loads the profile page.
 to waitForProfilePageLoad()
 	tell application "Safari"
 		tell front document to repeat until (do JavaScript Â
@@ -90,7 +93,7 @@ to waitForProfilePageLoad()
 	end tell
 end waitForProfilePageLoad
 
--- Wait for user sign-in
+-- Wait for user sign-in.
 to waitForSignIn()
 	tell application "Safari"
 		tell front document to repeat until (do JavaScript Â
@@ -100,7 +103,7 @@ to waitForSignIn()
 	end tell
 end waitForSignIn
 
--- Open safari with url to the user profile
+-- Open safari with url to the user profile.
 on openSafariDoc(link, msg)
 	tell application "System Events"
 		tell application "Safari"
@@ -110,7 +113,7 @@ on openSafariDoc(link, msg)
 	end tell
 end openSafariDoc
 
--- Process the input file
+-- Process the input file.
 on processInput(xs)
 	-- repeat with n from 1 to count of xs
 	set user to ""
@@ -128,11 +131,13 @@ on processInput(xs)
 	end repeat
 end processInput
 
+-- Set variables in the JS script.
 on constructVars(msg)
 	return js & "DL.username = '" & username & "'; DL.password = '" & pass & Â
 		"'; DL.message = '" & msg & "';" & js
 end constructVars
 
+-- Execute JavaScript once the website loads.
 to execJS(msg)
 	set js to constructVars(msg)
 	tell application "Safari"
@@ -145,18 +150,13 @@ to execJS(msg)
 		set ret to do JavaScript "dl.message()" in current tab of first window
 		log "Message sent status is " & ret
 	end tell
-	
 end execJS
 
 getCurrentDirectory()
---enableAppleEvents()
+enableAppleEvents()
 readCreds()
 readScript()
-log js
 set inp to readInputFile()
-log inp
 processInput(inp)
 
-
 log "done"
-
