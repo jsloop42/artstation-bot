@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cp ArtStationBot.icns ArtStationBot.app/Contents/Resources
+cp ArtStationBot.icns ArtStationBot.app/Contents/Resources/applet.icns
+cp Icon? ArtStationBot.app
+cp Info.plist ArtStationBot.app/Contents 
