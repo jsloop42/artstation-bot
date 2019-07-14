@@ -151,17 +151,12 @@ end closeSafari
 
 -- Process the input file.
 on processInput(xs)
-	-- repeat with n from 1 to count of xs
 	set user to ""
 	set msg to ""
-	repeat with n from 1 to 4
-		log "mod: " & n mod 3
-		if n = 3 then log (item n of xs) is ""
+	repeat with n from 1 to count of xs
 		if n mod 3 = 1 then set user to (item n of xs)
 		if n mod 3 = 2 then set msg to (item n of xs)
 		if n mod 3 = 0 then
-			log "User: " & user
-			log "Msg: " & msg
 			set cwURL to user
 			openSafariDoc(user, msg)
 			delay 2
