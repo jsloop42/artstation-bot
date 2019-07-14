@@ -1,15 +1,21 @@
 -- A bot to send messages to users at artstation.com website.
 -- Author: jsloop42@gmail.com
 
-global cwd
-global js
-global username
-global pass
+global cwd -- The current working directory
+global js -- The accompanying JavaScript source
+global username -- Sender's username
+global pass -- Sender's password
+global baseURL -- The base url of the website
+global cwURL -- Holds the current user's profile link
+global failxs -- A list of user urls for which message sending failed
 
 set cwd to ""
 set js to ""
 set username to ""
 set pass to ""
+set baseURL to "https://artstation.com"
+set cwURL to ""
+set failxs to {}
 
 -- Get current working directory.
 to getCurrentDirectory()
@@ -83,6 +89,16 @@ on getInputFile(msg)
 	return xs
 end getInputFile
 
+-- Wait till the home page loads.
+to waitForHomePageLoad()
+	tell application "Safari"
+		tell front document to repeat until (do JavaScript Â
+			"document.querySelector('div.wrapper div.wrapper-main') != null") is true
+		end repeat
+		log "Home page loaded"
+	end tell
+end waitForHomePageLoad
+
 -- Wait until Safari loads the profile page.
 to waitForProfilePageLoad()
 	tell application "Safari"
@@ -96,8 +112,10 @@ end waitForProfilePageLoad
 -- Wait for user sign-in.
 to waitForSignIn()
 	tell application "Safari"
-		tell front document to repeat until (do JavaScript Â
-			"dl.isSignedIn() && dl.isUserProfileLoaded()") is true
+		set ret to false
+		tell front document to repeat until ret is true
+			set ret to (do JavaScript "document.querySelector(\"a[href='/users/sign_out']\") != null")
+			log "wait for sign in " & ret
 		end repeat
 		log "Is signed in"
 	end tell
@@ -107,11 +125,29 @@ end waitForSignIn
 on openSafariDoc(link, msg)
 	tell application "System Events"
 		tell application "Safari"
+			activate
 			make new document with properties {URL:link}
-			--my execJS(msg)
+			my waitForProfilePageLoad()
+			delay 2
+			my execJS(msg)
 		end tell
 	end tell
 end openSafariDoc
+
+-- Close all Safari tabs
+to closeSafariTabs()
+	tell application "Safari"
+		close (every tab of every window)
+	end tell
+end closeSafariTabs
+
+-- Close all Safari windows
+to closeSafari()
+	tell application "Safari"
+		close every window
+	end tell
+end closeSafari
+
 
 -- Process the input file.
 on processInput(xs)
@@ -126,7 +162,10 @@ on processInput(xs)
 		if n mod 3 = 0 then
 			log "User: " & user
 			log "Msg: " & msg
+			set cwURL to user
 			openSafariDoc(user, msg)
+			delay 2
+			closeSafariTabs()
 		end if
 	end repeat
 end processInput
@@ -139,24 +178,50 @@ end constructVars
 
 -- Execute JavaScript once the website loads.
 to execJS(msg)
-	set js to constructVars(msg)
+	set artjs to constructVars(msg)
 	tell application "Safari"
-		do JavaScript js in current tab of first window
-		my waitForProfilePageLoad()
-		do JavaScript "dl.init()" in current tab of first window
-		my waitForSignIn()
-		my waitForProfilePageLoad()
-		log "signed in, profile page reloaded"
-		set ret to do JavaScript "dl.message()" in current tab of first window
-		log "Message sent status is " & ret
+		do JavaScript artjs in current tab of first window
+		set status to do JavaScript "dl.message()" in current tab of first window
+		if status is false then
+			log "Message sending failed for user " & cwURL
+			set end of failxs to cwURL
+		else
+			log "Message sent successfully"
+		end if
 	end tell
 end execJS
 
+to signIn()
+	set artjs to constructVars("")
+	tell application "Safari"
+		activate
+		make new document with properties {URL:baseURL}
+		my waitForHomePageLoad()
+		do JavaScript artjs in current tab of first window
+		do JavaScript "dl.init()" in current tab of first window
+		my waitForSignIn()
+	end tell
+end signIn
+
+-- Display message sending failures if any
+on displayFailList()
+	if (count of failxs) > 0 then
+		log "Sending message failed for "
+		repeat with n from 1 to count of failxs
+			log (item n of failxs)
+		end repeat
+	end if
+end displayFailList
+
+-- Begin processing
 getCurrentDirectory()
 enableAppleEvents()
 readCreds()
 readScript()
 set inp to readInputFile()
+signIn()
+delay 2
 processInput(inp)
-
-log "done"
+displayFailList()
+closeSafari()
+log "Done"
