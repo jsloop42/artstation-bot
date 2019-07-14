@@ -23,9 +23,11 @@ User list expects the url in first line, followed by the message and an empty li
 
 The credential file expects the first line to be the username, followed by password on the second line and an empty line.
 
+
 ### Side Note
 
-Using AppleScript with Safari requires enabling Apple Events, which the script does. This can be done manually by enabling the option `Allow JavaScript from Apple Events` under `Develop` menu, which can be enabled from `Advanced` settings under `Preferences`.
+1. Add the app to `Privacy > Accessibility` under `Security & Privacy` section of System Peferences so that the app does not have to be granted permission each time it runs.
+2. Using AppleScript with Safari requires enabling Apple Events, which the script does. This can be done manually by enabling the option `Allow JavaScript from Apple Events` under `Develop` menu, which can be enabled from `Advanced` settings under `Preferences`.
 
 ---
 
