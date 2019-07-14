@@ -1,0 +1,2 @@
+sender@sender-email.com
+senderpassword
