@@ -11,6 +11,7 @@ global cwURL -- Holds the current user's profile link
 global failxs -- A list of user urls for which message sending failed
 global okxs -- A list of user urls for which message sending succeeded
 global logPath -- The log file path
+global isEventsEnabled -- Flag which indicates if Apple Events are enabled
 
 set cwd to ""
 set js to ""
@@ -21,6 +22,7 @@ set cwURL to ""
 set failxs to {}
 set okxs to {}
 set logPath to ""
+set isEventsEnabled to false
 
 -- Get current working directory.
 to getCurrentDirectory()
@@ -31,6 +33,57 @@ to getCurrentDirectory()
         return (cwd as alias)
     end tell
 end getCurrentDirectory
+
+-- Enabled Develop menu if not enabled
+to enableDevelopMenu()
+    tell application "Safari"
+        tell application "System Events"
+            tell process "Safari"
+                click menu item "Preferences…" of menu 1 of menu bar item "Safari" of menu bar 1
+                click button "Advanced" of toolbar 1 of window 1
+                tell checkbox "Show Develop menu in menu bar" of group 1 of group 1 of window 1
+                    if value is 0 then click it
+                end tell
+                set frontmost to true
+                keystroke "." using {command down}
+            end tell
+        end tell
+    end tell
+end enableDevelopMenu
+
+-- Enabled Apple Events in Safari if not enabled using Menu
+to enableAppleEventsUsingMenu()
+    tell application "Safari"
+        tell application "System Events"
+            tell process "Safari"
+                tell menu "Develop" of menu bar item "Develop" of menu bar 1
+                    click it
+                    get properties of menu item "Allow JavaScript From Apple Events"
+                    tell menu item "Allow JavaScript From Apple Events"
+                        if value of attribute "AXMenuItemMarkChar" is not "✓" then
+                            set isEventsEnabled to false
+                            click
+                        else
+                            set isEventsEnabled to true
+                            keystroke return
+                        end if
+                        delay 1
+                    end tell
+                end tell
+                if isEventsEnabled is false then
+                    tell front window
+                        click button "Allow"
+                    end tell
+                end if
+            end tell
+        end tell
+    end tell
+end enableAppleEventsUsingMenu
+
+-- Enable Apple Events if not enabled in Safari.
+to enableAppleEvents()
+    do shell script "defaults write -app Safari AllowJavaScriptFromAppleEvents 1"
+end enableAppleEvents
 
 -- Check if the file exists in the given path.
 on fileExists(thePath)
@@ -73,11 +126,6 @@ to readCreds()
     end if
     return inp
 end readCreds
-
--- Enable Apple Events if not enabled in Safari.
-to enableAppleEvents()
-    do shell script "defaults write -app Safari AllowJavaScriptFromAppleEvents 1"
-end enableAppleEvents
 
 -- Read the input file containing user details.
 on readFile(aFile)
@@ -270,10 +318,21 @@ to displayNotification(atitle, msg)
     display notification msg with title atitle sound name "Ping"
 end displayNotification
 
+to enableAppleEventsInSafari()
+    tell application "System Events"
+        tell application "Safari"
+            activate
+            my enableDevelopMenu()
+            my enableAppleEventsUsingMenu()
+            my enableAppleEvents()
+        end tell
+    end tell
+end enableAppleEventsInSafari
+
 -- Begin processing.
 getCurrentDirectory()
 configureLogFile()
-enableAppleEvents()
+enableAppleEventsInSafari()
 readCreds()
 readScript()
 set inp to readInputFile()
