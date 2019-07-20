@@ -23,6 +23,7 @@
 		9E39029922E240C7009D1A36 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39029822E240C7009D1A36 /* main.swift */; };
 		9ECAFABB22E2FA6500953081 /* artstationbot.js in Resources */ = {isa = PBXBuildFile; fileRef = 9ECAFABA22E2FA6500953081 /* artstationbot.js */; };
 		9ECAFABD22E3098500953081 /* ScriptResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECAFABC22E3098500953081 /* ScriptResult.swift */; };
+		9ECAFABF22E319D500953081 /* MessageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECAFABE22E319D500953081 /* MessageService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,7 @@
 		9E39029822E240C7009D1A36 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		9ECAFABA22E2FA6500953081 /* artstationbot.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = artstationbot.js; sourceTree = "<group>"; };
 		9ECAFABC22E3098500953081 /* ScriptResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptResult.swift; sourceTree = "<group>"; };
+		9ECAFABE22E319D500953081 /* MessageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -196,6 +198,7 @@
 		9E39027C22E23422009D1A36 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				9ECAFABE22E319D500953081 /* MessageService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -365,6 +368,7 @@
 				9E39025122E230DE009D1A36 /* ArtStationBot.xcdatamodeld in Sources */,
 				9E39024E22E230DE009D1A36 /* AppDelegate.swift in Sources */,
 				9E39028C22E23A05009D1A36 /* MainWindowController.swift in Sources */,
+				9ECAFABF22E319D500953081 /* MessageService.swift in Sources */,
 				9E39029522E23C61009D1A36 /* UI.swift in Sources */,
 				9E39027F22E236A8009D1A36 /* WebKitViewController.swift in Sources */,
 				9E22C2FB22E25C1A00772681 /* Constants.swift in Sources */,

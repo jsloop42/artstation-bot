@@ -12,12 +12,11 @@ import DLLogger
 
 class WebKitViewController: NSViewController {
     private let log = Logger()
-    let msgHandlerName = "asb"
     lazy var webView: WKWebView = {
         let webView = WKWebView(frame: CGRect.zero, configuration: initWebKitConfig())
-        webView.navigationDelegate = self
         return webView
     }()
+    private let msgService = MessageService.shared
 
     override func loadView() {
         self.view = NSView()
@@ -28,7 +27,6 @@ class WebKitViewController: NSViewController {
     }
 
     override func viewDidLoad() {
-        self.initEvents()
         self.initData()
     }
 
@@ -45,7 +43,7 @@ class WebKitViewController: NSViewController {
         let script = getUserScript() ?? ""
         let userScript = WKUserScript(source: script, injectionTime: WKUserScriptInjectionTime.atDocumentStart, forMainFrameOnly: true)
         contentController.addUserScript(userScript)
-        contentController.add(self, name: msgHandlerName)
+        contentController.add(self, name: self.msgService.getHandlerName())
         return contentController
     }
 
@@ -53,10 +51,6 @@ class WebKitViewController: NSViewController {
         let url = Bundle(for: type(of: self)).url(forResource: "artstationbot", withExtension: "js", subdirectory: nil)
         guard let theUrl = url else { return nil }
         return try? String(contentsOf: theUrl, encoding: .utf8)
-    }
-
-    func initEvents() {
-        self.webView.navigationDelegate = self
     }
 
     func initData() {
@@ -83,34 +77,30 @@ class WebKitViewController: NSViewController {
 }
 
 extension WebKitViewController: WKScriptMessageHandler {
-    /// Delegate method which recieves any message send from user script.
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        let result = ScriptResult(message.body)
-        switch result.id {
-        case "document-url":
-            self.log.debug(result.value as Any)
-        case "greet":
-            self.log.debug(result.msg as Any)
-        case "main-nav-len":
-            self.log.debug(result.value as Any)
-        default:
-            self.log.debug(result)
-            break
-        }
+        self.msgService.process(message: message)
     }
 }
 
 extension WebKitViewController: WKNavigationDelegate, WKUIDelegate {
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        self.log.debug("site is loading")
+        self.log.debug("webview is loading")
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        self.log.debug("site did fail to provision")
+        self.log.debug("webview did fail to provision")
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        self.log.debug("did finish")
+        self.log.debug("webview did finish")
         self.execJS()
+    }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        self.log.debug("webview did fail")
+    }
+
+    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        self.log.debug("webview did commit")
     }
 }
