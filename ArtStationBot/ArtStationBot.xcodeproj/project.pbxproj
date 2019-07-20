@@ -21,6 +21,8 @@
 		9E39029522E23C61009D1A36 /* UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39029422E23C61009D1A36 /* UI.swift */; };
 		9E39029722E23CFE009D1A36 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39029622E23CFE009D1A36 /* MainViewController.swift */; };
 		9E39029922E240C7009D1A36 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39029822E240C7009D1A36 /* main.swift */; };
+		9ECAFABB22E2FA6500953081 /* artstationbot.js in Resources */ = {isa = PBXBuildFile; fileRef = 9ECAFABA22E2FA6500953081 /* artstationbot.js */; };
+		9ECAFABD22E3098500953081 /* ScriptResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECAFABC22E3098500953081 /* ScriptResult.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +77,8 @@
 		9E39029422E23C61009D1A36 /* UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI.swift; sourceTree = "<group>"; };
 		9E39029622E23CFE009D1A36 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		9E39029822E240C7009D1A36 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		9ECAFABA22E2FA6500953081 /* artstationbot.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = artstationbot.js; sourceTree = "<group>"; };
+		9ECAFABC22E3098500953081 /* ScriptResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptResult.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +107,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9E22C2FE22E2F8AE00772681 /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				9ECAFABA22E2FA6500953081 /* artstationbot.js */,
+			);
+			path = Scripts;
+			sourceTree = "<group>";
+		};
 		9E39024122E230DD009D1A36 = {
 			isa = PBXGroup;
 			children = (
@@ -127,6 +139,7 @@
 		9E39024C22E230DE009D1A36 /* ArtStationBot */ = {
 			isa = PBXGroup;
 			children = (
+				9E22C2FE22E2F8AE00772681 /* Scripts */,
 				9E39029322E23BD5009D1A36 /* Frameworks */,
 				9E39027D22E23428009D1A36 /* Model */,
 				9E39027C22E23422009D1A36 /* Service */,
@@ -190,6 +203,7 @@
 		9E39027D22E23428009D1A36 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				9ECAFABC22E3098500953081 /* ScriptResult.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -320,6 +334,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9E39025322E230E5009D1A36 /* Assets.xcassets in Resources */,
+				9ECAFABB22E2FA6500953081 /* artstationbot.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,6 +368,7 @@
 				9E39029522E23C61009D1A36 /* UI.swift in Sources */,
 				9E39027F22E236A8009D1A36 /* WebKitViewController.swift in Sources */,
 				9E22C2FB22E25C1A00772681 /* Constants.swift in Sources */,
+				9ECAFABD22E3098500953081 /* ScriptResult.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

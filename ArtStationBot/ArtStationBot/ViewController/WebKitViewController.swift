@@ -12,20 +12,12 @@ import DLLogger
 
 class WebKitViewController: NSViewController {
     private let log = Logger()
-    let scriptName = "asb"
+    let msgHandlerName = "asb"
     lazy var webView: WKWebView = {
-        let contentController = WKUserContentController()
-        let script = "webkit.messageHandlers.\(scriptName).postMessage(document.URL)"
-        let userScript = WKUserScript(source: script, injectionTime: WKUserScriptInjectionTime.atDocumentStart, forMainFrameOnly: true)
-        contentController.addUserScript(userScript)
-        contentController.add(self, name: scriptName)
-        let config = WKWebViewConfiguration()
-        config.userContentController = contentController
-        let webView = WKWebView(frame: CGRect.zero, configuration: config)
+        let webView = WKWebView(frame: CGRect.zero, configuration: initWebKitConfig())
         webView.navigationDelegate = self
         return webView
     }()
-
 
     override func loadView() {
         self.view = NSView()
@@ -38,6 +30,29 @@ class WebKitViewController: NSViewController {
     override func viewDidLoad() {
         self.initEvents()
         self.initData()
+    }
+
+    // MARK: - Init
+
+    func initWebKitConfig() -> WKWebViewConfiguration {
+        let config = WKWebViewConfiguration()
+        config.userContentController = initUserContentController()
+        return config
+    }
+
+    func initUserContentController() -> WKUserContentController {
+        let contentController = WKUserContentController()
+        let script = getUserScript() ?? ""
+        let userScript = WKUserScript(source: script, injectionTime: WKUserScriptInjectionTime.atDocumentStart, forMainFrameOnly: true)
+        contentController.addUserScript(userScript)
+        contentController.add(self, name: msgHandlerName)
+        return contentController
+    }
+
+    func getUserScript() -> String? {
+        let url = Bundle(for: type(of: self)).url(forResource: "artstationbot", withExtension: "js", subdirectory: nil)
+        guard let theUrl = url else { return nil }
+        return try? String(contentsOf: theUrl, encoding: .utf8)
     }
 
     func initEvents() {
@@ -58,18 +73,29 @@ class WebKitViewController: NSViewController {
         }
     }
 
-    func execJS() {
-        let script = "webkit.messageHandlers.\(scriptName).postMessage(document.querySelector('.fixed-main-nav').classList.value.length)"
-        self.webView.evaluateJavaScript(script) { _, err in
+    /// Executes the given script in the web view
+    func execJS(_ script: String? = nil) {
+        let aScript: String = { if let s = script { return s }; return "asb.init(); asb.getCount()" }()
+        self.webView.evaluateJavaScript(aScript) { _, err in
             if err != nil { self.log.error("Script execution error: \(err!)" as Any) }
         }
     }
 }
 
 extension WebKitViewController: WKScriptMessageHandler {
+    /// Delegate method which recieves any message send from user script.
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if message.name == scriptName {
-            self.log.debug("msg: \(message.body)")
+        let result = ScriptResult(message.body)
+        switch result.id {
+        case "document-url":
+            self.log.debug(result.value as Any)
+        case "greet":
+            self.log.debug(result.msg as Any)
+        case "main-nav-len":
+            self.log.debug(result.value as Any)
+        default:
+            self.log.debug(result)
+            break
         }
     }
 }
