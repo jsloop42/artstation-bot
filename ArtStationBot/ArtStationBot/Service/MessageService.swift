@@ -10,11 +10,15 @@ import Foundation
 import WebKit
 import DLLogger
 
+protocol MessageServiceDelegate: class {
+    func setIsSignedIn(_ flag: Bool)
+}
+
 /// A class which handles messaging between the webview and the app.
 class MessageService {
-    static let shared = MessageService()
     private let log = Logger()
     private let msgHandlerName = "asb"
+    weak var delegate: MessageServiceDelegate?
 
     func getHandlerName() -> String {
         return self.msgHandlerName
@@ -29,11 +33,15 @@ class MessageService {
             self.log.debug(result.msg as Any)
         case "main-nav-len":
             self.log.debug(result.value as Any)
+        case "sign-in":
+            self.log.debug(result.msg as Any)  // error message
+        case "is-signed-in?":
+            let isSignedIn = result.value as? Bool ?? false
+            self.log.debug(isSignedIn)
+            self.delegate?.setIsSignedIn(isSignedIn)
         default:
             self.log.debug(result)
             break
         }
     }
 }
-
-

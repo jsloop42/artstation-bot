@@ -41,8 +41,8 @@ class MainViewController: NSViewController {
 
     @objc func testButtonDidClick() {
         self.log.debug("btn did click")
-        _ = UI.createWebKitWindow()
-        //let vc = WebKitWindowController()
-        //vc.showWindow(self)
+        let wkwc = UI.createWebKitWindow()
+        wkwc.vc.setShouldSignIn(true)
+        wkwc.show()
     }
 }
