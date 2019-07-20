@@ -41,6 +41,25 @@ class UI {
         let h: CGFloat = { if let ah = height { return ah }; return 500 }()
         window.setFrame(NSMakeRect(NSApp.mainWindow!.frame.maxX, NSApp.mainWindow!.frame.maxY - h, w, h), display: true)
     }
+
+    static func createToolbar(id: NSToolbar.Identifier) -> NSToolbar {
+        let toolbar = NSToolbar(identifier: id)
+        toolbar.allowsUserCustomization = true
+        toolbar.displayMode = .iconAndLabel
+        return toolbar
+    }
+
+    static func createTabbar(labels: [String]) -> NSSegmentedControl {
+        let tabbar = NSSegmentedControl(labels: labels, trackingMode: .selectOne, target: self, action: nil)
+        tabbar.setSelected(true, forSegment: 0)
+        return tabbar
+    }
+
+    static func createButton() -> NSButton {
+        let btn = NSButton(frame: NSMakeRect(0, 0, 40, 40))
+        btn.bezelStyle = .texturedRounded
+        return btn
+    }
 }
 
 extension NSWindow {
