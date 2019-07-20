@@ -108,6 +108,5 @@ class AppNotification {
 
 extension AppNotification {
     struct Events {
-        static let isSignedIn = Notification.Name("isSignedInNotification")
     }
 }

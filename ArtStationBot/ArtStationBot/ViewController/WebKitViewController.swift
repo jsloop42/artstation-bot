@@ -10,24 +10,94 @@ import Foundation
 import WebKit
 import DLLogger
 
+class WebViewState {
+    private var urlStack: [String] = [Const.seedURL]
+    private var navStack: [NavigationPage] = [.home]
+    private var isSignedIn = false
+
+    // MARK: - Get
+
+    func getCurrentURL() -> String {
+        return self.urlStack.last ?? Const.seedURL
+    }
+
+    func getCurrentPage() -> NavigationPage {
+        return navStack.last ?? .home
+    }
+
+    func getIsSignedIn() -> Bool {
+        return self.isSignedIn
+    }
+
+    // MARK: - Set
+
+    func addCurrentURL(_ url: String) {
+        self.urlStack.append(url)
+    }
+
+    func addCurrentPage(_ page: NavigationPage) {
+        self.navStack.append(page)
+    }
+
+    func setIsSignedIn(_ flag: Bool) {
+        self.isSignedIn = flag
+    }
+
+    // MARK: - Remove
+
+    func removeCurrentURL() {
+        if self.urlStack.count > 1 {
+            _ = self.urlStack.popLast()
+        }
+    }
+
+    func removeCurrentPage() {
+        if self.navStack.count > 1 {
+            _ = self.navStack.popLast()
+        }
+    }
+}
+
 class WebKitViewController: NSViewController {
     private let log = Logger()
     lazy var webView: WKWebView = {
         let webView = WKWebView(frame: CGRect.zero, configuration: initWebKitConfig())
         return webView
     }()
-    private let msgService = MessageService.shared
+    private lazy var msgService: MessageService = {
+        let s = MessageService()
+        s.delegate = self
+        return s
+    }()
+    private let nc = AppNotif.getInstance()
+    private var notifs: [Any?] = []
+    var state: WebViewState = WebViewState()
+    var shouldSignIn = false
 
     override func loadView() {
         self.view = NSView()
         self.log.debug("webkit load view")
         self.webView.navigationDelegate = self
         self.webView.uiDelegate = self
+        self.webView.customUserAgent = Utils.getRandomUserAgent()
         self.view.addSubview(self.webView)
+        // self.resetWebView()
     }
 
     override func viewDidLoad() {
+        self.initEvents()
         self.initData()
+    }
+
+    func setShouldSignIn(_ flag: Bool) {
+        self.shouldSignIn = flag
+    }
+
+    /// Resets the webview's cookies and cache
+    func resetWebView() {
+        let websiteDataTypes = NSSet(array: [WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache, WKWebsiteDataTypeCookies])
+        let date = Date(timeIntervalSince1970: 0)
+        WKWebsiteDataStore.default().removeData(ofTypes: websiteDataTypes as! Set<String>, modifiedSince: date, completionHandler:{})
     }
 
     // MARK: - Init
@@ -53,6 +123,10 @@ class WebKitViewController: NSViewController {
         return try? String(contentsOf: theUrl, encoding: .utf8)
     }
 
+    func initEvents() {
+
+    }
+
     func initData() {
         if let url = URL(string: Const.seedURL) {
             self.webView.load(URLRequest(url: url))
@@ -76,6 +150,15 @@ class WebKitViewController: NSViewController {
     }
 }
 
+/// Message service delegate methods
+extension WebKitViewController: MessageServiceDelegate {
+    func setIsSignedIn(_ flag: Bool) {
+        self.log.debug("is-signed-in?: \(flag)")
+        self.state.setIsSignedIn(flag)
+        // can begin sending messages
+    }
+}
+
 extension WebKitViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         self.msgService.process(message: message)
@@ -93,7 +176,13 @@ extension WebKitViewController: WKNavigationDelegate, WKUIDelegate {
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         self.log.debug("webview did finish")
-        self.execJS()
+        switch self.state.getCurrentPage() {
+        case .home:
+            if !self.state.getIsSignedIn() && self.shouldSignIn { self.signIn() }
+        case .signIn:
+            self.state.addCurrentPage(.home)
+            self.isSignedIn()
+        }
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
@@ -103,4 +192,22 @@ extension WebKitViewController: WKNavigationDelegate, WKUIDelegate {
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         self.log.debug("webview did commit")
     }
+}
+
+/// Artstation website interaction methods
+extension WebKitViewController {
+    func signIn() {
+        self.shouldSignIn = true
+        self.state.addCurrentPage(.signIn)
+        //self.execJS("asb.signIn('email-address', 'password')")
+    }
+
+    func isSignedIn() {
+        self.execJS("asb.isSignedIn()")
+    }
+}
+
+enum NavigationPage {
+    case home
+    case signIn
 }

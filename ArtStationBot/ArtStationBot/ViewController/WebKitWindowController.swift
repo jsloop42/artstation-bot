@@ -12,8 +12,9 @@ import DLLogger
 
 class WebKitWindowController: NSWindowController {
     private let log = Logger()
-    private lazy var windowName: String = { NSStringFromClass(type(of: self)) }()
-    private lazy var win: NSWindow = { return UI.createWindow() }()
+    lazy var windowName: String = { NSStringFromClass(type(of: self)) }()
+    lazy var win: NSWindow = { return UI.createWindow() }()
+    lazy var vc: WebKitViewController = { return WebKitViewController() }()
 
     override init(window: NSWindow?) {
         super.init(window: window)
@@ -30,7 +31,6 @@ class WebKitWindowController: NSWindowController {
     }
 
     func initUI() {
-        let vc = WebKitViewController()
         self.win.contentViewController = vc
         self.win.contentView = vc.webView
         self.shouldCascadeWindows = true

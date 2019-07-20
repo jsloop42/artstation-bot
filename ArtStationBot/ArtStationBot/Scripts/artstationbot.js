@@ -29,7 +29,7 @@ ASB.prototype.signIn = function(username, password) {
         document.querySelector("#new_user input.password").value = password
         document.querySelector("#new_user button[type='submit']").click()
     } else {
-        if (this.isSignedIn()) {
+        if (this.internal.isSignedIn()) {
             ASB.msg.postMessage({"id": "sign-in", "status": true, "msg": "Already signed-in"})
         } else {
             ASB.msg.postMessage({"id": "sign-in", "status": false, "msg": "Error getting sign-in button node"})
@@ -38,7 +38,13 @@ ASB.prototype.signIn = function(username, password) {
 }
 
 ASB.prototype.isSignedIn = function() {
-    ASB.msg.postMessage({"id": "is-signed-in?", "status": true, "value": window.user_id != null && typeof window.user_id === "number"})
+    ASB.msg.postMessage({"id": "is-signed-in?", "status": true, "value": this.internal.isSignedIn()})
+}
+
+ASB.prototype.internal = {
+    "isSignedIn": function () {
+        return window.user_id != null && typeof window.user_id === "number"
+    }
 }
 
 // Extensions

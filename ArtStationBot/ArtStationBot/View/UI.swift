@@ -14,8 +14,8 @@ class UI {
         (MainWindowController()).show()
     }
 
-    static func createWebKitWindow() {
-        (WebKitWindowController()).show()
+    static func createWebKitWindow() -> WebKitWindowController {
+        return WebKitWindowController()
     }
 
     static func createWindow() -> NSWindow {
