@@ -10,6 +10,8 @@ import Foundation
 import AppKit
 
 class UI {
+    private static var enStringBundle: Bundle?
+
     static func createMainWindow() {
         (MainWindowController()).show()
     }
@@ -41,7 +43,53 @@ class UI {
         let h: CGFloat = { if let ah = height { return ah }; return 500 }()
         window.setFrame(NSMakeRect(NSApp.mainWindow!.frame.maxX, NSApp.mainWindow!.frame.maxY - h, w, h), display: true)
     }
-}
+
+    static func createToolbar(id: NSToolbar.Identifier) -> NSToolbar {
+        let toolbar = NSToolbar(identifier: id)
+        toolbar.allowsUserCustomization = true
+        toolbar.displayMode = .iconAndLabel
+        return toolbar
+    }
+
+    static func createSegmentedControl(labels: [String]) -> NSSegmentedControl {
+        let sc = NSSegmentedControl(labels: labels, trackingMode: .selectOne, target: self, action: nil)
+        sc.setSelected(true, forSegment: 0)
+        return sc
+    }
+
+    static func createButton() -> NSButton {
+        let btn = NSButton(frame: NSMakeRect(0, 0, 40, 40))
+        btn.bezelStyle = .texturedRounded
+        return btn
+    }
+
+    static func lmsg(_ key: String) -> String {
+        return lmsg(key, "en")  // Using en as default as there is only one localization at present
+    }
+
+    /// Returns the localized string
+    /// - Parameter key: Localization string key
+    static func lmsg(_ key: String, _ lang: String) -> String {
+        switch lang {
+        case "en":
+            if let enBundle = enStringBundle {
+                return NSLocalizedString(key, tableName: nil, bundle: enBundle, value: "", comment: "")
+            } else {
+                loadBundle(for: lang)
+                return lmsg(key, lang)
+            }
+        default:
+            break
+        }
+        return NSLocalizedString(key, comment: "")
+    }
+
+    static func loadBundle(for lang: String) {
+        let mainBundle = Bundle(for: self)
+        if let path = mainBundle.path(forResource: lang, ofType: "lproj") {
+            if lang == "en" { self.enStringBundle = Bundle(path: path) }
+        }
+    }}
 
 extension NSWindow {
     public func setFrameOriginToCenterOfScreen() {

@@ -29,7 +29,6 @@ class MainViewController: NSViewController {
     }
 
     func initUI() {
-        //let btn = NSButton(frame: NSMakeRect(0, 0, 100, 20))
         self.view.addSubview(btn)
         NSLayoutConstraint.activate([
             btn.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 8),
@@ -37,6 +36,7 @@ class MainViewController: NSViewController {
             btn.widthAnchor.constraint(equalToConstant: 100),
             btn.heightAnchor.constraint(equalToConstant: 20)
         ])
+        self.view.becomeFirstResponder()
     }
 
     @objc func testButtonDidClick() {

@@ -1,0 +1,4 @@
+framework module DLDynamicSpace {
+  header "DLDynamicSpace-Swift.h"
+  requires objc
+}
