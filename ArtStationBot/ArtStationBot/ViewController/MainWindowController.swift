@@ -8,6 +8,7 @@
 
 import Foundation
 import AppKit
+import DLDynamicSpace
 import DLLogger
 
 class MainWindowController: NSWindowController {
@@ -39,13 +40,24 @@ class MainWindowController: NSWindowController {
         btn.toolTip = "Set credentials"
         return btn
     }()
+    private lazy var dspaceId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarDynamicSpace") }()
+    private lazy var dspace: DynamicSpace = { return DynamicSpace(itemIdentifier: self.dspaceId) }()
+    private lazy var toolbarItems: [NSToolbarItem.Identifier] = {
+        var xs = [self.toolbarCrawlBtnId, self.toolbarMessageBtnId, self.toolbarCredsBtnId, self.toolbarSegmentedControlId, .flexibleSpace]
+        if #available(OSX 10.14, *) {
+            self.toolbar.centeredItemIdentifier = self.toolbarSegmentedControlId
+            return xs
+        }
+        xs.insert(self.dspaceId, at: 3)
+        return xs
+    }()
 
     override init(window: NSWindow?) {
         super.init(window: window)
         //self.windowFrameAutosaveName = self.windowName
         initUI()
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
@@ -63,6 +75,7 @@ class MainWindowController: NSWindowController {
         self.toolbar.delegate = self
         //self.window?.titleVisibility = .hidden
         //self.window?.title = "ArtStation Bot"
+        self.toolbar.allowsUserCustomization = true
         self.window?.toolbar = self.toolbar
     }
 
@@ -91,21 +104,19 @@ extension MainWindowController: NSToolbarDelegate {
             toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
             toolbarItem.label = "Credential"
             toolbarItem.view = self.credsBtn
-        case .flexibleSpace:
-            toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
-        case .separator:
-            toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
+        case self.dspaceId:
+            toolbarItem = self.dspace
         default:
-            self.log.debug("toolbar item id: \(itemIdentifier)")
+            toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
         }
         return toolbarItem
     }
 
     func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        return [self.toolbarCrawlBtnId, self.toolbarMessageBtnId, .separator, self.toolbarCredsBtnId, .flexibleSpace]
+        return [self.toolbarCrawlBtnId, self.toolbarMessageBtnId, self.toolbarCredsBtnId, self.toolbarSegmentedControlId, self.dspaceId, .space, .flexibleSpace]
     }
 
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        return [self.toolbarCrawlBtnId, self.toolbarMessageBtnId, .separator, self.toolbarCredsBtnId, .flexibleSpace]
+        return self.toolbarItems
     }
 }

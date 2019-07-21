@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9E15D0CC22E45C8C00CC1453 /* DLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E15D0CB22E45C8C00CC1453 /* DLLogger.framework */; };
+		9E15D0CE22E45C9300CC1453 /* DLLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E15D0CB22E45C8C00CC1453 /* DLLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9E15D0D122E46C3300CC1453 /* DLDynamicSpace.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E15D0D022E46C3300CC1453 /* DLDynamicSpace.framework */; };
+		9E15D0D322E46C4500CC1453 /* DLDynamicSpace.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E15D0D022E46C3300CC1453 /* DLDynamicSpace.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9E22C2FB22E25C1A00772681 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E22C2FA22E25C1A00772681 /* Constants.swift */; };
 		9E22C2FD22E272F700772681 /* WebKitWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E22C2FC22E272F700772681 /* WebKitWindowController.swift */; };
 		9E39024E22E230DE009D1A36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39024D22E230DE009D1A36 /* AppDelegate.swift */; };
@@ -16,8 +20,6 @@
 		9E39026D22E230E5009D1A36 /* ArtStationBotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39026C22E230E5009D1A36 /* ArtStationBotUITests.swift */; };
 		9E39027F22E236A8009D1A36 /* WebKitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39027E22E236A8009D1A36 /* WebKitViewController.swift */; };
 		9E39028C22E23A05009D1A36 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39028B22E23A05009D1A36 /* MainWindowController.swift */; };
-		9E39029022E23B6C009D1A36 /* DLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E39028E22E23B26009D1A36 /* DLLogger.framework */; };
-		9E39029122E23B6C009D1A36 /* DLLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E39028E22E23B26009D1A36 /* DLLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9E39029522E23C61009D1A36 /* UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39029422E23C61009D1A36 /* UI.swift */; };
 		9E39029722E23CFE009D1A36 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39029622E23CFE009D1A36 /* MainViewController.swift */; };
 		9E39029922E240C7009D1A36 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39029822E240C7009D1A36 /* main.swift */; };
@@ -46,13 +48,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		9E39029222E23B6D009D1A36 /* Embed Frameworks */ = {
+		9E15D0CF22E45C9300CC1453 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				9E39029122E23B6C009D1A36 /* DLLogger.framework in Embed Frameworks */,
+				9E15D0CE22E45C9300CC1453 /* DLLogger.framework in Embed Frameworks */,
+				9E15D0D322E46C4500CC1453 /* DLDynamicSpace.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -60,6 +63,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9E15D0CB22E45C8C00CC1453 /* DLLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DLLogger.framework; sourceTree = "<group>"; };
+		9E15D0D022E46C3300CC1453 /* DLDynamicSpace.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DLDynamicSpace.framework; sourceTree = "<group>"; };
 		9E22C2FA22E25C1A00772681 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		9E22C2FC22E272F700772681 /* WebKitWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebKitWindowController.swift; sourceTree = "<group>"; };
 		9E39024A22E230DE009D1A36 /* ArtStationBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArtStationBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,7 +81,6 @@
 		9E39026E22E230E5009D1A36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9E39027E22E236A8009D1A36 /* WebKitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebKitViewController.swift; sourceTree = "<group>"; };
 		9E39028B22E23A05009D1A36 /* MainWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
-		9E39028E22E23B26009D1A36 /* DLLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DLLogger.framework; sourceTree = "<group>"; };
 		9E39029422E23C61009D1A36 /* UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI.swift; sourceTree = "<group>"; };
 		9E39029622E23CFE009D1A36 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		9E39029822E240C7009D1A36 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -92,7 +96,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9E39029022E23B6C009D1A36 /* DLLogger.framework in Frameworks */,
+				9E15D0CC22E45C8C00CC1453 /* DLLogger.framework in Frameworks */,
+				9E15D0D122E46C3300CC1453 /* DLDynamicSpace.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,7 +232,8 @@
 		9E39029322E23BD5009D1A36 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				9E39028E22E23B26009D1A36 /* DLLogger.framework */,
+				9E15D0D022E46C3300CC1453 /* DLDynamicSpace.framework */,
+				9E15D0CB22E45C8C00CC1453 /* DLLogger.framework */,
 			);
 			path = Frameworks;
 			sourceTree = "<group>";
@@ -242,7 +248,7 @@
 				9E39024622E230DE009D1A36 /* Sources */,
 				9E39024722E230DE009D1A36 /* Frameworks */,
 				9E39024822E230DE009D1A36 /* Resources */,
-				9E39029222E23B6D009D1A36 /* Embed Frameworks */,
+				9E15D0CF22E45C9300CC1453 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
