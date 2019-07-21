@@ -11,6 +11,12 @@ import Foundation
 typealias Const = Constants
 
 class Constants {
-    static let seedURL = "https://artstation.com/"
-    static let testURL = "https://google.com"
+    struct URL {
+        static let seed = "https://artstation.com/"
+        static let csrf = "\(Const.URL.seed)api/v2/csrf_protection/token.json"
+    }
+}
+
+struct ContentType {
+    static let json = "application/json"
 }

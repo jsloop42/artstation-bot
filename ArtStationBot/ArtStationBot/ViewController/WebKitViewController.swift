@@ -11,14 +11,14 @@ import WebKit
 import DLLogger
 
 class WebViewState {
-    private var urlStack: [String] = [Const.seedURL]
+    private var urlStack: [String] = [Const.URL.seed]
     private var navStack: [NavigationPage] = [.home]
     private var isSignedIn = false
 
     // MARK: - Get
 
     func getCurrentURL() -> String {
-        return self.urlStack.last ?? Const.seedURL
+        return self.urlStack.last ?? Const.URL.seed
     }
 
     func getCurrentPage() -> NavigationPage {
@@ -64,8 +64,8 @@ class WebKitViewController: NSViewController {
         let webView = WKWebView(frame: CGRect.zero, configuration: initWebKitConfig())
         return webView
     }()
-    private lazy var msgService: MessageService = {
-        let s = MessageService()
+    private lazy var msgService: WebViewMessageService = {
+        let s = WebViewMessageService()
         s.delegate = self
         return s
     }()
@@ -128,7 +128,7 @@ class WebKitViewController: NSViewController {
     }
 
     func initData() {
-        if let url = URL(string: Const.seedURL) {
+        if let url = URL(string: Const.URL.seed) {
             self.webView.load(URLRequest(url: url))
         }
     }
@@ -151,7 +151,7 @@ class WebKitViewController: NSViewController {
 }
 
 /// Message service delegate methods
-extension WebKitViewController: MessageServiceDelegate {
+extension WebKitViewController: WebViewMessageServiceDelegate {
     func setIsSignedIn(_ flag: Bool) {
         self.log.debug("is-signed-in?: \(flag)")
         self.state.setIsSignedIn(flag)

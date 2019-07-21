@@ -13,6 +13,7 @@ import DLLogger
 
 class MainWindowController: NSWindowController {
     private let log = Logger()
+    private lazy var crawlService = { return CrawlService() }()
     private lazy var windowName: String = { NSStringFromClass(type(of: self)) }()
     private lazy var win: NSWindow = { return UI.createWindow() }()
     private lazy var toolbar: NSToolbar = { return UI.createToolbar(id: self.toolbarId) }()
@@ -58,6 +59,7 @@ class MainWindowController: NSWindowController {
         super.init(window: window)
         //self.windowFrameAutosaveName = self.windowName
         initUI()
+        initEvents()
     }
 
     required init?(coder: NSCoder) {
@@ -79,12 +81,23 @@ class MainWindowController: NSWindowController {
         self.toolbar.allowsUserCustomization = true
         self.window?.titleVisibility = .hidden
         //self.window?.title = "ArtStation Bot"
-
         self.window?.toolbar = self.toolbar
     }
 
     func show() {
         self.showWindow(NSApp)
+    }
+
+    func initEvents() {
+        let click = NSClickGestureRecognizer(target: self, action: #selector(crawlButtonDidClick))
+        self.crawlBtn.addGestureRecognizer(click)
+    }
+}
+
+// MARK: - Event handlers
+extension MainWindowController {
+    @objc func crawlButtonDidClick() {
+        self.crawlService.getCSRFToken()
     }
 }
 
