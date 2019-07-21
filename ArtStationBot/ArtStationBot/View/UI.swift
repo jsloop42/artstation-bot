@@ -51,10 +51,10 @@ class UI {
         return toolbar
     }
 
-    static func createTabbar(labels: [String]) -> NSSegmentedControl {
-        let tabbar = NSSegmentedControl(labels: labels, trackingMode: .selectOne, target: self, action: nil)
-        tabbar.setSelected(true, forSegment: 0)
-        return tabbar
+    static func createSegmentedControl(labels: [String]) -> NSSegmentedControl {
+        let sc = NSSegmentedControl(labels: labels, trackingMode: .selectOne, target: self, action: nil)
+        sc.setSelected(true, forSegment: 0)
+        return sc
     }
 
     static func createButton() -> NSButton {

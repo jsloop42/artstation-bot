@@ -16,7 +16,9 @@ class MainWindowController: NSWindowController {
     private lazy var windowName: String = { NSStringFromClass(type(of: self)) }()
     private lazy var win: NSWindow = { return UI.createWindow() }()
     private lazy var toolbar: NSToolbar = { return UI.createToolbar(id: self.toolbarId) }()
-    private lazy var tabbar: NSSegmentedControl = { return UI.createTabbar(labels: [UI.lmsg("Dashboard"), UI.lmsg("Crawler"), UI.lmsg("Messenger")]) }()
+    private lazy var segmentedControl: NSSegmentedControl = {
+        return UI.createSegmentedControl(labels: [UI.lmsg("Dashboard"), UI.lmsg("Crawler"), UI.lmsg("Messenger")])
+    }()
     private lazy var toolbarId: NSToolbar.Identifier = { return NSToolbar.Identifier("mainToolbar") }()
     private lazy var toolbarCrawlBtnId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarCrawlButton") }()
     private lazy var toolbarMessageBtnId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarMessageButton") }()
@@ -24,7 +26,7 @@ class MainWindowController: NSWindowController {
     private lazy var toolbarSegmentedControlId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarSegmentedControl") }()
     private lazy var crawlBtn: NSButton = {
         let btn = UI.createButton()
-        btn.title = UI.lmsg("Crawler")
+        btn.title = UI.lmsg("Crawl")
         btn.toolTip = UI.lmsg("Start Crawler")
         return btn
     }()
@@ -36,7 +38,7 @@ class MainWindowController: NSWindowController {
     }()
     private lazy var credsBtn: NSButton = {
         let btn = UI.createButton()
-        btn.title = UI.lmsg("Crawl")
+        btn.title = UI.lmsg("Credential")
         btn.toolTip = UI.lmsg("Set credentials")
         return btn
     }()
@@ -73,9 +75,11 @@ class MainWindowController: NSWindowController {
         UI.setMainWindowBounds(self.win)
         self.window = self.win
         self.toolbar.delegate = self
-        //self.window?.titleVisibility = .hidden
-        //self.window?.title = "ArtStation Bot"
+        self.toolbar.displayMode = .iconOnly
         self.toolbar.allowsUserCustomization = true
+        self.window?.titleVisibility = .hidden
+        //self.window?.title = "ArtStation Bot"
+
         self.window?.toolbar = self.toolbar
     }
 
@@ -91,7 +95,7 @@ extension MainWindowController: NSToolbarDelegate {
         switch itemIdentifier {
         case self.toolbarSegmentedControlId:
             toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
-            toolbarItem.view = self.tabbar
+            toolbarItem.view = self.segmentedControl
         case self.toolbarCrawlBtnId:
             toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
             toolbarItem.label = UI.lmsg("Crawl")
