@@ -16,7 +16,7 @@ class MainWindowController: NSWindowController {
     private lazy var windowName: String = { NSStringFromClass(type(of: self)) }()
     private lazy var win: NSWindow = { return UI.createWindow() }()
     private lazy var toolbar: NSToolbar = { return UI.createToolbar(id: self.toolbarId) }()
-    private lazy var tabbar: NSSegmentedControl = { return UI.createTabbar(labels: ["Dashboard", "Crawler", "Messenger"]) }()
+    private lazy var tabbar: NSSegmentedControl = { return UI.createTabbar(labels: [UI.lmsg("Dashboard"), UI.lmsg("Crawler"), UI.lmsg("Messenger")]) }()
     private lazy var toolbarId: NSToolbar.Identifier = { return NSToolbar.Identifier("mainToolbar") }()
     private lazy var toolbarCrawlBtnId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarCrawlButton") }()
     private lazy var toolbarMessageBtnId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarMessageButton") }()
@@ -24,20 +24,20 @@ class MainWindowController: NSWindowController {
     private lazy var toolbarSegmentedControlId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarSegmentedControl") }()
     private lazy var crawlBtn: NSButton = {
         let btn = UI.createButton()
-        btn.title = "Crawler"
-        btn.toolTip = "Start Crawler"
+        btn.title = UI.lmsg("Crawler")
+        btn.toolTip = UI.lmsg("Start Crawler")
         return btn
     }()
     private lazy var messageBtn: NSButton = {
         let btn = UI.createButton()
-        btn.title = "Message"
-        btn.toolTip = "Start Messenger"
+        btn.title = UI.lmsg("Message")
+        btn.toolTip = UI.lmsg("Start Messenger")
         return btn
     }()
     private lazy var credsBtn: NSButton = {
         let btn = UI.createButton()
-        btn.title = "Credential"
-        btn.toolTip = "Set credentials"
+        btn.title = UI.lmsg("Crawl")
+        btn.toolTip = UI.lmsg("Set credentials")
         return btn
     }()
     private lazy var dspaceId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarDynamicSpace") }()
@@ -94,15 +94,15 @@ extension MainWindowController: NSToolbarDelegate {
             toolbarItem.view = self.tabbar
         case self.toolbarCrawlBtnId:
             toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
-            toolbarItem.label = "Crawl"
+            toolbarItem.label = UI.lmsg("Crawl")
             toolbarItem.view = self.crawlBtn
         case self.toolbarMessageBtnId:
             toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
-            toolbarItem.label = "Message"
+            toolbarItem.label = UI.lmsg("Message")
             toolbarItem.view = self.messageBtn
         case self.toolbarCredsBtnId:
             toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
-            toolbarItem.label = "Credential"
+            toolbarItem.label = UI.lmsg("Credential")
             toolbarItem.view = self.credsBtn
         case self.dspaceId:
             toolbarItem = self.dspace

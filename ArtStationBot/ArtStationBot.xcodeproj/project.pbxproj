@@ -13,6 +13,7 @@
 		9E15D0D322E46C4500CC1453 /* DLDynamicSpace.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E15D0D022E46C3300CC1453 /* DLDynamicSpace.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9E22C2FB22E25C1A00772681 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E22C2FA22E25C1A00772681 /* Constants.swift */; };
 		9E22C2FD22E272F700772681 /* WebKitWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E22C2FC22E272F700772681 /* WebKitWindowController.swift */; };
+		9E2F29FF22E474C500D5B28A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9E2F29FD22E474C400D5B28A /* Localizable.strings */; };
 		9E39024E22E230DE009D1A36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39024D22E230DE009D1A36 /* AppDelegate.swift */; };
 		9E39025122E230DE009D1A36 /* ArtStationBot.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9E39024F22E230DE009D1A36 /* ArtStationBot.xcdatamodeld */; };
 		9E39025322E230E5009D1A36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E39025222E230E5009D1A36 /* Assets.xcassets */; };
@@ -67,6 +68,7 @@
 		9E15D0D022E46C3300CC1453 /* DLDynamicSpace.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DLDynamicSpace.framework; sourceTree = "<group>"; };
 		9E22C2FA22E25C1A00772681 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		9E22C2FC22E272F700772681 /* WebKitWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebKitWindowController.swift; sourceTree = "<group>"; };
+		9E2F29FE22E474C500D5B28A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9E39024A22E230DE009D1A36 /* ArtStationBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArtStationBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E39024D22E230DE009D1A36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9E39025022E230DE009D1A36 /* ArtStationBot.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ArtStationBot.xcdatamodel; sourceTree = "<group>"; };
@@ -158,12 +160,13 @@
 				9E39027A22E23415009D1A36 /* ViewController */,
 				9E39024D22E230DE009D1A36 /* AppDelegate.swift */,
 				9E22C2FA22E25C1A00772681 /* Constants.swift */,
+				9ECAFAC222E33AF800953081 /* Utils.swift */,
 				9E39029822E240C7009D1A36 /* main.swift */,
+				9E2F29FD22E474C400D5B28A /* Localizable.strings */,
 				9E39025222E230E5009D1A36 /* Assets.xcassets */,
 				9E39025722E230E5009D1A36 /* Info.plist */,
 				9E39025822E230E5009D1A36 /* ArtStationBot.entitlements */,
 				9E39024F22E230DE009D1A36 /* ArtStationBot.xcdatamodeld */,
-				9ECAFAC222E33AF800953081 /* Utils.swift */,
 			);
 			path = ArtStationBot;
 			sourceTree = "<group>";
@@ -328,8 +331,8 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				en,
 			);
 			mainGroup = 9E39024122E230DD009D1A36;
 			productRefGroup = 9E39024B22E230DE009D1A36 /* Products */;
@@ -349,6 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9E39025322E230E5009D1A36 /* Assets.xcassets in Resources */,
+				9E2F29FF22E474C500D5B28A /* Localizable.strings in Resources */,
 				9ECAFABB22E2FA6500953081 /* artstationbot.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -420,6 +424,17 @@
 			targetProxy = 9E39026922E230E5009D1A36 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		9E2F29FD22E474C400D5B28A /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9E2F29FE22E474C500D5B28A /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		9E39026F22E230E5009D1A36 /* Debug */ = {
