@@ -1,5 +1,5 @@
 //
-//  MessageService.swift
+//  WebViewMessageService.swift
 //  ArtStationBot
 //
 //  Created by jsloop on 20/07/19.
@@ -10,15 +10,15 @@ import Foundation
 import WebKit
 import DLLogger
 
-protocol MessageServiceDelegate: class {
+protocol WebViewMessageServiceDelegate: class {
     func setIsSignedIn(_ flag: Bool)
 }
 
 /// A class which handles messaging between the webview and the app.
-class MessageService {
+class WebViewMessageService {
     private let log = Logger()
     private let msgHandlerName = "asb"
-    weak var delegate: MessageServiceDelegate?
+    weak var delegate: WebViewMessageServiceDelegate?
 
     func getHandlerName() -> String {
         return self.msgHandlerName
