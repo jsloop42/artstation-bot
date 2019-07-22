@@ -28,6 +28,10 @@
 		9E3B992622E48713007C94A7 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992522E48713007C94A7 /* NetworkService.swift */; };
 		9E3B992822E48A3E007C94A7 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992722E48A3E007C94A7 /* Enums.swift */; };
 		9E3B992A22E49761007C94A7 /* CSRFTokenResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992922E49761007C94A7 /* CSRFTokenResult.swift */; };
+		9E5BD92022E643FB00C972A9 /* libfdb_c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E5BD91E22E643FB00C972A9 /* libfdb_c.dylib */; };
+		9E5BD92122E6443500C972A9 /* libfdb_c.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E5BD91E22E643FB00C972A9 /* libfdb_c.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		9E5BD92522E644CA00C972A9 /* FoundationDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5BD92422E644CA00C972A9 /* FoundationDBService.m */; };
+		9E5BD92822E6455C00C972A9 /* fdb.options in Resources */ = {isa = PBXBuildFile; fileRef = 9E5BD92622E6455C00C972A9 /* fdb.options */; };
 		9ECAFABB22E2FA6500953081 /* artstationbot.js in Resources */ = {isa = PBXBuildFile; fileRef = 9ECAFABA22E2FA6500953081 /* artstationbot.js */; };
 		9ECAFABD22E3098500953081 /* ScriptResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECAFABC22E3098500953081 /* ScriptResult.swift */; };
 		9ECAFABF22E319D500953081 /* WebViewMessageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECAFABE22E319D500953081 /* WebViewMessageService.swift */; };
@@ -59,6 +63,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				9E5BD92122E6443500C972A9 /* libfdb_c.dylib in Embed Frameworks */,
 				9E15D0CE22E45C9300CC1453 /* DLLogger.framework in Embed Frameworks */,
 				9E15D0D322E46C4500CC1453 /* DLDynamicSpace.framework in Embed Frameworks */,
 			);
@@ -94,6 +99,15 @@
 		9E3B992522E48713007C94A7 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		9E3B992722E48A3E007C94A7 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		9E3B992922E49761007C94A7 /* CSRFTokenResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSRFTokenResult.swift; sourceTree = "<group>"; };
+		9E5BD91C22E643FB00C972A9 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		9E5BD91D22E643FB00C972A9 /* fdb_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fdb_c.h; sourceTree = "<group>"; };
+		9E5BD91E22E643FB00C972A9 /* libfdb_c.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libfdb_c.dylib; sourceTree = "<group>"; };
+		9E5BD91F22E643FB00C972A9 /* CFoundationDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFoundationDB.h; sourceTree = "<group>"; };
+		9E5BD92222E644C900C972A9 /* ArtStationBot-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ArtStationBot-Bridging-Header.h"; sourceTree = "<group>"; };
+		9E5BD92322E644CA00C972A9 /* FoundationDBService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FoundationDBService.h; sourceTree = "<group>"; };
+		9E5BD92422E644CA00C972A9 /* FoundationDBService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FoundationDBService.m; sourceTree = "<group>"; };
+		9E5BD92622E6455C00C972A9 /* fdb.options */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fdb.options; sourceTree = "<group>"; };
+		9E5BD92722E6455C00C972A9 /* fdb_c_options.g.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fdb_c_options.g.h; sourceTree = "<group>"; };
 		9ECAFABA22E2FA6500953081 /* artstationbot.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = artstationbot.js; sourceTree = "<group>"; };
 		9ECAFABC22E3098500953081 /* ScriptResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptResult.swift; sourceTree = "<group>"; };
 		9ECAFABE22E319D500953081 /* WebViewMessageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewMessageService.swift; sourceTree = "<group>"; };
@@ -108,6 +122,7 @@
 			files = (
 				9E15D0CC22E45C8C00CC1453 /* DLLogger.framework in Frameworks */,
 				9E15D0D122E46C3300CC1453 /* DLDynamicSpace.framework in Frameworks */,
+				9E5BD92022E643FB00C972A9 /* libfdb_c.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,6 +175,7 @@
 		9E39024C22E230DE009D1A36 /* ArtStationBot */ = {
 			isa = PBXGroup;
 			children = (
+				9E5BD91B22E643F000C972A9 /* Libs */,
 				9E22C2FE22E2F8AE00772681 /* Scripts */,
 				9E39029322E23BD5009D1A36 /* Frameworks */,
 				9E39027D22E23428009D1A36 /* Model */,
@@ -222,8 +238,11 @@
 			children = (
 				9ECAFAC022E32D9A00953081 /* AppNotification.swift */,
 				9E2F2A0022E485B100D5B28A /* CrawlService.swift */,
+				9E5BD92322E644CA00C972A9 /* FoundationDBService.h */,
+				9E5BD92422E644CA00C972A9 /* FoundationDBService.m */,
 				9E3B992522E48713007C94A7 /* NetworkService.swift */,
 				9ECAFABE22E319D500953081 /* WebViewMessageService.swift */,
+				9E5BD92222E644C900C972A9 /* ArtStationBot-Bridging-Header.h */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -253,6 +272,19 @@
 			path = Frameworks;
 			sourceTree = "<group>";
 		};
+		9E5BD91B22E643F000C972A9 /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				9E5BD92722E6455C00C972A9 /* fdb_c_options.g.h */,
+				9E5BD92622E6455C00C972A9 /* fdb.options */,
+				9E5BD91F22E643FB00C972A9 /* CFoundationDB.h */,
+				9E5BD91D22E643FB00C972A9 /* fdb_c.h */,
+				9E5BD91E22E643FB00C972A9 /* libfdb_c.dylib */,
+				9E5BD91C22E643FB00C972A9 /* module.modulemap */,
+			);
+			path = Libs;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -261,9 +293,9 @@
 			buildConfigurationList = 9E39027122E230E5009D1A36 /* Build configuration list for PBXNativeTarget "ArtStationBot" */;
 			buildPhases = (
 				9E39024622E230DE009D1A36 /* Sources */,
+				9E15D0CF22E45C9300CC1453 /* Embed Frameworks */,
 				9E39024722E230DE009D1A36 /* Frameworks */,
 				9E39024822E230DE009D1A36 /* Resources */,
-				9E15D0CF22E45C9300CC1453 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -322,6 +354,7 @@
 				TargetAttributes = {
 					9E39024922E230DE009D1A36 = {
 						CreatedOnToolsVersion = 10.2.1;
+						LastSwiftMigration = 1020;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
 								enabled = 0;
@@ -364,6 +397,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9E39025322E230E5009D1A36 /* Assets.xcassets in Resources */,
+				9E5BD92822E6455C00C972A9 /* fdb.options in Resources */,
 				9E2F29FF22E474C500D5B28A /* Localizable.strings in Resources */,
 				9ECAFABB22E2FA6500953081 /* artstationbot.js in Resources */,
 			);
@@ -406,6 +440,7 @@
 				9E39027F22E236A8009D1A36 /* WebKitViewController.swift in Sources */,
 				9E22C2FB22E25C1A00772681 /* Constants.swift in Sources */,
 				9E3B992822E48A3E007C94A7 /* Enums.swift in Sources */,
+				9E5BD92522E644CA00C972A9 /* FoundationDBService.m in Sources */,
 				9ECAFABD22E3098500953081 /* ScriptResult.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -572,6 +607,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 7S7UE44956;
@@ -584,9 +621,15 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ArtStationBot/Libs",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dreamlisp.ArtStationBot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "ArtStationBot/Service/ArtStationBot-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -595,6 +638,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 7S7UE44956;
@@ -607,9 +652,14 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ArtStationBot/Libs",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dreamlisp.ArtStationBot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "ArtStationBot/Service/ArtStationBot-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
