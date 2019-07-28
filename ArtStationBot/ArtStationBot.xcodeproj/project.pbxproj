@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9E0DDE3B22EDE7B100C9DF84 /* libbson-1.0.0.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E0DDE3922EDE7B100C9DF84 /* libbson-1.0.0.0.0.dylib */; };
+		9E0DDE3C22EDE7B100C9DF84 /* libmongoc-1.0.0.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E0DDE3A22EDE7B100C9DF84 /* libmongoc-1.0.0.0.0.dylib */; };
+		9E0DDE3D22EDE7BB00C9DF84 /* libbson-1.0.0.0.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E0DDE3922EDE7B100C9DF84 /* libbson-1.0.0.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		9E0DDE3E22EDE7BB00C9DF84 /* libmongoc-1.0.0.0.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E0DDE3A22EDE7B100C9DF84 /* libmongoc-1.0.0.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		9E15D0CC22E45C8C00CC1453 /* DLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E15D0CB22E45C8C00CC1453 /* DLLogger.framework */; };
 		9E15D0CE22E45C9300CC1453 /* DLLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E15D0CB22E45C8C00CC1453 /* DLLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9E15D0D122E46C3300CC1453 /* DLDynamicSpace.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E15D0D022E46C3300CC1453 /* DLDynamicSpace.framework */; };
@@ -63,6 +67,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				9E0DDE3E22EDE7BB00C9DF84 /* libmongoc-1.0.0.0.0.dylib in Embed Frameworks */,
+				9E0DDE3D22EDE7BB00C9DF84 /* libbson-1.0.0.0.0.dylib in Embed Frameworks */,
 				9E5BD92122E6443500C972A9 /* libfdb_c.dylib in Embed Frameworks */,
 				9E15D0CE22E45C9300CC1453 /* DLLogger.framework in Embed Frameworks */,
 				9E15D0D322E46C4500CC1453 /* DLDynamicSpace.framework in Embed Frameworks */,
@@ -73,6 +79,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9E0DDE3922EDE7B100C9DF84 /* libbson-1.0.0.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libbson-1.0.0.0.0.dylib"; sourceTree = "<group>"; };
+		9E0DDE3A22EDE7B100C9DF84 /* libmongoc-1.0.0.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libmongoc-1.0.0.0.0.dylib"; sourceTree = "<group>"; };
 		9E15D0CB22E45C8C00CC1453 /* DLLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DLLogger.framework; sourceTree = "<group>"; };
 		9E15D0D022E46C3300CC1453 /* DLDynamicSpace.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DLDynamicSpace.framework; sourceTree = "<group>"; };
 		9E22C2FA22E25C1A00772681 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -120,6 +128,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E0DDE3C22EDE7B100C9DF84 /* libmongoc-1.0.0.0.0.dylib in Frameworks */,
+				9E0DDE3B22EDE7B100C9DF84 /* libbson-1.0.0.0.0.dylib in Frameworks */,
 				9E15D0CC22E45C8C00CC1453 /* DLLogger.framework in Frameworks */,
 				9E15D0D122E46C3300CC1453 /* DLDynamicSpace.framework in Frameworks */,
 				9E5BD92022E643FB00C972A9 /* libfdb_c.dylib in Frameworks */,
@@ -266,6 +276,8 @@
 		9E39029322E23BD5009D1A36 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9E0DDE3922EDE7B100C9DF84 /* libbson-1.0.0.0.0.dylib */,
+				9E0DDE3A22EDE7B100C9DF84 /* libmongoc-1.0.0.0.0.dylib */,
 				9E15D0D022E46C3300CC1453 /* DLDynamicSpace.framework */,
 				9E15D0CB22E45C8C00CC1453 /* DLLogger.framework */,
 			);
@@ -606,6 +618,7 @@
 		9E39027222E230E5009D1A36 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
@@ -617,6 +630,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ArtStationBot/Frameworks",
 				);
+				HEADER_SEARCH_PATHS = (
+					"/usr/local/include/libmongoc-1.0",
+					"/usr/local/include/libbson-1.0",
+				);
 				INFOPLIST_FILE = ArtStationBot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -625,6 +642,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ArtStationBot/Libs",
+					"$(PROJECT_DIR)/ArtStationBot/Frameworks",
+					/usr/local/lib/,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.ArtStationBot;
@@ -632,12 +651,16 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "ArtStationBot/Service/ArtStationBot-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				SYSTEM_FRAMEWORK_SEARCH_PATHS = "";
+				SYSTEM_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
 		};
 		9E39027322E230E5009D1A36 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
@@ -649,6 +672,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ArtStationBot/Frameworks",
 				);
+				HEADER_SEARCH_PATHS = (
+					"/usr/local/include/libmongoc-1.0",
+					"/usr/local/include/libbson-1.0",
+				);
 				INFOPLIST_FILE = ArtStationBot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -657,12 +684,17 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ArtStationBot/Libs",
+					"$(PROJECT_DIR)/ArtStationBot/Frameworks",
+					/usr/local/lib/,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.ArtStationBot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ArtStationBot/Service/ArtStationBot-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				SYSTEM_FRAMEWORK_SEARCH_PATHS = "";
+				SYSTEM_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
 		};

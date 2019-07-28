@@ -68,8 +68,6 @@ class WebKitViewController: NSViewController {
         s.delegate = self
         return s
     }()
-    private let nc = AppNotif.getInstance()
-    private var notifs: [Any?] = []
     var state: WebViewState = WebViewState()
     var shouldSignIn = false
 
