@@ -6,6 +6,8 @@
 	<dict>
 		<key>ClusterConfigPath</key>
 		<string>/usr/local/etc/foundationdb/fdb.cluster</string>
+		<key>DocumentLayerURL</key>
+		<string>mongodb://127.0.0.1:27016</string>
 	</dict>
 </dict>
 </plist>

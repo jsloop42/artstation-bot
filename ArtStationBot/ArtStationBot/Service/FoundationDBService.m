@@ -7,6 +7,7 @@
 
 
 #import "FoundationDBService.h"
+#import "ArtStationBot-Swift.h"
 #import "mongoc/mongoc.h"
 //#import "bson/bcon.h"
 
@@ -22,10 +23,29 @@
 #endif
 
 static const char *dbName = "artstation";
+static const char *appName = "artstationbot";
+static const char *skills_coll_name = "skills";
+static const char *users_coll_name = "users";
+
+@interface FoundationDBService ()
+@property (nonatomic, readwrite) mongoc_uri_t *mongouri;
+@property (nonatomic, readwrite) mongoc_client_t *client;
+@property (nonatomic, readwrite) mongoc_database_t *database;
+@property (nonatomic, readwrite) mongoc_collection_t *skills_coll;
+@property (nonatomic, readwrite) mongoc_collection_t *users_coll;
+@property (nonatomic, readwrite) bson_t *insertCommand;
+@property (nonatomic, readwrite) bson_t *readCommand;
+@property (nonatomic, readwrite) bson_t *updateCommand;
+@property (nonatomic, readwrite) bson_t *deleteCommand;
+@property (nonatomic, readwrite) bson_t reply;
+@property (nonatomic, readwrite) bson_t *insert;
+
+@end
 
 @implementation FoundationDBService {
     NSString *_configPath;
     NSString *_config;
+    char *_docLayerURL;
 }
 
 @synthesize configPath = _configPath;
@@ -38,44 +58,50 @@ static const char *dbName = "artstation";
     return self;
 }
 
-- (int)fail {
-    debug(@"DB error")
+- (void)dealloc {
+    mongoc_collection_destroy(self.skills_coll);
+    mongoc_collection_destroy(self.users_coll);
+    mongoc_database_destroy(self.database);
+    mongoc_uri_destroy(self.mongouri);
+    mongoc_client_destroy(self.client);
+    mongoc_cleanup();
+}
+
+- (int)fail:(bson_error_t)err {
+    error(@"DB error: code: %d, msg: %s" , err.code, err.message);
     return EXIT_FAILURE;
 }
 
 - (void)bootstrap {
-    //[self initDocLayer];
+    NSString *url = [Utils getDocLayerURL];
+    _docLayerURL = (char *)[url UTF8String];
+    [self initDocLayer];
+    self.skills_coll = mongoc_client_get_collection(self.client, dbName, skills_coll_name);
+    self.users_coll = mongoc_client_get_collection(self.client, dbName, users_coll_name);
 }
 
 - (int)initDocLayer {
-    const char *_fdbURL = "mongodb://localhost:27016";
     bson_error_t err;
-    mongoc_uri_t *mongouri = mongoc_uri_new_with_error(_fdbURL, &err);
-    if (!mongouri) return [self fail];
-    mongoc_client_t *client = mongoc_client_new_from_uri(mongouri);
-    if (!client) return [self fail];
-    mongoc_client_set_appname(client, "artstationbot");
-    mongoc_database_t *database = mongoc_client_get_database(client, dbName);
-    mongoc_collection_t *coll = mongoc_client_get_collection(client, dbName, "users");
-    bson_t *command = BCON_NEW("ping", BCON_INT32(1));
+    self.mongouri = mongoc_uri_new_with_error(_docLayerURL, &err);
+    if (!self.mongouri) return [self fail:err];
+    self.client = mongoc_client_new_from_uri(self.mongouri);
+    if (!self.client) return [self fail:err];
+    mongoc_client_set_appname(self.client, appName);
+    self.database = mongoc_client_get_database(self.client, dbName);
+    return EXIT_SUCCESS;
+}
+
+- (int)insertSkills:(char *)json {
+    bson_error_t err;
+    bson_t *skill_json = bson_new_from_json((const uint8_t *)json, -1, &err);
     bson_t reply;
-    bool retVal = mongoc_client_command_simple(client, dbName, command, NULL, &reply, &err);
-    if (!retVal) return EXIT_FAILURE;
-    char *str = bson_as_json(&reply, NULL);
-    printf("%s\n", str);
-    bson_t *insert = BCON_NEW("hello", BCON_UTF8("world"));
-    if (!mongoc_collection_insert_one(coll, insert, NULL, &reply, &err)) {
-        return [self fail];
-    }
-    bson_destroy(insert);
+    bool ret = mongoc_collection_insert_one(self.skills_coll, skill_json, NULL, &reply, &err);
+    if (!ret) [self fail:err];
+    char *str = bson_as_canonical_extended_json(skill_json, NULL);
+    debug(@"%s\n", str);
+    bson_destroy(skill_json);
     bson_destroy(&reply);
-    bson_destroy(command);
     bson_free(str);
-    mongoc_collection_destroy(coll);
-    mongoc_database_destroy(database);
-    mongoc_uri_destroy(mongouri);
-    mongoc_client_destroy(client);
-    mongoc_cleanup();
     return EXIT_SUCCESS;
 }
 

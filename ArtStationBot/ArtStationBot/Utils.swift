@@ -56,4 +56,11 @@ class Utils: NSObject {
         }
         return ""
     }
+
+    static func getDocLayerURL() -> String {
+        if let conf = getConfig(), let fdbconf = conf.value(forKey: "FoundationDB") as? NSDictionary {
+            return fdbconf.value(forKey: "DocumentLayerURL") as? String ?? ""
+        }
+        return ""
+    }
 }
