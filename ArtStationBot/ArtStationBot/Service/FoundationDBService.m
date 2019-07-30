@@ -5,7 +5,6 @@
 //  Created by jsloop on 23/07/19.
 //
 
-
 #import "FoundationDBService.h"
 #import "ArtStationBot-Swift.h"
 #import "mongoc/mongoc.h"
@@ -78,6 +77,7 @@ static bson_t *insert;
     [self initDocLayer];
     skills_coll = mongoc_client_get_collection(client, dbName, skills_coll_name);
     users_coll = mongoc_client_get_collection(client, dbName, users_coll_name);
+    [self test];
 }
 
 - (int)initDocLayer {
@@ -106,67 +106,109 @@ static bson_t *insert;
     return EXIT_SUCCESS;
 }
 
-- (int)insertUser {
-    mongoc_client_session_t *session;
-    mongoc_session_opt_t *session_opts;
-    mongoc_transaction_opt_t *default_txn_opts;
-    mongoc_transaction_opt_t *txn_opts;
-    mongoc_read_concern_t *read_concern;
-    mongoc_write_concern_t *write_concern;
-    bson_t *doc;
-    bson_t *insert_opts;
-    bson_error_t err;
-    default_txn_opts = mongoc_transaction_opts_new();
-    read_concern = mongoc_read_concern_new();
-    mongoc_read_concern_set_level(read_concern, "snapshot");
-    mongoc_transaction_opts_set_read_concern(default_txn_opts, read_concern);
-    session_opts = mongoc_session_opts_new();
-    mongoc_session_opts_set_default_transaction_opts(session_opts, default_txn_opts);
-    session = mongoc_client_start_session(client, session_opts, &err);
-    if (!session) {
-        MONGOC_ERROR("Failed to start session: %s", err.message);
-        return EXIT_FAILURE;
-    }
-    txn_opts = mongoc_transaction_opts_new();
-    write_concern = mongoc_write_concern_new();
-    mongoc_write_concern_set_wmajority(write_concern, 1000);  // write timeout
-    mongoc_transaction_opts_set_write_concern(txn_opts, write_concern);
-    insert_opts = bson_new();
+- (void)test {
+    User *user = [User new];
+    user.userId = 1;
+    user.username = @"Jane Doe";
+    user.isStaff = YES;
+    user.skills = [NSMutableArray new];
+    Skill *skill = [Skill new];
+    skill.name = @"2D Art";
+    [user.skills addObject:skill];
+    Software *software = [Software new];
+    software.name = @"Houdini";
+    user.software = [NSMutableArray new];
+    [user.software addObject:software];
+    SampleProject *proj = [SampleProject new];
+    proj.sampleProjectId = 1;
+    proj.url = @"https://example.com";
+    proj.smallerSquareCoverURL = @"https://example.com/cover.jpg";
+    proj.title = @"Example project";
+    user.sampleProjects = [NSMutableArray new];
+    [user.sampleProjects addObject:proj];
+    [self insertUser:user];
+}
+
+- (int)insertUser:(User *)user {
     // user_json: {"_id": 123, "username": "Foo"}
     // "2D Animation": {"_id": 1, "users": [123]} // db["2D Animation"].update({"_id": 1}, {"$push": {"users": 123}})
     // FIXME: insert docs to user, skills
-    insertUserTransaction(self, session, txn_opts, &err);
+    bson_error_t err;
+    bson_t *user_doc = constructUserBSON(user, &err);
     return EXIT_SUCCESS;
 }
 
-// FIXME: test
-int insertUserTransaction(id self, mongoc_client_session_t *session, mongoc_transaction_opt_t *txn_opts, bson_error_t *err) {
-    bool ret = mongoc_client_session_start_transaction(session, txn_opts, err);
-    if (!ret) {
-        MONGOC_ERROR("Failed to start transaction: %s", err->message);
-        return EXIT_FAILURE;
+bson_t *constructUserBSON(User *user, bson_error_t *err) {
+    int user_id = (int)user.userId;
+    int i = 0;
+    bson_t skills;
+    bson_t skills_doc;
+    bson_t software;
+    bson_t software_doc;
+    bson_t sample_project;
+    bson_t sample_project_doc;
+    int skills_len = (int)user.skills.count;
+    int software_len = (int)user.software.count;
+    int sample_project_len = (int)user.sampleProjects.count;
+    const char *key;
+    char buf[16];
+    size_t keylen;
+    char *str;
+    bson_t *user_doc = BCON_NEW("_id", BCON_INT64(user_id),
+                                "username", BCON_UTF8([user.username UTF8String]),
+                                "large_avatar_url", BCON_UTF8([user.largeAvatarURL UTF8String]),
+                                "small_cover_url", BCON_UTF8([user.smallCoverURL UTF8String]),
+                                "is_staff", BCON_BOOL(user.isStaff),
+                                "pro_member", BCON_BOOL(user.isProMember),
+                                "artstation_profile_url", BCON_UTF8([user.artstationProfileURL UTF8String]),
+                                "likesCount", BCON_INT64((int64_t)user.likesCount),
+                                "follower_count", BCON_INT64((int64_t)user.followersCount),
+                                "available_full_time", BCON_BOOL(user.isAvailableFullTime),
+                                "available_contract", BCON_BOOL(user.isAvailableContract),
+                                "available_freelance", BCON_BOOL(user.isAvailableFreelance),
+                                "location", BCON_UTF8([user.location UTF8String]),
+                                "full_name", BCON_UTF8([user.fullName UTF8String]),
+                                "headline", BCON_UTF8([user.headline UTF8String]),
+                                "followed", BCON_BOOL(user.isFollowed),
+                                "following_back", BCON_BOOL(user.isFollowingBack));
+    // Append skills
+    BSON_APPEND_ARRAY_BEGIN(user_doc, "skills", &skills);
+    for (i = 0; i < skills_len; ++i) {
+        keylen = bson_uint32_to_string(i, &key, buf, sizeof buf);
+        bson_append_document_begin(&skills, key, (int)keylen, &skills_doc);
+        BSON_APPEND_UTF8(&skills_doc, "skill_name", [user.skills[i].name UTF8String]);
+        bson_append_document_end(&skills, &skills_doc);
     }
-    bson_t *selector = BCON_NEW ("_id", BCON_INT32(1));
-    bson_t *update = BCON_NEW("$push", "{", "users", BCON_INT32(123), "}");
-    bson_t *update_opts = bson_new();
-    ret = mongoc_client_session_append(session, update_opts, err);
-    if (!ret) {
-        MONGOC_ERROR("Failed to update session: %s", err->message);
-        return EXIT_FAILURE;
+    bson_append_array_end(user_doc, &skills);
+    // Append software
+    key = NULL;
+    keylen = 0;
+    BSON_APPEND_ARRAY_BEGIN(user_doc, "software", &software);
+    for (i = 0; i < software_len; ++i) {
+        keylen = bson_uint32_to_string(i, &key, buf, sizeof buf);
+        bson_append_document_begin(&software, key, (int)keylen, &software_doc);
+        BSON_APPEND_UTF8(&software_doc, "software_name", [user.software[i].name UTF8String]);
+        bson_append_document_end(&software, &software_doc);
     }
-    bson_t reply;
-    ret = mongoc_collection_update_one(skills_coll, selector, update, update_opts, &reply, err);
-    if (!ret) {
-        MONGOC_ERROR("Failed to update collection: %s", err->message);
-        return EXIT_FAILURE;
+    bson_append_array_end(user_doc, &software);
+    // Append sample projects
+    key = NULL;
+    keylen = 0;
+    BSON_APPEND_ARRAY_BEGIN(user_doc, "sample_projects", &sample_project);
+    for (i = 0; i < sample_project_len; ++i) {
+        keylen = bson_uint32_to_string(i, &key, buf, sizeof buf);
+        bson_append_document_begin(&sample_project, key, (int)keylen, &sample_project_doc);
+        BSON_APPEND_INT64(&sample_project_doc, "_id", (int64_t)user.sampleProjects[i].sampleProjectId);
+        BSON_APPEND_UTF8(&sample_project_doc, "smaller_square_cover_url", [user.sampleProjects[i].smallerSquareCoverURL UTF8String]);
+        BSON_APPEND_UTF8(&sample_project_doc, "url", [user.sampleProjects[i].url UTF8String]);
+        BSON_APPEND_UTF8(&sample_project_doc, "title", [user.sampleProjects[i].title UTF8String]);
+        bson_append_document_end(&sample_project, &sample_project_doc);
     }
-    bson_destroy(&reply);
-    bson_destroy(update_opts);
-    bson_destroy(update_opts);
-    bson_destroy(update);
-    bson_destroy(selector);
-    mongoc_transaction_opts_destroy(txn_opts);
-    return EXIT_SUCCESS;
+    bson_append_array_end(user_doc, &sample_project);
+    str = bson_as_canonical_extended_json(user_doc, NULL);
+    MONGOC_INFO("user doc: %s", str);
+    bson_free(str);
+    return user_doc;
 }
 
 @end

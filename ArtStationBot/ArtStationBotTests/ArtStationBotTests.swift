@@ -15,7 +15,4 @@ class ArtStationBotTests: XCTestCase {
 
     override func tearDown() {
     }
-
-    func notestExample() {
-    }
 }

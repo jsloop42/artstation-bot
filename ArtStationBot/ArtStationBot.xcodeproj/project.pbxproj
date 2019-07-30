@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9E044E5E22F0B4A7000D6780 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E5D22F0B4A7000D6780 /* User.m */; };
+		9E044E6122F0B738000D6780 /* SampleProject.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6022F0B738000D6780 /* SampleProject.m */; };
+		9E044E6422F0B7CE000D6780 /* Skill.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6322F0B7CE000D6780 /* Skill.m */; };
+		9E044E6722F0B816000D6780 /* Software.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6622F0B816000D6780 /* Software.m */; };
 		9E0DDE3B22EDE7B100C9DF84 /* libbson-1.0.0.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E0DDE3922EDE7B100C9DF84 /* libbson-1.0.0.0.0.dylib */; };
 		9E0DDE3C22EDE7B100C9DF84 /* libmongoc-1.0.0.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E0DDE3A22EDE7B100C9DF84 /* libmongoc-1.0.0.0.0.dylib */; };
 		9E0DDE3D22EDE7BB00C9DF84 /* libbson-1.0.0.0.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E0DDE3922EDE7B100C9DF84 /* libbson-1.0.0.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -32,6 +36,11 @@
 		9E3B992622E48713007C94A7 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992522E48713007C94A7 /* NetworkService.swift */; };
 		9E3B992822E48A3E007C94A7 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992722E48A3E007C94A7 /* Enums.swift */; };
 		9E3B992A22E49761007C94A7 /* CSRFTokenResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992922E49761007C94A7 /* CSRFTokenResult.swift */; };
+		9E4C607B22F0D6B90027B2BB /* FoundationDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5BD92422E644CA00C972A9 /* FoundationDBService.m */; };
+		9E4C607C22F0D6C50027B2BB /* SampleProject.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6022F0B738000D6780 /* SampleProject.m */; };
+		9E4C607D22F0D6C50027B2BB /* Skill.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6322F0B7CE000D6780 /* Skill.m */; };
+		9E4C607E22F0D6C50027B2BB /* Software.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6622F0B816000D6780 /* Software.m */; };
+		9E4C607F22F0D6C50027B2BB /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E5D22F0B4A7000D6780 /* User.m */; };
 		9E5BD92022E643FB00C972A9 /* libfdb_c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E5BD91E22E643FB00C972A9 /* libfdb_c.dylib */; };
 		9E5BD92122E6443500C972A9 /* libfdb_c.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E5BD91E22E643FB00C972A9 /* libfdb_c.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		9E5BD92522E644CA00C972A9 /* FoundationDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5BD92422E644CA00C972A9 /* FoundationDBService.m */; };
@@ -79,6 +88,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9E044E5C22F0B4A7000D6780 /* User.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		9E044E5D22F0B4A7000D6780 /* User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		9E044E5F22F0B738000D6780 /* SampleProject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SampleProject.h; sourceTree = "<group>"; };
+		9E044E6022F0B738000D6780 /* SampleProject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SampleProject.m; sourceTree = "<group>"; };
+		9E044E6222F0B7CE000D6780 /* Skill.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Skill.h; sourceTree = "<group>"; };
+		9E044E6322F0B7CE000D6780 /* Skill.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Skill.m; sourceTree = "<group>"; };
+		9E044E6522F0B816000D6780 /* Software.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Software.h; sourceTree = "<group>"; };
+		9E044E6622F0B816000D6780 /* Software.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Software.m; sourceTree = "<group>"; };
 		9E0DDE3922EDE7B100C9DF84 /* libbson-1.0.0.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libbson-1.0.0.0.0.dylib"; sourceTree = "<group>"; };
 		9E0DDE3A22EDE7B100C9DF84 /* libmongoc-1.0.0.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libmongoc-1.0.0.0.0.dylib"; sourceTree = "<group>"; };
 		9E15D0CB22E45C8C00CC1453 /* DLLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DLLogger.framework; sourceTree = "<group>"; };
@@ -107,6 +124,7 @@
 		9E3B992522E48713007C94A7 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		9E3B992722E48A3E007C94A7 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		9E3B992922E49761007C94A7 /* CSRFTokenResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSRFTokenResult.swift; sourceTree = "<group>"; };
+		9E4C607822F0D6650027B2BB /* ArtStationBotTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ArtStationBotTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		9E5BD91C22E643FB00C972A9 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		9E5BD91D22E643FB00C972A9 /* fdb_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fdb_c.h; sourceTree = "<group>"; };
 		9E5BD91E22E643FB00C972A9 /* libfdb_c.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libfdb_c.dylib; sourceTree = "<group>"; };
@@ -212,6 +230,7 @@
 			children = (
 				9E39026122E230E5009D1A36 /* ArtStationBotTests.swift */,
 				9E39026322E230E5009D1A36 /* Info.plist */,
+				9E4C607822F0D6650027B2BB /* ArtStationBotTests-Bridging-Header.h */,
 			);
 			path = ArtStationBotTests;
 			sourceTree = "<group>";
@@ -262,6 +281,14 @@
 			children = (
 				9ECAFABC22E3098500953081 /* ScriptResult.swift */,
 				9E3B992922E49761007C94A7 /* CSRFTokenResult.swift */,
+				9E044E5F22F0B738000D6780 /* SampleProject.h */,
+				9E044E6022F0B738000D6780 /* SampleProject.m */,
+				9E044E6222F0B7CE000D6780 /* Skill.h */,
+				9E044E6322F0B7CE000D6780 /* Skill.m */,
+				9E044E6522F0B816000D6780 /* Software.h */,
+				9E044E6622F0B816000D6780 /* Software.m */,
+				9E044E5C22F0B4A7000D6780 /* User.h */,
+				9E044E5D22F0B4A7000D6780 /* User.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -375,6 +402,7 @@
 					};
 					9E39025C22E230E5009D1A36 = {
 						CreatedOnToolsVersion = 10.2.1;
+						LastSwiftMigration = 1020;
 						TestTargetID = 9E39024922E230DE009D1A36;
 					};
 					9E39026722E230E5009D1A36 = {
@@ -439,11 +467,15 @@
 			files = (
 				9E22C2FD22E272F700772681 /* WebKitWindowController.swift in Sources */,
 				9E39029722E23CFE009D1A36 /* MainViewController.swift in Sources */,
+				9E044E6722F0B816000D6780 /* Software.m in Sources */,
+				9E044E5E22F0B4A7000D6780 /* User.m in Sources */,
+				9E044E6122F0B738000D6780 /* SampleProject.m in Sources */,
 				9E39029922E240C7009D1A36 /* main.swift in Sources */,
 				9E39025122E230DE009D1A36 /* ArtStationBot.xcdatamodeld in Sources */,
 				9E39024E22E230DE009D1A36 /* AppDelegate.swift in Sources */,
 				9ECAFAC322E33AF800953081 /* Utils.swift in Sources */,
 				9E3B992A22E49761007C94A7 /* CSRFTokenResult.swift in Sources */,
+				9E044E6422F0B7CE000D6780 /* Skill.m in Sources */,
 				9E39028C22E23A05009D1A36 /* MainWindowController.swift in Sources */,
 				9ECAFABF22E319D500953081 /* WebViewMessageService.swift in Sources */,
 				9E39029522E23C61009D1A36 /* UI.swift in Sources */,
@@ -461,7 +493,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E4C607F22F0D6C50027B2BB /* User.m in Sources */,
+				9E4C607B22F0D6B90027B2BB /* FoundationDBService.m in Sources */,
+				9E4C607E22F0D6C50027B2BB /* Software.m in Sources */,
+				9E4C607D22F0D6C50027B2BB /* Skill.m in Sources */,
 				9E39026222E230E5009D1A36 /* ArtStationBotTests.swift in Sources */,
+				9E4C607C22F0D6C50027B2BB /* SampleProject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,6 +740,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 7S7UE44956;
@@ -714,6 +752,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.dreamlisp.ArtStationBotTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "ArtStationBotTests/ArtStationBotTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArtStationBot.app/Contents/MacOS/ArtStationBot";
 			};
@@ -724,6 +764,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 7S7UE44956;
@@ -735,6 +776,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.dreamlisp.ArtStationBotTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "ArtStationBotTests/ArtStationBotTests-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArtStationBot.app/Contents/MacOS/ArtStationBot";
 			};
