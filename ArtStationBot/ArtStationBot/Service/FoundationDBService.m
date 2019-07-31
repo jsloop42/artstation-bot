@@ -92,6 +92,8 @@ static bson_t *insert;
     return EXIT_SUCCESS;
 }
 
+#pragma mark Insert
+
 - (int)insertSkills:(char *)json {
     bson_error_t err;
     bson_t *skill_json = bson_new_from_json((const uint8_t *)json, -1, &err);
@@ -129,14 +131,53 @@ static bson_t *insert;
     [self insertUser:user];
 }
 
+/** Inserts user info to `user` collection and a reference to the `user` to `skills["skill name"].users` collection. */
 - (int)insertUser:(User *)user {
-    // user_json: {"_id": 123, "username": "Foo"}
-    // "2D Animation": {"_id": 1, "users": [123]} // db["2D Animation"].update({"_id": 1}, {"$push": {"users": 123}})
-    // FIXME: insert docs to user, skills
+    // db.users.insert({"_id": 123, "username": "Jane Doe", ..})
+    // db.skills["2D Art"].users.insert({"_id": 1, "messaged": false, "message_info": []})
     bson_error_t err;
+    // users
     bson_t *user_doc = constructUserBSON(user, &err);
+    bson_t reply;
+    int skills_len = (int)user.skills.count;
+    int i = 0;
+    // skills
+    mongoc_collection_t *skill_user_coll = NULL;
+    bson_t *skill_user_doc = NULL;
+    char *skill_coll_name = NULL;
+    char *skill_name = NULL;
+    bool ret = mongoc_collection_insert_one(users_coll, user_doc, NULL, &reply, &err);
+    if (!ret) {
+        if (err.code == MONGOC_ERROR_DUPLICATE_KEY) {
+            MONGOC_INFO("Document with %d already exists. Ignoring...", (int)user.userId);
+        } else {
+            [self fail:err];
+        }
+    }
+    // Insert succeeded. Update the skills collections.
+    for(i = 0; i < skills_len; i++) {
+        skill_name = (char *)[user.skills[i].name UTF8String];
+        skill_coll_name = (char *)[[NSString stringWithFormat:@"skills.%s.users", skill_name] UTF8String];
+        skill_user_coll = mongoc_client_get_collection(client, dbName, skill_coll_name);
+        skill_user_doc = BCON_NEW("_id", BCON_INT64(user.userId),
+                                  "messaged", BCON_BOOL(NO),
+                                  "message_info", "[","]");
+        ret = mongoc_collection_insert_one(skill_user_coll, skill_user_doc, NULL, NULL, &err);
+        if (!ret) {
+            if (err.code == MONGOC_ERROR_DUPLICATE_KEY) {
+                MONGOC_INFO("User with id: %d already exists for skill: %s. Ignoring...", (int)user.userId, skill_name);
+            } else {
+                [self fail:err];
+            }
+        }
+    }
+    if (skill_user_doc) bson_destroy(skill_user_doc);
+    bson_destroy(&reply);
+    bson_destroy(user_doc);
     return EXIT_SUCCESS;
 }
+
+#pragma mark BSON
 
 bson_t *constructUserBSON(User *user, bson_error_t *err) {
     int user_id = (int)user.userId;
@@ -174,7 +215,7 @@ bson_t *constructUserBSON(User *user, bson_error_t *err) {
     // Append skills
     BSON_APPEND_ARRAY_BEGIN(user_doc, "skills", &skills);
     for (i = 0; i < skills_len; ++i) {
-        keylen = bson_uint32_to_string(i, &key, buf, sizeof buf);
+        keylen = bson_uint32_to_string(i, &key, buf, sizeof(buf));
         bson_append_document_begin(&skills, key, (int)keylen, &skills_doc);
         BSON_APPEND_UTF8(&skills_doc, "skill_name", [user.skills[i].name UTF8String]);
         bson_append_document_end(&skills, &skills_doc);
@@ -185,7 +226,7 @@ bson_t *constructUserBSON(User *user, bson_error_t *err) {
     keylen = 0;
     BSON_APPEND_ARRAY_BEGIN(user_doc, "software", &software);
     for (i = 0; i < software_len; ++i) {
-        keylen = bson_uint32_to_string(i, &key, buf, sizeof buf);
+        keylen = bson_uint32_to_string(i, &key, buf, sizeof(buf));
         bson_append_document_begin(&software, key, (int)keylen, &software_doc);
         BSON_APPEND_UTF8(&software_doc, "software_name", [user.software[i].name UTF8String]);
         bson_append_document_end(&software, &software_doc);
@@ -196,7 +237,7 @@ bson_t *constructUserBSON(User *user, bson_error_t *err) {
     keylen = 0;
     BSON_APPEND_ARRAY_BEGIN(user_doc, "sample_projects", &sample_project);
     for (i = 0; i < sample_project_len; ++i) {
-        keylen = bson_uint32_to_string(i, &key, buf, sizeof buf);
+        keylen = bson_uint32_to_string(i, &key, buf, sizeof(buf));
         bson_append_document_begin(&sample_project, key, (int)keylen, &sample_project_doc);
         BSON_APPEND_INT64(&sample_project_doc, "_id", (int64_t)user.sampleProjects[i].sampleProjectId);
         BSON_APPEND_UTF8(&sample_project_doc, "smaller_square_cover_url", [user.sampleProjects[i].smallerSquareCoverURL UTF8String]);
