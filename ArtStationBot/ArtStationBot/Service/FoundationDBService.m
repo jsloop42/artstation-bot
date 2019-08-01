@@ -7,19 +7,12 @@
 
 #import "FoundationDBService.h"
 #import "ArtStationBot-Swift.h"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdocumentation"
 #import "mongoc/mongoc.h"
+#pragma clang diagnostic pop
+#import "Constants.h"
 //#import "bson/bcon.h"
-
-#define NSLog(FORMAT, ...) fprintf(stderr, "%s\n", [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);
-
-#ifdef DEBUG
-#   define debug(...) NSLog(__VA_ARGS__)
-#   define info(...) NSLog(__VA_ARGS__)
-#   define error(...) NSLog(__VA_ARGS__)
-#else
-#   define info(...) NSLog(__VA_ARGS__)
-#   define error(...) NSLog(__VA_ARGS__)
-#endif
 
 static const char *dbName = "artstation";
 static const char *appName = "artstationbot";
@@ -31,12 +24,6 @@ static mongoc_client_t *client;
 static mongoc_database_t *database;
 static mongoc_collection_t *skills_coll;
 static mongoc_collection_t *users_coll;
-static bson_t *insertCommand;
-static bson_t *readCommand;
-static bson_t *updateCommand;
-static bson_t *deleteCommand;
-static bson_t reply;
-static bson_t *insert;
 
 @interface FoundationDBService ()
 @end

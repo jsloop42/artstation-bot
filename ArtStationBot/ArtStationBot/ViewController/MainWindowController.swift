@@ -96,7 +96,12 @@ class MainWindowController: NSWindowController {
 // MARK: - Event handlers
 extension MainWindowController {
     @objc func crawlButtonDidClick() {
-        self.crawlService.getCSRFToken()
+        self.crawlService.getCSRFToken { token in
+            self.log.debug("CSRF token: \(token)")
+            self.crawlService.getFilterList { dict in
+                self.log.debug("get skills: \(dict)")
+            }
+        }
     }
 }
 

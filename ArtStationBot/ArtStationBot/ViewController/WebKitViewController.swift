@@ -10,14 +10,14 @@ import WebKit
 import DLLogger
 
 class WebViewState {
-    private var urlStack: [String] = [Const.URL.seed]
+    private var urlStack: [String] = [Constants.seedURL()]
     private var navStack: [NavigationPage] = [.home]
     private var isSignedIn = false
 
     // MARK: - Get
 
     func getCurrentURL() -> String {
-        return self.urlStack.last ?? Const.URL.seed
+        return self.urlStack.last ?? Constants.seedURL()
     }
 
     func getCurrentPage() -> NavigationPage {
@@ -125,7 +125,7 @@ class WebKitViewController: NSViewController {
     }
 
     func initData() {
-        if let url = URL(string: Const.URL.seed) {
+        if let url = URL(string: Constants.seedURL()) {
             self.webView.load(URLRequest(url: url))
         }
     }

@@ -19,10 +19,10 @@
 		9E15D0CE22E45C9300CC1453 /* DLLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E15D0CB22E45C8C00CC1453 /* DLLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9E15D0D122E46C3300CC1453 /* DLDynamicSpace.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E15D0D022E46C3300CC1453 /* DLDynamicSpace.framework */; };
 		9E15D0D322E46C4500CC1453 /* DLDynamicSpace.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E15D0D022E46C3300CC1453 /* DLDynamicSpace.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9E22C2FB22E25C1A00772681 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E22C2FA22E25C1A00772681 /* Constants.swift */; };
 		9E22C2FD22E272F700772681 /* WebKitWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E22C2FC22E272F700772681 /* WebKitWindowController.swift */; };
+		9E296E3D22F35F99001BED13 /* CrawlService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E296E3C22F35F99001BED13 /* CrawlService.m */; };
+		9E296E4022F363BE001BED13 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E296E3F22F363BE001BED13 /* Constants.m */; };
 		9E2F29FF22E474C500D5B28A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9E2F29FD22E474C400D5B28A /* Localizable.strings */; };
-		9E2F2A0122E485B100D5B28A /* CrawlService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E2F2A0022E485B100D5B28A /* CrawlService.swift */; };
 		9E39024E22E230DE009D1A36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39024D22E230DE009D1A36 /* AppDelegate.swift */; };
 		9E39025122E230DE009D1A36 /* ArtStationBot.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9E39024F22E230DE009D1A36 /* ArtStationBot.xcdatamodeld */; };
 		9E39025322E230E5009D1A36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E39025222E230E5009D1A36 /* Assets.xcassets */; };
@@ -35,7 +35,6 @@
 		9E39029922E240C7009D1A36 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39029822E240C7009D1A36 /* main.swift */; };
 		9E3B992622E48713007C94A7 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992522E48713007C94A7 /* NetworkService.swift */; };
 		9E3B992822E48A3E007C94A7 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992722E48A3E007C94A7 /* Enums.swift */; };
-		9E3B992A22E49761007C94A7 /* CSRFTokenResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992922E49761007C94A7 /* CSRFTokenResult.swift */; };
 		9E4C607B22F0D6B90027B2BB /* FoundationDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5BD92422E644CA00C972A9 /* FoundationDBService.m */; };
 		9E4C607C22F0D6C50027B2BB /* SampleProject.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6022F0B738000D6780 /* SampleProject.m */; };
 		9E4C607D22F0D6C50027B2BB /* Skill.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6322F0B7CE000D6780 /* Skill.m */; };
@@ -100,10 +99,12 @@
 		9E0DDE3A22EDE7B100C9DF84 /* libmongoc-1.0.0.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libmongoc-1.0.0.0.0.dylib"; sourceTree = "<group>"; };
 		9E15D0CB22E45C8C00CC1453 /* DLLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DLLogger.framework; sourceTree = "<group>"; };
 		9E15D0D022E46C3300CC1453 /* DLDynamicSpace.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DLDynamicSpace.framework; sourceTree = "<group>"; };
-		9E22C2FA22E25C1A00772681 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		9E22C2FC22E272F700772681 /* WebKitWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebKitWindowController.swift; sourceTree = "<group>"; };
+		9E296E3B22F35F99001BED13 /* CrawlService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CrawlService.h; sourceTree = "<group>"; };
+		9E296E3C22F35F99001BED13 /* CrawlService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CrawlService.m; sourceTree = "<group>"; };
+		9E296E3E22F363BE001BED13 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		9E296E3F22F363BE001BED13 /* Constants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		9E2F29FE22E474C500D5B28A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		9E2F2A0022E485B100D5B28A /* CrawlService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrawlService.swift; sourceTree = "<group>"; };
 		9E39024A22E230DE009D1A36 /* ArtStationBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArtStationBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E39024D22E230DE009D1A36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9E39025022E230DE009D1A36 /* ArtStationBot.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ArtStationBot.xcdatamodel; sourceTree = "<group>"; };
@@ -123,7 +124,6 @@
 		9E39029822E240C7009D1A36 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		9E3B992522E48713007C94A7 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		9E3B992722E48A3E007C94A7 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
-		9E3B992922E49761007C94A7 /* CSRFTokenResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSRFTokenResult.swift; sourceTree = "<group>"; };
 		9E4C607822F0D6650027B2BB /* ArtStationBotTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ArtStationBotTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		9E5BD91C22E643FB00C972A9 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		9E5BD91D22E643FB00C972A9 /* fdb_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fdb_c.h; sourceTree = "<group>"; };
@@ -211,7 +211,8 @@
 				9E39027B22E2341E009D1A36 /* View */,
 				9E39027A22E23415009D1A36 /* ViewController */,
 				9E39024D22E230DE009D1A36 /* AppDelegate.swift */,
-				9E22C2FA22E25C1A00772681 /* Constants.swift */,
+				9E296E3E22F363BE001BED13 /* Constants.h */,
+				9E296E3F22F363BE001BED13 /* Constants.m */,
 				9E3B992722E48A3E007C94A7 /* Enums.swift */,
 				9ECAFAC222E33AF800953081 /* Utils.swift */,
 				9E39029822E240C7009D1A36 /* main.swift */,
@@ -266,7 +267,8 @@
 		9E39027C22E23422009D1A36 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				9E2F2A0022E485B100D5B28A /* CrawlService.swift */,
+				9E296E3B22F35F99001BED13 /* CrawlService.h */,
+				9E296E3C22F35F99001BED13 /* CrawlService.m */,
 				9E5BD92322E644CA00C972A9 /* FoundationDBService.h */,
 				9E5BD92422E644CA00C972A9 /* FoundationDBService.m */,
 				9E3B992522E48713007C94A7 /* NetworkService.swift */,
@@ -280,7 +282,6 @@
 			isa = PBXGroup;
 			children = (
 				9ECAFABC22E3098500953081 /* ScriptResult.swift */,
-				9E3B992922E49761007C94A7 /* CSRFTokenResult.swift */,
 				9E044E5F22F0B738000D6780 /* SampleProject.h */,
 				9E044E6022F0B738000D6780 /* SampleProject.m */,
 				9E044E6222F0B7CE000D6780 /* Skill.h */,
@@ -470,19 +471,18 @@
 				9E044E6722F0B816000D6780 /* Software.m in Sources */,
 				9E044E5E22F0B4A7000D6780 /* User.m in Sources */,
 				9E044E6122F0B738000D6780 /* SampleProject.m in Sources */,
+				9E296E4022F363BE001BED13 /* Constants.m in Sources */,
 				9E39029922E240C7009D1A36 /* main.swift in Sources */,
 				9E39025122E230DE009D1A36 /* ArtStationBot.xcdatamodeld in Sources */,
 				9E39024E22E230DE009D1A36 /* AppDelegate.swift in Sources */,
 				9ECAFAC322E33AF800953081 /* Utils.swift in Sources */,
-				9E3B992A22E49761007C94A7 /* CSRFTokenResult.swift in Sources */,
 				9E044E6422F0B7CE000D6780 /* Skill.m in Sources */,
 				9E39028C22E23A05009D1A36 /* MainWindowController.swift in Sources */,
 				9ECAFABF22E319D500953081 /* WebViewMessageService.swift in Sources */,
 				9E39029522E23C61009D1A36 /* UI.swift in Sources */,
-				9E2F2A0122E485B100D5B28A /* CrawlService.swift in Sources */,
 				9E3B992622E48713007C94A7 /* NetworkService.swift in Sources */,
 				9E39027F22E236A8009D1A36 /* WebKitViewController.swift in Sources */,
-				9E22C2FB22E25C1A00772681 /* Constants.swift in Sources */,
+				9E296E3D22F35F99001BED13 /* CrawlService.m in Sources */,
 				9E3B992822E48A3E007C94A7 /* Enums.swift in Sources */,
 				9E5BD92522E644CA00C972A9 /* FoundationDBService.m in Sources */,
 				9ECAFABD22E3098500953081 /* ScriptResult.swift in Sources */,

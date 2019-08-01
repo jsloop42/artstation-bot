@@ -9,6 +9,8 @@ import Foundation
 import SystemConfiguration
 import DLLogger
 
+@objc
+@objcMembers
 class NetworkService: NSObject {
     private let log = Logger()
     private lazy var backgroundQueue: OperationQueue = {
@@ -46,11 +48,24 @@ class NetworkService: NSObject {
     /// Send a `GET` request using the given url components and invokes the callback on response.
     /// - Parameters:
     ///     - comp: The url component from which the url will be constructed.
+    ///     - headers: Optional headers to be included with the request.
     ///     - callback: A callback function to receive the response.
-    func get(comp: URLComponents, callback: @escaping (_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void) {
+    func get(comp: URLComponents, headers: [String: String]? = nil, callback: @escaping (_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void) {
         guard Reachability.isConnectedToNetwork() else { return callback(nil, nil, AppError.offline) }
         guard let url: URL = comp.url else { return callback(nil, nil, AppError.urlError) }
-        (self.queueType == .background ? self.bgSession : self.usrSession).dataTask(with: url, completionHandler: callback).resume()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue(Constants.contentTypeJSON(), forHTTPHeaderField: "Content-Type")
+        request.addValue(Constants.contentTypeJSON(), forHTTPHeaderField: "Accept")
+        request.addValue(self.userAgent, forHTTPHeaderField: "User-Agent")
+        request.addValue(Constants.seedURL(), forHTTPHeaderField: "Origin")
+        request.addValue(self.requestedWith, forHTTPHeaderField: "x-requested-with")
+        if let headersDict = headers, headersDict.count > 0 {
+            headersDict.keys.forEach { key in
+                if let val = headersDict[key] { request.addValue(val, forHTTPHeaderField: key) }
+            }
+        }
+        (self.queueType == .background ? self.bgSession : self.usrSession).dataTask(with: request, completionHandler: callback).resume()
     }
 
     /// Send a `HTTP POST` request.
@@ -59,9 +74,6 @@ class NetworkService: NSObject {
     ///     - body: The `POST` body.
     ///     - headers: An optional dictionary containing headers to be appended
     ///     - callback: The callback function.
-    ///     - data: The data returned from the `POST` call.
-    ///     - response: The `URLResponse` object.
-    ///     - error: An optional error object.
     func post(url: String, body: Data? = nil, headers: [String: String]? = nil,
               callback: @escaping (_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void) {
         guard Reachability.isConnectedToNetwork() else { return callback(nil, nil, AppError.offline) }
@@ -69,10 +81,10 @@ class NetworkService: NSObject {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = body
-        request.addValue(ContentType.json, forHTTPHeaderField: "Content-Type")
-        request.addValue(ContentType.json, forHTTPHeaderField: "Accept")
+        request.addValue(Constants.contentTypeJSON(), forHTTPHeaderField: "Content-Type")
+        request.addValue(Constants.contentTypeJSON(), forHTTPHeaderField: "Accept")
         request.addValue(self.userAgent, forHTTPHeaderField: "User-Agent")
-        request.addValue(Const.URL.seed, forHTTPHeaderField: "Origin")
+        request.addValue(Constants.seedURL(), forHTTPHeaderField: "Origin")
         request.addValue(self.requestedWith, forHTTPHeaderField: "x-requested-with")
         if let headersDict = headers, headersDict.count > 0 {
             headersDict.keys.forEach { key in
@@ -84,9 +96,9 @@ class NetworkService: NSObject {
 }
 
 extension NetworkService {
-    enum QueueType {
-        case background
-        case userInitiated
+    @objc enum QueueType: Int {
+        case background = 0
+        case userInitiated = 1
     }
 }
 
