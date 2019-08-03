@@ -77,7 +77,7 @@
                         filters.skills = [NSMutableArray new];
                         for (idict in arr) {
                             Skill *skill = [Skill new];
-                            skill.skillId = (NSUInteger)[idict valueForKey:@"id"];
+                            skill.skillId = [(NSNumber *)[idict valueForKey:@"id"] integerValue];
                             skill.name = [idict valueForKey:@"name"];
                             [filters.skills addObject:skill];
                         }
@@ -99,7 +99,7 @@
                         filters.software = [NSMutableArray new];
                         for (idict in arr) {
                             Software *software = [Software new];
-                            software.softwareId = (NSUInteger)[idict valueForKey:@"id"];
+                            software.softwareId = [(NSNumber *)[idict valueForKey:@"id"] integerValue];
                             software.iconURL = [idict valueForKey:@"icon_url"];
                             software.name = [idict valueForKey:@"name"];
                             [filters.software addObject:software];

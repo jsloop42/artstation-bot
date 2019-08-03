@@ -16,7 +16,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        _ = FoundationDBService.init()
+        _ = FoundationDBService.shared().initDocLayer()
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

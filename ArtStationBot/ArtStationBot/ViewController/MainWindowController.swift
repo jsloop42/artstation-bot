@@ -13,6 +13,7 @@ import DLLogger
 class MainWindowController: NSWindowController {
     private let log = Logger()
     private lazy var crawlService = { return CrawlService() }()
+    private lazy var dbService = { return FoundationDBService.shared() }()
     private lazy var windowName: String = { NSStringFromClass(type(of: self)) }()
     private lazy var win: NSWindow = { return UI.createWindow() }()
     private lazy var toolbar: NSToolbar = { return UI.createToolbar(id: self.toolbarId) }()
@@ -99,6 +100,9 @@ extension MainWindowController {
             self.log.debug("CSRF token: \(token)")
             self.crawlService.getFilterList { filters in
                 self.log.debug("Filters: \(filters)")
+                self.dbService.insert(filters, callback: { status in
+                    self.log.debug("Filters insert status: \(status)")
+                })
             }
         }
     }

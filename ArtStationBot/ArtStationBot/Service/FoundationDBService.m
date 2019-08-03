@@ -18,14 +18,20 @@ static const char *dbName = "artstation";
 static const char *appName = "artstationbot";
 static const char *skills_coll_name = "skills";
 static const char *users_coll_name = "users";
+static const char *software_coll_name = "software";
+static const char *availability_coll_name = "availability";
 
 static mongoc_uri_t *mongouri;
 static mongoc_client_t *client;
 static mongoc_database_t *database;
 static mongoc_collection_t *skills_coll;
 static mongoc_collection_t *users_coll;
+static mongoc_collection_t *software_coll;
+static mongoc_collection_t *availability_coll;
+static FoundationDBService *fdb;
 
 @interface FoundationDBService ()
+@property (atomic, readwrite) dispatch_queue_t dispatchQueue;
 @end
 
 @implementation FoundationDBService {
@@ -35,6 +41,16 @@ static mongoc_collection_t *users_coll;
 }
 
 @synthesize configPath = _configPath;
+
++ (void)initialize {
+    if (self == [self class]) {
+        fdb = [FoundationDBService new];
+    }
+}
+
++ (FoundationDBService *)shared {
+    return fdb;
+}
 
 - (instancetype)init {
     self = [super init];
@@ -47,6 +63,8 @@ static mongoc_collection_t *users_coll;
 - (void)dealloc {
     mongoc_collection_destroy(skills_coll);
     mongoc_collection_destroy(users_coll);
+    mongoc_collection_destroy(software_coll);
+    mongoc_collection_destroy(availability_coll);
     mongoc_database_destroy(database);
     mongoc_uri_destroy(mongouri);
     mongoc_client_destroy(client);
@@ -55,16 +73,15 @@ static mongoc_collection_t *users_coll;
 
 - (int)fail:(bson_error_t)err {
     MONGOC_ERROR("DB error: code: %d, msg: %s" , err.code, err.message);
-    return EXIT_FAILURE;
+    return FAIL;
 }
 
 - (void)bootstrap {
+    self.dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
     NSString *url = [Utils getDocLayerURL];
     _docLayerURL = (char *)[url UTF8String];
-    [self initDocLayer];
-    skills_coll = mongoc_client_get_collection(client, dbName, skills_coll_name);
-    users_coll = mongoc_client_get_collection(client, dbName, users_coll_name);
-    [self test];
+    //[self initDocLayer];
+    //[self test];
 }
 
 - (int)initDocLayer {
@@ -76,23 +93,137 @@ static mongoc_collection_t *users_coll;
     if (!client) return [self fail:err];
     mongoc_client_set_appname(client, appName);
     database = mongoc_client_get_database(client, dbName);
-    return EXIT_SUCCESS;
+    skills_coll = mongoc_client_get_collection(client, dbName, skills_coll_name);
+    users_coll = mongoc_client_get_collection(client, dbName, users_coll_name);
+    software_coll = mongoc_client_get_collection(client, dbName, software_coll_name);
+    availability_coll = mongoc_client_get_collection(client, dbName, availability_coll_name);
+    return OK;
 }
 
 #pragma mark Insert
 
-- (int)insertSkills:(char *)json {
-    bson_error_t err;
-    bson_t *skill_json = bson_new_from_json((const uint8_t *)json, -1, &err);
+- (void)insertFilters:(Filters *)filters callback:(void (^)(BOOL))callback {
+    BOOL __block isSuccess = YES;
+    NSLock *lock = [NSLock new];
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        debug(@"Dispatch group complete - notify");
+        callback(isSuccess);
+    });
+    dispatch_group_enter(group);
+    debug(@"Dispatch group enter - skills");
+    dispatch_async(self.dispatchQueue, ^{
+        if ([filters.skills count] > 0) {
+            BOOL ret = [self insertSkills:filters.skills];
+            if (!ret) {
+                [lock lock];
+                isSuccess = ret;
+                [lock unlock];
+            }
+        }
+        debug(@"Dispatch group leave - skills");
+        dispatch_group_leave(group);
+    });
+    dispatch_group_enter(group);
+    debug(@"Dispatch group enter - software");
+    dispatch_async(self.dispatchQueue, ^{
+        if ([filters.software count] > 0) {
+            BOOL ret = [self insertSoftware:filters.software];
+            if (!ret) {
+                [lock lock];
+                isSuccess = ret;
+                [lock unlock];
+            }
+        }
+        debug(@"Dispatch group leave - software");
+        dispatch_group_leave(group);
+    });
+    dispatch_group_enter(group);
+    debug(@"Dispatch group enter - availabilities");
+    dispatch_async(self.dispatchQueue, ^{
+        if ([filters.availabilities count] > 0) {
+            BOOL ret = [self insertAvailabilities:filters.availabilities];
+            if (!ret) {
+                [lock lock];
+                isSuccess = ret;
+                [lock unlock];
+            }
+        }
+        debug(@"Dispatch group leave - availabilities");
+        dispatch_group_leave(group);
+    });
+}
+
+- (int)insertSkills:(NSMutableArray<Skill *> *)skills {
+    Skill *skill;
+    bson_t *skill_doc;
     bson_t reply;
-    bool ret = mongoc_collection_insert_one(skills_coll, skill_json, NULL, &reply, &err);
-    if (!ret) [self fail:err];
-    char *str = bson_as_canonical_extended_json(skill_json, NULL);
-    debug(@"%s\n", str);
-    bson_destroy(skill_json);
+    bson_error_t err;
+    bool ret;
+    bson_t opts = BSON_INITIALIZER;
+    BSON_APPEND_BOOL(&opts, "ordered", false);
+    mongoc_bulk_operation_t *bulk = mongoc_collection_create_bulk_operation_with_opts(skills_coll, &opts);
+    bson_destroy(&opts);
+    for (skill in skills) {
+        skill_doc = constructSKillBSON(skill);
+        mongoc_bulk_operation_insert(bulk, skill_doc);
+        bson_destroy(skill_doc);
+    }
+    ret = mongoc_bulk_operation_execute(bulk, &reply, &err);
+    if (!ret) {
+        [self fail:err];
+    }
     bson_destroy(&reply);
-    bson_free(str);
-    return EXIT_SUCCESS;
+    mongoc_bulk_operation_destroy(bulk);
+    return OK;
+}
+
+- (int)insertSoftware:(NSMutableArray<Software *> *)software {
+    Software *sw;
+    bson_t *sw_doc;
+    bson_t reply;
+    bson_error_t err;
+    bool ret;
+    bson_t opts = BSON_INITIALIZER;
+    BSON_APPEND_BOOL(&opts, "ordered", false);
+    mongoc_bulk_operation_t *bulk = mongoc_collection_create_bulk_operation_with_opts(software_coll, &opts);
+    bson_destroy(&opts);
+    for (sw in software) {
+        sw_doc = constructSoftwareBSON(sw);
+        mongoc_bulk_operation_insert(bulk, sw_doc);
+        bson_destroy(sw_doc);
+    }
+    ret = mongoc_bulk_operation_execute(bulk, &reply, &err);
+    if (!ret) {
+        [self fail:err];
+    }
+    bson_destroy(&reply);
+    mongoc_bulk_operation_destroy(bulk);
+    return OK;
+}
+
+- (int)insertAvailabilities:(NSMutableArray<Availability *> *)availabilities {
+    Availability *availability;
+    bson_t *availability_doc;
+    bson_t reply;
+    bson_error_t err;
+    bool ret;
+    bson_t opts = BSON_INITIALIZER;
+    BSON_APPEND_BOOL(&opts, "ordered", false);
+    mongoc_bulk_operation_t *bulk = mongoc_collection_create_bulk_operation_with_opts(availability_coll, &opts);
+    bson_destroy(&opts);
+    for (availability in availabilities) {
+        availability_doc = constructAvailabilityBSON(availability);
+        mongoc_bulk_operation_insert(bulk, availability_doc);
+        bson_destroy(availability_doc);
+    }
+    ret = mongoc_bulk_operation_execute(bulk, &reply, &err);
+    if (!ret) {
+        [self fail:err];
+    }
+    bson_destroy(&reply);
+    mongoc_bulk_operation_destroy(bulk);
+    return OK;
 }
 
 - (void)test {
@@ -124,7 +255,7 @@ static mongoc_collection_t *users_coll;
     // db.skills["2D Art"].users.insert({"_id": 1, "messaged": false, "message_info": []})
     bson_error_t err;
     // users
-    bson_t *user_doc = constructUserBSON(user, &err);
+    bson_t *user_doc = constructUserBSON(user);
     bson_t reply;
     int skills_len = (int)user.skills.count;
     int i = 0;
@@ -161,12 +292,24 @@ static mongoc_collection_t *users_coll;
     if (skill_user_doc) bson_destroy(skill_user_doc);
     bson_destroy(&reply);
     bson_destroy(user_doc);
-    return EXIT_SUCCESS;
+    return OK;
 }
 
 #pragma mark BSON
 
-bson_t *constructUserBSON(User *user, bson_error_t *err) {
+bson_t *constructSKillBSON(Skill *skill) {
+    return BCON_NEW("_id", BCON_INT64((int64_t)skill.skillId), "name", BCON_UTF8([skill.name UTF8String]));
+}
+
+bson_t *constructSoftwareBSON(Software *software) {
+    return BCON_NEW("_id", BCON_INT64((int64_t)software.softwareId), "name", BCON_UTF8([software.name UTF8String]), "icon_url", BCON_UTF8([software.iconURL UTF8String]));
+}
+
+bson_t *constructAvailabilityBSON(Availability* availability) {
+    return BCON_NEW("_id", BCON_UTF8([availability.availabilityId UTF8String]), "name", BCON_UTF8([availability.name UTF8String]));
+}
+
+bson_t *constructUserBSON(User *user) {
     int user_id = (int)user.userId;
     int i = 0;
     bson_t skills;
@@ -182,7 +325,7 @@ bson_t *constructUserBSON(User *user, bson_error_t *err) {
     char buf[16];
     size_t keylen;
     char *str;
-    bson_t *user_doc = BCON_NEW("_id", BCON_INT64(user_id),
+    bson_t *user_doc = BCON_NEW("_id", BCON_INT64((int64_t)user_id),
                                 "username", BCON_UTF8([user.username UTF8String]),
                                 "large_avatar_url", BCON_UTF8([user.largeAvatarURL UTF8String]),
                                 "small_cover_url", BCON_UTF8([user.smallCoverURL UTF8String]),
