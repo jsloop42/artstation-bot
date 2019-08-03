@@ -97,8 +97,8 @@ extension MainWindowController {
     @objc func crawlButtonDidClick() {
         self.crawlService.getCSRFToken { token in
             self.log.debug("CSRF token: \(token)")
-            self.crawlService.getFilterList { dict in
-                self.log.debug("get skills: \(dict)")
+            self.crawlService.getFilterList { filters in
+                self.log.debug("Filters: \(filters)")
             }
         }
     }

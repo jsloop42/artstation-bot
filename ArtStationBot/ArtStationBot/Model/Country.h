@@ -1,16 +1,16 @@
 //
-//  Skill.h
+//  Country.h
 //  ArtStationBot
 //
-//  Created by jsloop on 30/07/19.
+//  Created by jsloop on 03/08/19.
 //
 
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Skill : NSObject
-@property (nonatomic, readwrite) NSUInteger skillId;
+@interface Country : NSObject
+@property (nonatomic, readwrite) NSString *countryId;
 @property (nonatomic, readwrite) NSString *name;
 @end
 

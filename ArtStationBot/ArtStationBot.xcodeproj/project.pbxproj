@@ -22,6 +22,9 @@
 		9E22C2FD22E272F700772681 /* WebKitWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E22C2FC22E272F700772681 /* WebKitWindowController.swift */; };
 		9E296E3D22F35F99001BED13 /* CrawlService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E296E3C22F35F99001BED13 /* CrawlService.m */; };
 		9E296E4022F363BE001BED13 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E296E3F22F363BE001BED13 /* Constants.m */; };
+		9E296E4322F58437001BED13 /* Filters.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E296E4222F58437001BED13 /* Filters.m */; };
+		9E296E4622F58509001BED13 /* Country.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E296E4522F58509001BED13 /* Country.m */; };
+		9E296E4C22F59605001BED13 /* Availability.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E296E4B22F59605001BED13 /* Availability.m */; };
 		9E2F29FF22E474C500D5B28A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9E2F29FD22E474C400D5B28A /* Localizable.strings */; };
 		9E39024E22E230DE009D1A36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39024D22E230DE009D1A36 /* AppDelegate.swift */; };
 		9E39025122E230DE009D1A36 /* ArtStationBot.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9E39024F22E230DE009D1A36 /* ArtStationBot.xcdatamodeld */; };
@@ -104,6 +107,12 @@
 		9E296E3C22F35F99001BED13 /* CrawlService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CrawlService.m; sourceTree = "<group>"; };
 		9E296E3E22F363BE001BED13 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		9E296E3F22F363BE001BED13 /* Constants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		9E296E4122F58437001BED13 /* Filters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Filters.h; sourceTree = "<group>"; };
+		9E296E4222F58437001BED13 /* Filters.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Filters.m; sourceTree = "<group>"; };
+		9E296E4422F58509001BED13 /* Country.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Country.h; sourceTree = "<group>"; };
+		9E296E4522F58509001BED13 /* Country.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Country.m; sourceTree = "<group>"; };
+		9E296E4A22F59605001BED13 /* Availability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Availability.h; sourceTree = "<group>"; };
+		9E296E4B22F59605001BED13 /* Availability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Availability.m; sourceTree = "<group>"; };
 		9E2F29FE22E474C500D5B28A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9E39024A22E230DE009D1A36 /* ArtStationBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArtStationBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E39024D22E230DE009D1A36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -281,6 +290,12 @@
 		9E39027D22E23428009D1A36 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				9E296E4A22F59605001BED13 /* Availability.h */,
+				9E296E4B22F59605001BED13 /* Availability.m */,
+				9E296E4422F58509001BED13 /* Country.h */,
+				9E296E4522F58509001BED13 /* Country.m */,
+				9E296E4122F58437001BED13 /* Filters.h */,
+				9E296E4222F58437001BED13 /* Filters.m */,
 				9ECAFABC22E3098500953081 /* ScriptResult.swift */,
 				9E044E5F22F0B738000D6780 /* SampleProject.h */,
 				9E044E6022F0B738000D6780 /* SampleProject.m */,
@@ -474,7 +489,9 @@
 				9E296E4022F363BE001BED13 /* Constants.m in Sources */,
 				9E39029922E240C7009D1A36 /* main.swift in Sources */,
 				9E39025122E230DE009D1A36 /* ArtStationBot.xcdatamodeld in Sources */,
+				9E296E4622F58509001BED13 /* Country.m in Sources */,
 				9E39024E22E230DE009D1A36 /* AppDelegate.swift in Sources */,
+				9E296E4C22F59605001BED13 /* Availability.m in Sources */,
 				9ECAFAC322E33AF800953081 /* Utils.swift in Sources */,
 				9E044E6422F0B7CE000D6780 /* Skill.m in Sources */,
 				9E39028C22E23A05009D1A36 /* MainWindowController.swift in Sources */,
@@ -482,6 +499,7 @@
 				9E39029522E23C61009D1A36 /* UI.swift in Sources */,
 				9E3B992622E48713007C94A7 /* NetworkService.swift in Sources */,
 				9E39027F22E236A8009D1A36 /* WebKitViewController.swift in Sources */,
+				9E296E4322F58437001BED13 /* Filters.m in Sources */,
 				9E296E3D22F35F99001BED13 /* CrawlService.m in Sources */,
 				9E3B992822E48A3E007C94A7 /* Enums.swift in Sources */,
 				9E5BD92522E644CA00C972A9 /* FoundationDBService.m in Sources */,
