@@ -88,8 +88,7 @@ class MainWindowController: NSWindowController {
     }
 
     func initEvents() {
-        let click = NSClickGestureRecognizer(target: self, action: #selector(crawlButtonDidClick))
-        self.crawlBtn.addGestureRecognizer(click)
+        self.crawlBtn.action = #selector(crawlButtonDidClick)
     }
 }
 

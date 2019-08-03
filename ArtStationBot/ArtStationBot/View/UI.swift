@@ -58,6 +58,7 @@ class UI {
 
     static func createButton() -> NSButton {
         let btn = NSButton(frame: NSMakeRect(0, 0, 40, 40))
+        btn.setButtonType(.momentaryPushIn)
         btn.bezelStyle = .texturedRounded
         return btn
     }
