@@ -27,6 +27,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)domain;
 + (NSString *)filterListFragment;
 + (NSString *)filterListURL;
++ (NSString *)searchUsersURL;
++ (NSString *)csrfTokenHeader;
++ (NSString *)cloudFlareCSRFTokenHeader;
++ (NSUInteger)maxUserLimit;
 @end
 
 NS_ASSUME_NONNULL_END
