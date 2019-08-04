@@ -17,10 +17,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readwrite) NSString *configPath;
 - (bool)initDocLayer;
 - (void)insertFilters:(Filters *)filters callback:(void (^)(BOOL))callback;
-- (bool)insertSkills:(NSMutableArray<Skill *> *)skills;
-- (bool)insertSoftware:(NSMutableArray<Software *> *)software;
-- (bool)insertAvailabilities:(NSMutableArray<Availability *> *)availabilities;
+- (bool)upsertSkills:(NSMutableArray<Skill *> *)skills;
+- (bool)upsertSoftware:(NSMutableArray<Software *> *)software;
+- (bool)upsertAvailabilities:(NSMutableArray<Availability *> *)availabilities;
+- (bool)upsertCountries:(NSMutableArray<Country *> *)countries;
 - (bool)insertUser:(User *)user;
+- (void)test;
+- (void)getUsersWithOffset:(NSUInteger)userId limit:(NSUInteger)limit callback:(void (^) (NSArray<User *> *))callback;
 @end
 
 NS_ASSUME_NONNULL_END

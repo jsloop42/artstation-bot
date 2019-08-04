@@ -96,17 +96,21 @@ class MainWindowController: NSWindowController {
 // MARK: - Event handlers
 extension MainWindowController {
     @objc func crawlButtonDidClick() {
-        self.crawlService.getCSRFToken { token in
-            self.log.debug("CSRF token: \(token)")
-            self.crawlService.getFilterList { filters in
-                self.log.debug("Filters: \(filters)")
-                self.dbService.insert(filters, callback: { status in
-                    DispatchQueue.main.async {
-                        self.log.debug("Filters insert status: \(status)")
-                    }
-                })
-            }
-        }
+//        self.crawlService.getCSRFToken { token in
+//            self.log.debug("CSRF token: \(token)")
+//            self.crawlService.getFilterList { filters in
+//                self.log.debug("Filters: \(filters)")
+//                self.dbService.insert(filters, callback: { status in
+//                    DispatchQueue.main.async {
+//                        self.log.debug("Filters insert status: \(status)")
+//                    }
+//                })
+//            }
+//        }
+        //self.dbService.test()
+//        self.dbService.getUsersWithOffset(1, limit: 2, callback: { users in
+//            self.log.debug(users)
+//        })
     }
 }
 

@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Country.h"
 #import "SampleProject.h"
 #import "Skill.h"
 #import "Software.h"
@@ -34,6 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readwrite) NSMutableArray<SampleProject *> *sampleProjects;
 @property (nonatomic, readwrite) NSMutableArray<Skill *> *skills;
 @property (nonatomic, readwrite) NSMutableArray<Software *> *software;
+@property (nonatomic, readwrite) Country *country;
 @end
 
 NS_ASSUME_NONNULL_END
