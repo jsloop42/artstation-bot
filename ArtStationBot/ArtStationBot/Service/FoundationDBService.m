@@ -34,8 +34,6 @@ static FoundationDBService *fdb;
 
 @interface FoundationDBService ()
 @property (atomic, readwrite) dispatch_queue_t dispatchQueue;
-@property (nonatomic, readwrite) NSArray<Country *> *countries;
-@property (nonatomic, readwrite) NSArray<Skill *> *skills;
 @end
 
 @implementation FoundationDBService {
@@ -48,7 +46,7 @@ static FoundationDBService *fdb;
 
 + (void)initialize {
     if (self == [self class]) {
-        fdb = [FoundationDBService new];
+        if (!fdb) fdb = [FoundationDBService new];
     }
 }
 
@@ -82,7 +80,7 @@ static FoundationDBService *fdb;
 }
 
 - (void)bootstrap {
-    self.dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+    self.dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     NSString *url = [Utils getDocLayerURL];
     _docLayerURL = (char *)[url UTF8String];
 }
@@ -125,7 +123,7 @@ static FoundationDBService *fdb;
             MONGOC_INFO("str: %s", str);
             data = [NSData dataWithBytes:str length:(NSUInteger)strlen(str)];
             userDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
-            user = [self constructUserFromDictionary:userDict];
+            user = [ModelUtils.shared userFromDictionary:userDict convertType:ConvertTypeBSON];
             debug(@"user obj: %@", user);
             if (user) [users addObject:user];
             debug(@"user dict: %@", userDict);
@@ -140,8 +138,8 @@ static FoundationDBService *fdb;
 #pragma mark Insert
 
 - (void)insertFilters:(Filters *)filters callback:(void (^)(BOOL))callback {
-    self.countries = filters.countries;
-    self.skills = filters.skills;
+    StateData.shared.countries = filters.countries;
+    StateData.shared.skills = filters.skills;
     dispatch_async(self.dispatchQueue, ^{
         BOOL isSuccess = YES;
         bool ret;
@@ -328,112 +326,6 @@ static FoundationDBService *fdb;
     return true;
 }
 
-# pragma mark Model
-
-- (User *)constructUserFromDictionary:(NSDictionary *)dict {
-    User *user = [User new];
-    id val;
-    user.userId = (NSUInteger)[[(NSMutableDictionary *)[dict valueForKey:@"_id"] objectForKey:@"$numberLong"] integerValue];
-    val = (NSString *)[dict valueForKey:@"username"];
-    if (val != [NSNull null]) user.username = val;
-    val = (NSString *)[dict valueForKey:@"large_avatar_url"];
-    if (val != [NSNull null]) user.largeAvatarURL = val;
-    val = (NSString *)[dict valueForKey:@"small_avatar_url"];
-    if (val != [NSNull null]) user.smallCoverURL = val;
-    val = [dict valueForKey:@"is_staff"];
-    user.isStaff = val ? (BOOL)CFBooleanGetValue((CFBooleanRef)val) : NO;
-    val = [dict valueForKey:@"pro_member"];
-    user.isProMember = val ? (BOOL)CFBooleanGetValue((CFBooleanRef)val) : NO;
-    val = (NSString *)[dict valueForKey:@"artstation_profile_url"];
-    if (val != [NSNull null]) user.artstationProfileURL = val;
-    user.likesCount = (NSUInteger)[[(NSMutableDictionary *)[dict valueForKey:@"likes_count"] objectForKey:@"$numberLong"] integerValue];
-    user.followersCount = (NSUInteger)[[(NSMutableDictionary *)[dict valueForKey:@"follower_count"] objectForKey:@"$numberLong"] integerValue];
-    val = [dict valueForKey:@"available_full_time"];
-    user.isAvailableFullTime = val ? (BOOL)CFBooleanGetValue((CFBooleanRef)val) : NO;
-    val = [dict valueForKey:@"available_contract"];
-    user.isAvailableContract = val ? (BOOL)CFBooleanGetValue((CFBooleanRef)val) : NO;
-    val = [dict valueForKey:@"available_freelance"];
-    user.isAvailableFreelance = val ? (BOOL)CFBooleanGetValue((CFBooleanRef)val) : NO;
-    val = (NSString *)[dict valueForKey:@"location"];
-    if (val != [NSNull null]) user.location = val;
-    val = (NSString *)[dict valueForKey:@"full_name"];
-    if (val != [NSNull null]) user.fullName = val;
-    val = (NSString *)[dict valueForKey:@"headline"];
-    if (val != [NSNull null]) user.headline = val;
-    val = [dict valueForKey:@"followed"];
-    user.isFollowed = val ? (BOOL)CFBooleanGetValue((CFBooleanRef)val) : NO;
-    val = [dict valueForKey:@"following_back"];
-    user.isFollowingBack = val ? (BOOL)CFBooleanGetValue((CFBooleanRef)val) : NO;
-    val = (NSString *)[dict valueForKey:@"country"];
-    if (val != [NSNull null]) {
-        NSString *countryId = (NSString *)val;
-        if (countryId) {
-            Country *country = [[self.countries filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"countryId == %@", countryId]] firstObject];
-            if (country) user.country = country;
-        }
-    }
-    NSMutableDictionary *hm;
-    // Construct sample projects
-    NSMutableArray *sampleProjects = (NSMutableArray *)[dict objectForKey:@"sample_projects"];
-    if ([sampleProjects count] > 0) {
-        SampleProject *proj;
-        user.sampleProjects = [NSMutableArray new];
-        for (hm in sampleProjects) {
-            proj = [SampleProject new];
-            proj.sampleProjectId = (NSUInteger)[[(NSMutableDictionary *)[hm valueForKey:@"_id"] objectForKey:@"$numberLong"] integerValue];
-            val = [hm valueForKey:@"smaller_square_cover_url"];
-            if (val != [NSNull null]) proj.smallerSquareCoverURL = val;
-            val = [hm valueForKey:@"url"];
-            if (val != [NSNull null]) proj.url = val;
-            val = [hm valueForKey:@"title"];
-            if (val != [NSNull null]) proj.title = val;
-            [user.sampleProjects addObject:proj];
-        }
-    }
-    // Construct skills
-    NSMutableArray *skillsArr = (NSMutableArray *)[dict objectForKey:@"skills"];
-    if ([skillsArr count] > 0) {
-        Skill *skill;
-        user.skills = [NSMutableArray new];
-        for (hm in skillsArr) {
-            skill = [Skill new];
-            skill.skillId = (NSUInteger)[[(NSMutableDictionary *)[hm valueForKey:@"_id"] objectForKey:@"$numberLong"] integerValue];
-            val = [hm valueForKey:@"skill_name"];
-            if (val != [NSNull null]) skill.name = val;
-            [user.skills addObject:skill];
-        }
-    }
-    // Construct software
-    NSMutableArray *software = (NSMutableArray *)[dict objectForKey:@"software"];
-    if ([software count] > 0) {
-        user.software = [NSMutableArray new];
-        Software *sw;
-        for (hm in software) {
-            sw = [Software new];
-            sw.softwareId = (NSUInteger)[[(NSMutableDictionary *)[hm valueForKey:@"_id"] objectForKey:@"$numberLong"] integerValue];
-            val = [hm valueForKey:@"software_name"];
-            if (val != [NSNull null]) sw.name = val;
-            [user.software addObject:sw];
-        }
-    }
-    return user;
-}
-
-- (Country * _Nullable)countryFromLocation:(NSString *)location {
-    NSArray *locArr = [location componentsSeparatedByString:@", "];
-    NSString *countryName;
-    NSArray<Country *> *countryArr;
-    Country *country;
-    if ([locArr count] > 0) {
-        countryName = (NSString *)[locArr lastObject];
-        countryArr = [self.countries filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name == %@", countryName]];
-        if ([countryArr count] >= 1) {
-            country = [countryArr firstObject];
-        }
-    }
-    return country;
-}
-
 #pragma mark BSON
 
 bson_t *constructSKillBSON(Skill *skill, bool isUpdate) {
@@ -481,7 +373,7 @@ bson_t *constructUserBSON(FoundationDBService *fbd, User *user) {
                                 "pro_member", BCON_BOOL(user.isProMember),
                                 "artstation_profile_url", BCON_UTF8([user.artstationProfileURL UTF8String]),
                                 "likes_count", BCON_INT64((int64_t)user.likesCount),
-                                "follower_count", BCON_INT64((int64_t)user.followersCount),
+                                "followers_count", BCON_INT64((int64_t)user.followersCount),
                                 "available_full_time", BCON_BOOL(user.isAvailableFullTime),
                                 "available_contract", BCON_BOOL(user.isAvailableContract),
                                 "available_freelance", BCON_BOOL(user.isAvailableFreelance),
@@ -491,7 +383,7 @@ bson_t *constructUserBSON(FoundationDBService *fbd, User *user) {
                                 "followed", BCON_BOOL(user.isFollowed),
                                 "following_back", BCON_BOOL(user.isFollowingBack));
     // Add country
-    Country *country = [fdb countryFromLocation:user.location];
+    Country *country = [ModelUtils.shared countryFromLocation:user.location];  // NOTE: Country name does not match name from the filter's list
     if (country) BSON_APPEND_UTF8(user_doc, "country", [country.countryId UTF8String]);
     // Append skills
     BSON_APPEND_ARRAY_BEGIN(user_doc, "skills", &skills);

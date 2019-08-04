@@ -17,6 +17,7 @@
 @implementation CrawlService {
     NetworkService *_nwsvc;
     NSString *_csrfToken;
+    dispatch_queue_t _dispatchQueue;
 }
 
 @synthesize nwsvc = _nwsvc;
@@ -32,6 +33,7 @@
 - (void)bootstrap {
     _nwsvc = [NetworkService new];
     _nwsvc.queueType = QueueTypeBackground;
+    _dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT , 0);
     _csrfToken = @"";
 }
 
@@ -122,7 +124,7 @@
     }];
 }
 
-- (void)getUsersForSkill:(NSString *)skillId page:(NSUInteger)page max:(NSUInteger)max callback:(void (^) (NSArray<User *> *))callback {
+- (void)getUsersForSkill:(NSString *)skillId page:(NSUInteger)page max:(NSUInteger)max callback:(void (^) (UserSearchResponse *))callback {
     [self getCSRFToken:^(NSString * _Nonnull csrfToken) {
         NSMutableDictionary *dict = [NSMutableDictionary new];
         [dict setValue:@"" forKey:@"query"];
@@ -136,8 +138,32 @@
         [self.nwsvc postWithUrl:[Constants searchUsersURL] body:body
                         headers:@{[Constants csrfTokenHeader]: csrfToken, [Constants cloudFlareCSRFTokenHeader]: csrfToken}
                        callback:^(NSData * _Nullable data, NSURLResponse * _Nullable resp, NSError * _Nullable err) {
-            debug(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-            callback(@[]);
+           debug(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+           NSError *aErr;
+           NSMutableDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&aErr];
+           UserSearchResponse *uresp = [UserSearchResponse new];
+           if (err || aErr) {
+               uresp.status = NO;
+               callback(uresp);
+               return;
+           }
+           uresp.status = YES;
+           uresp.usersList = [NSMutableArray new];
+           uresp.totalCount = (NSUInteger)[(NSString *)[jsonDict valueForKey:@"total_count"] integerValue];
+           uresp.skillId = skillId;
+           uresp.page = page;
+           NSMutableArray *usersList;
+           id val = [jsonDict objectForKey:@"data"];
+           if (val && val != [NSNull null]) usersList = (NSMutableArray *)val;
+           NSMutableDictionary *dict;
+           if ([usersList count] > 0) {
+               User *user;
+               for (dict in usersList) {
+                   user = [ModelUtils.shared userFromDictionary:dict convertType:ConvertTypeJSON];
+                   [uresp.usersList addObject:user];
+               }
+           }
+           callback(uresp);
         }];
     }];
 }

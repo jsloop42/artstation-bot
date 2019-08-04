@@ -111,8 +111,9 @@ extension MainWindowController {
 //        self.dbService.getUsersWithOffset(1, limit: 2, callback: { users in
 //            self.log.debug(users)
 //        })
-//        self.crawlService.getUsersForSkill("1", page: 1, max: 15, callback: { usersList in
-//            self.log.debug("users list: \(usersList)")
+//        self.crawlService.getUsersForSkill("1", page: 1, max: 15, callback: { userResp  in
+//            self.log.debug("total users count: \(userResp.totalCount)")
+//            self.log.debug("first user's id: \((userResp.usersList.firstObject as! User).userId)")
 //        })
     }
 }

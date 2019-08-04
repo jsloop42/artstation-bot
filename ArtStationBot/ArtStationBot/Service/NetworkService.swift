@@ -16,7 +16,7 @@ class NetworkService: NSObject {
     private lazy var backgroundQueue: OperationQueue = {
         let q = OperationQueue()
         q.name = "Network Service Background Queue"
-        q.qualityOfService = QualityOfService.background
+        q.qualityOfService = QualityOfService.default
         return q
     }()
     private lazy var userInitiatedQueue: OperationQueue = {
