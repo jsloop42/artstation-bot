@@ -19,7 +19,8 @@ static const char *appName = "artstationbot";
 static const char *skills_coll_name = "skills";
 static const char *users_coll_name = "users";
 static const char *software_coll_name = "software";
-static const char *availability_coll_name = "availability";
+static const char *availabilities_coll_name = "availabilities";
+static const char *countries_coll_name = "countries";
 
 static mongoc_uri_t *mongouri;
 static mongoc_client_t *client;
@@ -27,7 +28,8 @@ static mongoc_database_t *database;
 static mongoc_collection_t *skills_coll;
 static mongoc_collection_t *users_coll;
 static mongoc_collection_t *software_coll;
-static mongoc_collection_t *availability_coll;
+static mongoc_collection_t *availabilities_coll;
+static mongoc_collection_t *countries_coll;
 static FoundationDBService *fdb;
 
 @interface FoundationDBService ()
@@ -64,16 +66,17 @@ static FoundationDBService *fdb;
     mongoc_collection_destroy(skills_coll);
     mongoc_collection_destroy(users_coll);
     mongoc_collection_destroy(software_coll);
-    mongoc_collection_destroy(availability_coll);
+    mongoc_collection_destroy(availabilities_coll);
+    mongoc_collection_destroy(countries_coll);
     mongoc_database_destroy(database);
     mongoc_uri_destroy(mongouri);
     mongoc_client_destroy(client);
     mongoc_cleanup();
 }
 
-- (int)fail:(bson_error_t)err {
+- (bool)fail:(bson_error_t)err {
     MONGOC_ERROR("DB error: code: %d, msg: %s" , err.code, err.message);
-    return FAIL;
+    return false;
 }
 
 - (void)bootstrap {
@@ -84,7 +87,7 @@ static FoundationDBService *fdb;
     //[self test];
 }
 
-- (int)initDocLayer {
+- (bool)initDocLayer {
     bson_error_t err;
     mongoc_init();
     mongouri = mongoc_uri_new_with_error(_docLayerURL, &err);
@@ -96,65 +99,43 @@ static FoundationDBService *fdb;
     skills_coll = mongoc_client_get_collection(client, dbName, skills_coll_name);
     users_coll = mongoc_client_get_collection(client, dbName, users_coll_name);
     software_coll = mongoc_client_get_collection(client, dbName, software_coll_name);
-    availability_coll = mongoc_client_get_collection(client, dbName, availability_coll_name);
-    return OK;
+    availabilities_coll = mongoc_client_get_collection(client, dbName, availabilities_coll_name);
+    countries_coll = mongoc_client_get_collection(client, dbName, countries_coll_name);
+    return true;
 }
 
 #pragma mark Insert
 
 - (void)insertFilters:(Filters *)filters callback:(void (^)(BOOL))callback {
-    BOOL __block isSuccess = YES;
-    NSLock *lock = [NSLock new];
-    dispatch_group_t group = dispatch_group_create();
-    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-        debug(@"Dispatch group complete - notify");
-        callback(isSuccess);
-    });
-    dispatch_group_enter(group);
-    debug(@"Dispatch group enter - skills");
     dispatch_async(self.dispatchQueue, ^{
+        BOOL isSuccess = YES;
+        bool ret;
         if ([filters.skills count] > 0) {
-            BOOL ret = [self insertSkills:filters.skills];
-            if (!ret) {
-                [lock lock];
-                isSuccess = ret;
-                [lock unlock];
-            }
+            debug(@"Upserting skills");
+            ret = [self upsertSkills:filters.skills];
+            if (!ret) isSuccess = NO;
         }
-        debug(@"Dispatch group leave - skills");
-        dispatch_group_leave(group);
-    });
-    dispatch_group_enter(group);
-    debug(@"Dispatch group enter - software");
-    dispatch_async(self.dispatchQueue, ^{
         if ([filters.software count] > 0) {
-            BOOL ret = [self insertSoftware:filters.software];
-            if (!ret) {
-                [lock lock];
-                isSuccess = ret;
-                [lock unlock];
-            }
+            debug(@"Upserting software");
+            ret = [self upsertSoftware:filters.software];
+            if (!ret) isSuccess = NO;
         }
-        debug(@"Dispatch group leave - software");
-        dispatch_group_leave(group);
-    });
-    dispatch_group_enter(group);
-    debug(@"Dispatch group enter - availabilities");
-    dispatch_async(self.dispatchQueue, ^{
         if ([filters.availabilities count] > 0) {
-            BOOL ret = [self insertAvailabilities:filters.availabilities];
-            if (!ret) {
-                [lock lock];
-                isSuccess = ret;
-                [lock unlock];
-            }
+            debug(@"Upserting availabilities");
+            ret = [self upsertAvailabilities:filters.availabilities];
+            if (!ret) isSuccess = NO;
         }
-        debug(@"Dispatch group leave - availabilities");
-        dispatch_group_leave(group);
+        if ([filters.countries count] > 0) {
+            debug(@"Upserting countries");
+            ret = [self upsertCountries:filters.countries];
+            if (!ret) isSuccess = NO;
+        }
+        debug(@"Filters upsert complete");
+        callback(isSuccess);
     });
 }
 
-- (int)insertSkills:(NSMutableArray<Skill *> *)skills {
+- (bool)upsertSkills:(NSMutableArray<Skill *> *)skills {
     Skill *skill;
     bson_t *skill_doc;
     bson_t reply;
@@ -165,20 +146,18 @@ static FoundationDBService *fdb;
     mongoc_bulk_operation_t *bulk = mongoc_collection_create_bulk_operation_with_opts(skills_coll, &opts);
     bson_destroy(&opts);
     for (skill in skills) {
-        skill_doc = constructSKillBSON(skill);
-        mongoc_bulk_operation_insert(bulk, skill_doc);
+        skill_doc = constructSKillBSON(skill, true);
+        mongoc_bulk_operation_update_one(bulk, BCON_NEW("_id", BCON_INT64((int64_t)skill.skillId)), skill_doc, true);
         bson_destroy(skill_doc);
     }
     ret = mongoc_bulk_operation_execute(bulk, &reply, &err);
-    if (!ret) {
-        [self fail:err];
-    }
     bson_destroy(&reply);
     mongoc_bulk_operation_destroy(bulk);
-    return OK;
+    if (!ret) [self fail:err];
+    return true;
 }
 
-- (int)insertSoftware:(NSMutableArray<Software *> *)software {
+- (bool)upsertSoftware:(NSMutableArray<Software *> *)software {
     Software *sw;
     bson_t *sw_doc;
     bson_t reply;
@@ -189,20 +168,18 @@ static FoundationDBService *fdb;
     mongoc_bulk_operation_t *bulk = mongoc_collection_create_bulk_operation_with_opts(software_coll, &opts);
     bson_destroy(&opts);
     for (sw in software) {
-        sw_doc = constructSoftwareBSON(sw);
-        mongoc_bulk_operation_insert(bulk, sw_doc);
+        sw_doc = constructSoftwareBSON(sw, true);
+        mongoc_bulk_operation_update_one(bulk, BCON_NEW("_id", BCON_INT64((int64_t)sw.softwareId)), sw_doc, true);
         bson_destroy(sw_doc);
     }
     ret = mongoc_bulk_operation_execute(bulk, &reply, &err);
-    if (!ret) {
-        [self fail:err];
-    }
     bson_destroy(&reply);
     mongoc_bulk_operation_destroy(bulk);
-    return OK;
+    if (!ret) [self fail:err];
+    return true;
 }
 
-- (int)insertAvailabilities:(NSMutableArray<Availability *> *)availabilities {
+- (bool)upsertAvailabilities:(NSMutableArray<Availability *> *)availabilities {
     Availability *availability;
     bson_t *availability_doc;
     bson_t reply;
@@ -210,20 +187,40 @@ static FoundationDBService *fdb;
     bool ret;
     bson_t opts = BSON_INITIALIZER;
     BSON_APPEND_BOOL(&opts, "ordered", false);
-    mongoc_bulk_operation_t *bulk = mongoc_collection_create_bulk_operation_with_opts(availability_coll, &opts);
+    mongoc_bulk_operation_t *bulk = mongoc_collection_create_bulk_operation_with_opts(availabilities_coll, &opts);
     bson_destroy(&opts);
     for (availability in availabilities) {
-        availability_doc = constructAvailabilityBSON(availability);
-        mongoc_bulk_operation_insert(bulk, availability_doc);
+        availability_doc = constructAvailabilityBSON(availability, true);
+        mongoc_bulk_operation_update_one(bulk, BCON_NEW("_id", BCON_UTF8([availability.availabilityId UTF8String])), availability_doc, true);
         bson_destroy(availability_doc);
     }
     ret = mongoc_bulk_operation_execute(bulk, &reply, &err);
-    if (!ret) {
-        [self fail:err];
-    }
     bson_destroy(&reply);
     mongoc_bulk_operation_destroy(bulk);
-    return OK;
+    if (!ret) [self fail:err];
+    return true;
+}
+
+- (bool)upsertCountries:(NSMutableArray<Country *> *)countries {
+    Country *country;
+    bson_t *country_doc;
+    bson_t reply;
+    bson_error_t err;
+    bool ret;
+    bson_t opts = BSON_INITIALIZER;
+    BSON_APPEND_BOOL(&opts, "ordered", false);
+    mongoc_bulk_operation_t *bulk = mongoc_collection_create_bulk_operation_with_opts(countries_coll, &opts);
+    bson_destroy(&opts);
+    for (country in countries) {
+        country_doc = constructCountryBSON(country, true);
+        mongoc_bulk_operation_update_one(bulk, BCON_NEW("_id", BCON_UTF8([country.countryId UTF8String])), country_doc, true);
+        bson_destroy(country_doc);
+    }
+    ret = mongoc_bulk_operation_execute(bulk, &reply, &err);
+    bson_destroy(&reply);
+    mongoc_bulk_operation_destroy(bulk);
+    if (!ret) [self fail:err];
+    return true;
 }
 
 - (void)test {
@@ -250,7 +247,7 @@ static FoundationDBService *fdb;
 }
 
 /** Inserts user info to `user` collection and a reference to the `user` to `skills["skill name"].users` collection. */
-- (int)insertUser:(User *)user {
+- (bool)insertUser:(User *)user {
     // db.users.insert({"_id": 123, "username": "Jane Doe", ..})
     // db.skills["2D Art"].users.insert({"_id": 1, "messaged": false, "message_info": []})
     bson_error_t err;
@@ -260,11 +257,13 @@ static FoundationDBService *fdb;
     int skills_len = (int)user.skills.count;
     int i = 0;
     // skills
-    mongoc_collection_t *skill_user_coll = NULL;
-    bson_t *skill_user_doc = NULL;
+    mongoc_collection_t *skill_user_coll;
+    bson_t *skill_user_doc;
     char *skill_coll_name = NULL;
     char *skill_name = NULL;
     bool ret = mongoc_collection_insert_one(users_coll, user_doc, NULL, &reply, &err);
+    bson_destroy(&reply);
+    bson_destroy(user_doc);
     if (!ret) {
         if (err.code == MONGOC_ERROR_DUPLICATE_KEY) {
             MONGOC_INFO("Document with %d already exists. Ignoring...", (int)user.userId);
@@ -281,6 +280,7 @@ static FoundationDBService *fdb;
                                   "messaged", BCON_BOOL(NO),
                                   "message_info", "[","]");
         ret = mongoc_collection_insert_one(skill_user_coll, skill_user_doc, NULL, NULL, &err);
+        bson_destroy(skill_user_doc);
         if (!ret) {
             if (err.code == MONGOC_ERROR_DUPLICATE_KEY) {
                 MONGOC_INFO("User with id: %d already exists for skill: %s. Ignoring...", (int)user.userId, skill_name);
@@ -289,24 +289,30 @@ static FoundationDBService *fdb;
             }
         }
     }
-    if (skill_user_doc) bson_destroy(skill_user_doc);
-    bson_destroy(&reply);
-    bson_destroy(user_doc);
-    return OK;
+    return true;
 }
 
 #pragma mark BSON
 
-bson_t *constructSKillBSON(Skill *skill) {
-    return BCON_NEW("_id", BCON_INT64((int64_t)skill.skillId), "name", BCON_UTF8([skill.name UTF8String]));
+bson_t *constructSKillBSON(Skill *skill, bool isUpdate) {
+    return isUpdate ? BCON_NEW("$set", "{", "name", BCON_UTF8([skill.name UTF8String]), "}")
+                    : BCON_NEW("_id", BCON_INT64((int64_t)skill.skillId), "name", BCON_UTF8([skill.name UTF8String]));
 }
 
-bson_t *constructSoftwareBSON(Software *software) {
-    return BCON_NEW("_id", BCON_INT64((int64_t)software.softwareId), "name", BCON_UTF8([software.name UTF8String]), "icon_url", BCON_UTF8([software.iconURL UTF8String]));
+bson_t *constructSoftwareBSON(Software *software, bool isUpdate) {
+    return isUpdate ? BCON_NEW("$set", "{", "name", BCON_UTF8([software.name UTF8String]), "icon_url", BCON_UTF8([software.iconURL UTF8String]), "}")
+                    : BCON_NEW("_id", BCON_INT64((int64_t)software.softwareId), "name", BCON_UTF8([software.name UTF8String]),
+                               "icon_url", BCON_UTF8([software.iconURL UTF8String]));
 }
 
-bson_t *constructAvailabilityBSON(Availability* availability) {
-    return BCON_NEW("_id", BCON_UTF8([availability.availabilityId UTF8String]), "name", BCON_UTF8([availability.name UTF8String]));
+bson_t *constructAvailabilityBSON(Availability *availability, bool isUpdate) {
+    return isUpdate ? BCON_NEW("$set", "{", "name", BCON_UTF8([availability.name UTF8String]), "}")
+                    : BCON_NEW("_id", BCON_UTF8([availability.availabilityId UTF8String]), "name", BCON_UTF8([availability.name UTF8String]));
+}
+
+bson_t *constructCountryBSON(Country *country, bool isUpdate) {
+    return isUpdate ? BCON_NEW("$set", "{", "name", BCON_UTF8([country.name UTF8String]), "}")
+                    : BCON_NEW("_id", BCON_UTF8([country.countryId UTF8String]), "name", BCON_UTF8([country.name UTF8String]));
 }
 
 bson_t *constructUserBSON(User *user) {

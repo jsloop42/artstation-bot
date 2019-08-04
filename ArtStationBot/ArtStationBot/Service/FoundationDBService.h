@@ -15,12 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 @interface FoundationDBService : NSObject
 + (FoundationDBService *)shared;
 @property (nonatomic, readwrite) NSString *configPath;
-- (int)initDocLayer;
+- (bool)initDocLayer;
 - (void)insertFilters:(Filters *)filters callback:(void (^)(BOOL))callback;
-- (int)insertSkills:(NSMutableArray<Skill *> *)skills;
-- (int)insertSoftware:(NSMutableArray<Software *> *)software;
-- (int)insertAvailabilities:(NSMutableArray<Availability *> *)availabilities;
-- (int)insertUser:(User *)user;
+- (bool)insertSkills:(NSMutableArray<Skill *> *)skills;
+- (bool)insertSoftware:(NSMutableArray<Software *> *)software;
+- (bool)insertAvailabilities:(NSMutableArray<Availability *> *)availabilities;
+- (bool)insertUser:(User *)user;
 @end
 
 NS_ASSUME_NONNULL_END

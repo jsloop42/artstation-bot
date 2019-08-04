@@ -101,7 +101,9 @@ extension MainWindowController {
             self.crawlService.getFilterList { filters in
                 self.log.debug("Filters: \(filters)")
                 self.dbService.insert(filters, callback: { status in
-                    self.log.debug("Filters insert status: \(status)")
+                    DispatchQueue.main.async {
+                        self.log.debug("Filters insert status: \(status)")
+                    }
                 })
             }
         }

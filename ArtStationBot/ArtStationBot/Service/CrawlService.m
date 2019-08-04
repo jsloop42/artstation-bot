@@ -57,7 +57,6 @@
 - (void)getFilterList:(void (^)(Filters *))callback {
     CrawlService __block *weakSelf = self;
     NSURLComponents *comp = [[NSURLComponents alloc] initWithString:Constants.filterListURL];
-    debug(@"url: %@", comp);
     NSDictionary *headers = @{@"PUBLIC-CSRF-TOKEN": _csrfToken};
     [self.nwsvc getWithComp:comp headers:headers callback:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         CrawlService *this = weakSelf;
@@ -65,7 +64,6 @@
         NSArray *ret;
         if (data) {
             ret = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
-            debug(@"Skills list is %@", ret);
             Filters *filters = [Filters new];
             NSDictionary *odict = nil;
             NSDictionary *idict = nil;
