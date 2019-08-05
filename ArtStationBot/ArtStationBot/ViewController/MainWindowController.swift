@@ -12,6 +12,7 @@ import DLLogger
 
 class MainWindowController: NSWindowController {
     private let log = Logger()
+    private lazy var frontierService = { return FrontierService.shared() }()
     private lazy var crawlService = { return CrawlService() }()
     private lazy var dbService = { return FoundationDBService.shared() }()
     private lazy var windowName: String = { NSStringFromClass(type(of: self)) }()
@@ -115,6 +116,7 @@ extension MainWindowController {
 //            self.log.debug("total users count: \(userResp.totalCount)")
 //            self.log.debug("first user's id: \((userResp.usersList.firstObject as! User).userId)")
 //        })
+        self.frontierService.startCrawl()
     }
 }
 

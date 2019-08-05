@@ -14,6 +14,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CrawlService : NSObject
+@property (nonatomic, readwrite) CrawlerState *crawlerState;
 - (void)getCSRFToken:(void (^)(NSString *))callback;
 - (void)getFilterList:(void (^)(Filters *))callback;
 - (void)getUsersForSkill:(NSString *)skillId page:(NSUInteger)page max:(NSUInteger)max callback:(void (^) (UserSearchResponse *))callback;

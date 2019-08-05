@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 #   define error(...) NSLog(__VA_ARGS__)
 #endif
 
+#define Const Constants
+
 @interface Constants : NSObject
 + (NSString *)seedURL;
 + (NSString *)csrfTokenURL;

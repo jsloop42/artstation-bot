@@ -51,6 +51,9 @@
 		9E70E79922F74BBF009FF504 /* ModelUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E70E79822F74BBF009FF504 /* ModelUtils.m */; };
 		9E70E79C22F74C60009FF504 /* StateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E70E79B22F74C60009FF504 /* StateData.m */; };
 		9E70E79F22F7526F009FF504 /* UserSearchResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E70E79E22F7526F009FF504 /* UserSearchResponse.m */; };
+		9E70E7A222F88862009FF504 /* CrawlerState.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E70E7A122F88862009FF504 /* CrawlerState.m */; };
+		9E70E7A522F88A8D009FF504 /* FrontierService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E70E7A422F88A8D009FF504 /* FrontierService.m */; };
+		9E70E7AB22F8907C009FF504 /* UserFetchState.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E70E7AA22F8907C009FF504 /* UserFetchState.m */; };
 		9ECAFABB22E2FA6500953081 /* artstationbot.js in Resources */ = {isa = PBXBuildFile; fileRef = 9ECAFABA22E2FA6500953081 /* artstationbot.js */; };
 		9ECAFABD22E3098500953081 /* ScriptResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECAFABC22E3098500953081 /* ScriptResult.swift */; };
 		9ECAFABF22E319D500953081 /* WebViewMessageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECAFABE22E319D500953081 /* WebViewMessageService.swift */; };
@@ -153,6 +156,12 @@
 		9E70E79B22F74C60009FF504 /* StateData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StateData.m; sourceTree = "<group>"; };
 		9E70E79D22F7526F009FF504 /* UserSearchResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserSearchResponse.h; sourceTree = "<group>"; };
 		9E70E79E22F7526F009FF504 /* UserSearchResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserSearchResponse.m; sourceTree = "<group>"; };
+		9E70E7A022F88862009FF504 /* CrawlerState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CrawlerState.h; sourceTree = "<group>"; };
+		9E70E7A122F88862009FF504 /* CrawlerState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CrawlerState.m; sourceTree = "<group>"; };
+		9E70E7A322F88A8D009FF504 /* FrontierService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FrontierService.h; sourceTree = "<group>"; };
+		9E70E7A422F88A8D009FF504 /* FrontierService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FrontierService.m; sourceTree = "<group>"; };
+		9E70E7A922F8907C009FF504 /* UserFetchState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserFetchState.h; sourceTree = "<group>"; };
+		9E70E7AA22F8907C009FF504 /* UserFetchState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserFetchState.m; sourceTree = "<group>"; };
 		9ECAFABA22E2FA6500953081 /* artstationbot.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = artstationbot.js; sourceTree = "<group>"; };
 		9ECAFABC22E3098500953081 /* ScriptResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptResult.swift; sourceTree = "<group>"; };
 		9ECAFABE22E319D500953081 /* WebViewMessageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewMessageService.swift; sourceTree = "<group>"; };
@@ -289,6 +298,8 @@
 				9E296E3C22F35F99001BED13 /* CrawlService.m */,
 				9E5BD92322E644CA00C972A9 /* FoundationDBService.h */,
 				9E5BD92422E644CA00C972A9 /* FoundationDBService.m */,
+				9E70E7A322F88A8D009FF504 /* FrontierService.h */,
+				9E70E7A422F88A8D009FF504 /* FrontierService.m */,
 				9E3B992522E48713007C94A7 /* NetworkService.swift */,
 				9ECAFABE22E319D500953081 /* WebViewMessageService.swift */,
 				9E5BD92222E644C900C972A9 /* ArtStationBot-Bridging-Header.h */,
@@ -303,6 +314,8 @@
 				9E296E4B22F59605001BED13 /* Availability.m */,
 				9E296E4422F58509001BED13 /* Country.h */,
 				9E296E4522F58509001BED13 /* Country.m */,
+				9E70E7A022F88862009FF504 /* CrawlerState.h */,
+				9E70E7A122F88862009FF504 /* CrawlerState.m */,
 				9E296E4122F58437001BED13 /* Filters.h */,
 				9E296E4222F58437001BED13 /* Filters.m */,
 				9ECAFABC22E3098500953081 /* ScriptResult.swift */,
@@ -318,6 +331,8 @@
 				9E70E79822F74BBF009FF504 /* ModelUtils.m */,
 				9E70E79A22F74C60009FF504 /* StateData.h */,
 				9E70E79B22F74C60009FF504 /* StateData.m */,
+				9E70E7A922F8907C009FF504 /* UserFetchState.h */,
+				9E70E7AA22F8907C009FF504 /* UserFetchState.m */,
 				9E70E79D22F7526F009FF504 /* UserSearchResponse.h */,
 				9E70E79E22F7526F009FF504 /* UserSearchResponse.m */,
 			);
@@ -506,10 +521,12 @@
 				9E70E79C22F74C60009FF504 /* StateData.m in Sources */,
 				9E39025122E230DE009D1A36 /* ArtStationBot.xcdatamodeld in Sources */,
 				9E296E4622F58509001BED13 /* Country.m in Sources */,
+				9E70E7A522F88A8D009FF504 /* FrontierService.m in Sources */,
 				9E39024E22E230DE009D1A36 /* AppDelegate.swift in Sources */,
 				9E296E4C22F59605001BED13 /* Availability.m in Sources */,
 				9ECAFAC322E33AF800953081 /* Utils.swift in Sources */,
 				9E044E6422F0B7CE000D6780 /* Skill.m in Sources */,
+				9E70E7A222F88862009FF504 /* CrawlerState.m in Sources */,
 				9E39028C22E23A05009D1A36 /* MainWindowController.swift in Sources */,
 				9ECAFABF22E319D500953081 /* WebViewMessageService.swift in Sources */,
 				9E39029522E23C61009D1A36 /* UI.swift in Sources */,
@@ -522,6 +539,7 @@
 				9E5BD92522E644CA00C972A9 /* FoundationDBService.m in Sources */,
 				9ECAFABD22E3098500953081 /* ScriptResult.swift in Sources */,
 				9E70E79F22F7526F009FF504 /* UserSearchResponse.m in Sources */,
+				9E70E7AB22F8907C009FF504 /* UserFetchState.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

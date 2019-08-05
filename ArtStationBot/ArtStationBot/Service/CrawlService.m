@@ -35,6 +35,7 @@
     _nwsvc.queueType = QueueTypeBackground;
     _dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT , 0);
     _csrfToken = @"";
+    self.crawlerState = [CrawlerState new];
 }
 
 - (void)getCSRFToken:(void (^)(NSString *))callback {
@@ -152,6 +153,12 @@
            uresp.totalCount = (NSUInteger)[(NSString *)[jsonDict valueForKey:@"total_count"] integerValue];
            uresp.skillId = skillId;
            uresp.page = page;
+           UserFetchState *userFetchState = [self.crawlerState.fetchState objectForKey:@((NSUInteger)[skillId integerValue])];
+           if (!userFetchState) userFetchState = [UserFetchState new];
+           userFetchState.skillId = skillId;
+           userFetchState.page = page;
+           userFetchState.totalCount = uresp.totalCount;
+           [self.crawlerState.fetchState setObject:userFetchState forKey:skillId];
            NSMutableArray *usersList;
            id val = [jsonDict objectForKey:@"data"];
            if (val && val != [NSNull null]) usersList = (NSMutableArray *)val;
