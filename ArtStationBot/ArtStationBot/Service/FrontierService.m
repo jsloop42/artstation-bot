@@ -12,7 +12,7 @@ static FrontierService *_frontierService;
 
 @interface FrontierService ()
 /* Table that keeps info on the crawls that can to be scheduled */
-@property (atomic, readwrite, retain) NSMutableDictionary<NSNumber *, UserFetchState *> *fetchTable;  // skillId, userFetchState
+@property (atomic, readwrite) NSMutableDictionary<NSNumber *, UserFetchState *> *fetchTable;  // skillId, userFetchState
 /* Table that keeps the current running crawls */
 @property (atomic, readwrite) NSMutableDictionary<NSNumber *, UserFetchState *> *runTable;  // skillId, userFetchState
 @property (atomic, readwrite) GKARC4RandomSource *arc4RandomSource;
@@ -53,16 +53,29 @@ static FrontierService *_frontierService;
 }
 
 /**
+ Basic algorithm for crawling
  1. Get the list of skills from filters list.
  2. For each skill, get the crawler state `fetchState`.
  3. If state exists, use the page from the state else set page to 1.
  4. Add the fetchState to a queue `fetchList`.
- 5. Construct a set of time interval with a certain deviation starting from now + a skew.
+ 5. Construct a set of time interval starting from now + a skew with a certain deviation.
  6. For each element in the queue, execute getUsersForSkill to fetch the users' list.
  */
 - (void)startCrawl {
+//    [self.fdbService getSkills:^{
+//        debug(@"Skills state updated with count: %ld", StateData.shared.skills.count);
+//    }];
     [self.crawlerService getFilterList:^(Filters * _Nonnull filters) {
-        [self crawlNextBatch:filters.skills];
+        debug(@"Filters list fetched");
+        [self.fdbService insertFilters:filters callback:^(BOOL status) {
+            debug(@"Filters list updated");
+            debug(@"Skills state updated with count: %ld", StateData.shared.skills.count);
+            [self.fdbService getCrawlerState:^(CrawlerState * _Nonnull state) {
+                debug(@"Crawler state obtained with fetch user count: %ld", state.fetchState.count);
+                self.crawlerService.crawlerState = state;
+                [self crawlNextBatch:filters.skills];
+            }];
+        }];
     }];
 }
 
@@ -137,6 +150,7 @@ static FrontierService *_frontierService;
         int mean = [(NSNumber *)meanArr[0] intValue];
         int deviation = [(NSNumber *)meanArr[1] intValue];
         self.gaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.arc4RandomSource mean:mean deviation:deviation];
+        debug(@"Queueing the next batch: %ld", self.batchCount);
         [self crawlNextBatch:StateData.shared.skills];
     }
 }

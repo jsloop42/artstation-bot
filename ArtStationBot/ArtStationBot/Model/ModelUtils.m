@@ -36,6 +36,26 @@ static ModelUtils *_modelUtils;
     return country;
 }
 
+- (Skill *)skillFromDictionary:(NSDictionary *)dict {
+    Skill *skill = [Skill new];
+    id val = [dict valueForKey:@"_id"];
+    if (val && val != [NSNull null]) skill.skillId = (NSUInteger)[[(NSMutableDictionary *)val objectForKey:@"$numberLong"] integerValue];
+    val = [dict valueForKey:@"name"];
+    if (val && val != [NSNull null]) skill.name = (NSString *)val;
+    return skill;
+}
+
+- (UserFetchState *)userFetchStateFromDictionary:(NSDictionary *)dict forSkill:(Skill *)skill {
+    UserFetchState *fetchState = [UserFetchState new];
+    fetchState.skillId = [NSString stringWithFormat:@"%ld", skill.skillId];
+    fetchState.skillName = skill.name;
+    id val = [dict valueForKey:@"page"];
+    if (val && val != [NSNull null]) fetchState.page = (NSUInteger)[[(NSMutableDictionary *)val objectForKey:@"$numberLong"] integerValue];
+    val = [dict valueForKey:@"total_count"];
+    if (val && val != [NSNull null]) fetchState.totalCount = (NSUInteger)[[(NSMutableDictionary *)val objectForKey:@"$numberLong"] integerValue];
+    return fetchState;
+}
+
 - (User *)userFromDictionary:(NSDictionary *)dict convertType:(enum ConvertType)convertType {
     User *user = [User new];
     id val;

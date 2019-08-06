@@ -25,6 +25,8 @@ typedef NS_ENUM(NSUInteger, ConvertType) {
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)new NS_UNAVAILABLE;
 - (Country * _Nullable)countryFromLocation:(NSString *)location;
+- (Skill *)skillFromDictionary:(NSDictionary *)dict;
+- (UserFetchState *)userFetchStateFromDictionary:(NSDictionary *)dict forSkill:(Skill *)skill;
 - (User *)userFromDictionary:(NSDictionary *)dict convertType:(enum ConvertType)convertType;
 @end
 

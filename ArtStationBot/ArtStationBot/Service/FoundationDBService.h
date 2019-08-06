@@ -11,6 +11,8 @@
 #import "User.h"
 #import "StateData.h"
 #import "ModelUtils.h"
+#import "UserFetchState.h"
+#import "CrawlerState.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readwrite) NSString *configPath;
 - (bool)initDocLayer;
 - (void)getUsersWithOffset:(NSUInteger)userId limit:(NSUInteger)limit callback:(void (^) (NSArray<User *> *))callback;
+- (void)getSkills:(void (^)(void))callback;
+- (void)getCrawlerState:(void(^)(CrawlerState *))callback;
 - (void)insertFilters:(Filters *)filters callback:(void (^)(BOOL))callback;
 - (bool)upsertSkills:(NSMutableArray<Skill *> *)skills;
 - (bool)upsertSoftware:(NSMutableArray<Software *> *)software;

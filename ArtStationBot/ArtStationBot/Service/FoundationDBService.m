@@ -118,36 +118,138 @@ static FoundationDBService *fdb;
     });
 }
 
+- (void)getSkills:(void (^)(void))callback {
+    dispatch_async(self.dispatchQueue, ^{
+        mongoc_cursor_t *cursor;
+        const bson_t *doc;
+        char *str;
+        mongoc_client_t *client = mongoc_client_pool_pop(pool);
+        mongoc_collection_t *coll = mongoc_client_get_collection(client, dbName, skills_coll_name);
+        bson_t query = BSON_INITIALIZER;
+        cursor = mongoc_collection_find_with_opts(coll, &query, NULL, NULL);
+        NSMutableArray<Skill *> *skills = [NSMutableArray new];
+        NSError *err;
+        NSMutableDictionary *dict;
+        Skill *skill;
+        while (mongoc_cursor_next(cursor, &doc)) {
+            str = bson_as_canonical_extended_json(doc, NULL);
+            dict = [NSJSONSerialization JSONObjectWithData:[NSData dataWithBytes:str length:strlen(str)] options:NSJSONReadingMutableContainers error:&err];
+            skill = [ModelUtils.shared skillFromDictionary:dict];
+            debug(@"Skill name: %@", skill.name);
+            [skills addObject:skill];
+            bson_free(str);
+        }
+        mongoc_client_pool_push(pool, client);
+        bson_destroy(&query);
+        mongoc_cursor_destroy(cursor);
+        mongoc_collection_destroy(coll);
+        StateData.shared.skills = skills;
+        callback();
+    });
+}
+
+- (void)getCrawlState:(NSString *)skillName callback:(void(^)(UserFetchState *))callback {
+    dispatch_async(self.dispatchQueue, ^{
+    });
+}
+
+- (void)getCrawlerState:(void(^)(CrawlerState *))callback {
+    dispatch_async(self.dispatchQueue, ^{
+        Skill *skill;
+        char *str;
+        CrawlerState *state = [CrawlerState new];
+        state.fetchState = [NSMutableDictionary new];
+        NSError *err;
+        NSMutableDictionary *dict;
+        UserFetchState *userFetchState;
+        for (skill in StateData.shared.skills) {
+            mongoc_cursor_t *cursor;
+            const bson_t *doc;
+            mongoc_client_t *client = mongoc_client_pool_pop(pool);
+            mongoc_collection_t *coll = mongoc_client_get_collection(client, dbName, [[NSString stringWithFormat:@"skills.%@", skill.name] UTF8String]);
+            bson_t *query = BCON_NEW("_id", BCON_UTF8("crawl_state"));
+            cursor = mongoc_collection_find_with_opts(coll, query, NULL, NULL);
+            while (mongoc_cursor_next(cursor, &doc)) {
+                str = bson_as_canonical_extended_json(doc, NULL);
+                dict = [NSJSONSerialization JSONObjectWithData:[NSData dataWithBytes:str length:strlen(str)] options:NSJSONReadingMutableContainers error:&err];
+                userFetchState = [ModelUtils.shared userFetchStateFromDictionary:dict forSkill:skill];
+                [state.fetchState setObject:userFetchState forKey:@(skill.skillId)];
+                bson_free(str);
+            }
+            mongoc_client_pool_push(pool, client);
+            bson_destroy(query);
+            mongoc_cursor_destroy(cursor);
+            mongoc_collection_destroy(coll);
+        }
+        callback(state);
+    });
+}
+
 #pragma mark Insert
 
 - (void)insertFilters:(Filters *)filters callback:(void (^)(BOOL))callback {
     StateData.shared.countries = filters.countries;
     StateData.shared.skills = filters.skills;
+    BOOL __block isSuccess = YES;
+    NSLock *lock = [NSLock new];
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_group_enter(group);
+    dispatch_group_notify(group, self.dispatchQueue, ^{
+        debug(@"Filters upsert complete");
+        callback(isSuccess);
+    });
     dispatch_async(self.dispatchQueue, ^{
-        BOOL isSuccess = YES;
         bool ret;
         if ([filters.skills count] > 0) {
             debug(@"Upserting skills");
             ret = [self upsertSkills:filters.skills];
-            if (!ret) isSuccess = NO;
+            if (!ret) {
+                [lock lock];
+                isSuccess = NO;
+                [lock unlock];
+            }
         }
+        dispatch_group_leave(group);
+    });
+    dispatch_group_enter(group);
+    dispatch_async(self.dispatchQueue, ^{
+        bool ret;
         if ([filters.software count] > 0) {
             debug(@"Upserting software");
             ret = [self upsertSoftware:filters.software];
-            if (!ret) isSuccess = NO;
+            if (!ret) {
+                [lock lock];
+                isSuccess = NO;
+                [lock unlock];
+            }
         }
+        dispatch_group_leave(group);
+    });
+    dispatch_group_enter(group);
+    dispatch_async(self.dispatchQueue, ^{
+        bool ret;
         if ([filters.availabilities count] > 0) {
             debug(@"Upserting availabilities");
             ret = [self upsertAvailabilities:filters.availabilities];
-            if (!ret) isSuccess = NO;
+            if (!ret) {
+                [lock lock];
+                isSuccess = NO;
+                [lock unlock];
+            }
         }
+        dispatch_group_leave(group);
+    });
+    dispatch_async(self.dispatchQueue, ^{
+        bool ret;
         if ([filters.countries count] > 0) {
             debug(@"Upserting countries");
             ret = [self upsertCountries:filters.countries];
-            if (!ret) isSuccess = NO;
+            if (!ret) {
+                [lock lock];
+                isSuccess = NO;
+                [lock unlock];
+            }
         }
-        debug(@"Filters upsert complete");
-        callback(isSuccess);
     });
 }
 
