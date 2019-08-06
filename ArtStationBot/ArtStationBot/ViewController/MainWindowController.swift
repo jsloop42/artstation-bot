@@ -3,7 +3,6 @@
 //  ArtStationBot
 //
 //  Created by jsloop on 19/07/19.
-//  Copyright © 2019 DreamLisp. All rights reserved.
 //
 
 import Foundation
@@ -13,6 +12,9 @@ import DLLogger
 
 class MainWindowController: NSWindowController {
     private let log = Logger()
+    private lazy var frontierService = { return FrontierService.shared() }()
+    private lazy var crawlService = { return CrawlService() }()
+    private lazy var dbService = { return FoundationDBService.shared() }()
     private lazy var windowName: String = { NSStringFromClass(type(of: self)) }()
     private lazy var win: NSWindow = { return UI.createWindow() }()
     private lazy var toolbar: NSToolbar = { return UI.createToolbar(id: self.toolbarId) }()
@@ -58,6 +60,7 @@ class MainWindowController: NSWindowController {
         super.init(window: window)
         //self.windowFrameAutosaveName = self.windowName
         initUI()
+        initEvents()
     }
 
     required init?(coder: NSCoder) {
@@ -79,12 +82,41 @@ class MainWindowController: NSWindowController {
         self.toolbar.allowsUserCustomization = true
         self.window?.titleVisibility = .hidden
         //self.window?.title = "ArtStation Bot"
-
         self.window?.toolbar = self.toolbar
     }
 
     func show() {
         self.showWindow(NSApp)
+    }
+
+    func initEvents() {
+        self.crawlBtn.action = #selector(crawlButtonDidClick)
+    }
+}
+
+// MARK: - Event handlers
+extension MainWindowController {
+    @objc func crawlButtonDidClick() {
+//        self.crawlService.getCSRFToken { token in
+//            self.log.debug("CSRF token: \(token)")
+//            self.crawlService.getFilterList { filters in
+//                self.log.debug("Filters: \(filters)")
+//                self.dbService.insert(filters, callback: { status in
+//                    DispatchQueue.main.async {
+//                        self.log.debug("Filters insert status: \(status)")
+//                    }
+//                })
+//            }
+//        }
+        //self.dbService.test()
+//        self.dbService.getUsersWithOffset(1, limit: 2, callback: { users in
+//            self.log.debug(users)
+//        })
+//        self.crawlService.getUsersForSkill("1", page: 1, max: 15, callback: { userResp  in
+//            self.log.debug("total users count: \(userResp.totalCount)")
+//            self.log.debug("first user's id: \((userResp.usersList.firstObject as! User).userId)")
+//        })
+        self.frontierService.startCrawl()
     }
 }
 

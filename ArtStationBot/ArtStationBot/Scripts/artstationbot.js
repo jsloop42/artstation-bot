@@ -22,7 +22,7 @@ ASB.prototype.getCount = function() {
 
 ASB.prototype.signIn = function(username, password) {
     if (username.isEmpty() || password.isEmpty()) { ASB.msg.postMessage({"id": "sign-in", "status": false, "msg": "Arguments cannot be empty"}); return; }
-    const btn = document.querySelector('.sign-in-button')
+    const btn = document.querySelector("a[href='/users/sign_in'] i")
     if (btn) {
         btn.click()
         document.querySelector("#new_user input.email").value = username

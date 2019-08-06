@@ -3,7 +3,6 @@
 //  ArtStationBot
 //
 //  Created by jsloop on 20/07/19.
-//  Copyright © 2019 DreamLisp. All rights reserved.
 //
 
 import Foundation

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>FoundationDB</key>
+	<dict>
+		<key>ClusterConfigPath</key>
+		<string>/usr/local/etc/foundationdb/fdb.cluster</string>
+		<key>DocumentLayerURL</key>
+		<string>mongodb://127.0.0.1:27016/?retryWrites=true</string>
+	</dict>
+</dict>
+</plist>

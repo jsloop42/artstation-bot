@@ -3,7 +3,6 @@
 //  ArtStationBot
 //
 //  Created by jsloop on 19/07/19.
-//  Copyright © 2019 DreamLisp. All rights reserved.
 //
 
 import Foundation
@@ -59,6 +58,7 @@ class UI {
 
     static func createButton() -> NSButton {
         let btn = NSButton(frame: NSMakeRect(0, 0, 40, 40))
+        btn.setButtonType(.momentaryPushIn)
         btn.bezelStyle = .texturedRounded
         return btn
     }

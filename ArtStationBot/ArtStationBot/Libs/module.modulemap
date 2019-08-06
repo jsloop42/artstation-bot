@@ -1,0 +1,5 @@
+module CFoundationDBWrapper [system] {
+	header "CFoundationDB.h"
+	link "libfdb_c"
+	export *
+}

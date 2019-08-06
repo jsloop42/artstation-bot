@@ -3,18 +3,20 @@
 //  ArtStationBot
 //
 //  Created by jsloop on 19/07/19.
-//  Copyright © 2019 DreamLisp. All rights reserved.
 //
 
 import Cocoa
+import DLLogger
 
 class AppDelegate: NSObject, NSApplicationDelegate {
+    private let log = Logger()
 
     override init() {
         UI.createMainWindow()
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        _ = FoundationDBService.shared().initDocLayer()
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
