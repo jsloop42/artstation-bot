@@ -94,7 +94,7 @@ static FrontierService *_frontierService;
     NSUInteger skillId;
     UserFetchState *fetchState;
     for (skill in skills) {
-        if (count < 2) {  // TODO: remove this
+        //if (count < 2) {  // TODO: remove this
             skillId = skill.skillId;
             page = 1;
             fetchState = [self.crawlerService.crawlerState.fetchState objectForKey:@(skillId)];
@@ -114,7 +114,7 @@ static FrontierService *_frontierService;
             } else {
                 debug(@"All users fetched for skill: %@", skill.name);
             }
-        }
+        //}
         count++;
     }
 }
