@@ -10,6 +10,7 @@
 #import "CrawlerState.h"
 #import "CrawlService.h"
 #import "Constants.h"
+#import "FoundationDBService.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -133,7 +133,7 @@
         [dict setValue:@([Constants maxUserLimit]) forKey:@"per_page"];  // Since the website uses 15 users per page, we have to use the same
         [dict setValue:@"followers" forKey:@"sorting"];
         [dict setValue:@"1" forKey:@"pro_first"];
-        [dict setObject:@[@{@"field": @"skill_ids", @"method": @"include", @"value": @[@"1"]}] forKey:@"filters"];
+        [dict setObject:@[@{@"field": @"skill_ids", @"method": @"include", @"value": @[skillId]}] forKey:@"filters"];
         [dict setObject:@[] forKey:@"additional_fields"];
         NSData *body = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
         [self.nwsvc postWithUrl:[Constants searchUsersURL] body:body

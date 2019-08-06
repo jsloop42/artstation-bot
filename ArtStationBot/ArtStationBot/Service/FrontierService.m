@@ -7,7 +7,7 @@
 
 #import "FrontierService.h"
 
-#define GD_MEAN 3  // TODO: update this interval
+#define GD_MEAN 10  // TODO: update this interval
 #define GD_SD 1
 static FrontierService *_frontierService;
 
@@ -20,6 +20,7 @@ static FrontierService *_frontierService;
 @property (atomic, readwrite) GKGaussianDistribution *gaussianDistribution;
 @property (nonatomic, readwrite) dispatch_queue_t dispatchQueue;
 @property (atomic, readwrite) NSUInteger totalDelay;
+@property (nonatomic, readwrite) FoundationDBService *fdbService;
 @end
 
 @implementation FrontierService
@@ -34,6 +35,7 @@ static FrontierService *_frontierService;
 
 - (void)bootstrap {
     self.crawlerService = [CrawlService new];
+    self.fdbService = FoundationDBService.shared;
     self.fetchTable = [NSMutableDictionary new];
     self.arc4RandomSource = [GKARC4RandomSource new];
     [self.arc4RandomSource dropValuesWithCount:764];
@@ -53,26 +55,28 @@ static FrontierService *_frontierService;
 - (void)startCrawl {
     [self.crawlerService getFilterList:^(Filters * _Nonnull filters) {
         Skill *skill;
-        NSUInteger count = 0;
+        NSUInteger count = 0;  // TOD): test remove later
         NSUInteger page = 1;
         NSUInteger skillId;
         UserFetchState *fetchState;
         for (skill in filters.skills) {
-            skillId = skill.skillId;
-            page = 1;
-            fetchState = [self.crawlerService.crawlerState.fetchState objectForKey:@(skillId)];
-            if (!fetchState) {
-                fetchState = [UserFetchState new];
-            } else {
-                page = fetchState.page + 1;
-            }
-            fetchState.page = page;
-            fetchState.skillId = [NSString stringWithFormat:@"%ld", skillId];
-            [self.fetchTable setObject:fetchState forKey:@(skillId)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self scheduleFetch:skillId];
-            });
-            count++;
+            //if (count < 2) {
+                skillId = skill.skillId;
+                page = 1;
+                fetchState = [self.crawlerService.crawlerState.fetchState objectForKey:@(skillId)];
+                if (!fetchState) {
+                    fetchState = [UserFetchState new];
+                } else {
+                    page = fetchState.page + 1;
+                }
+                fetchState.page = page;
+                fetchState.skillId = [NSString stringWithFormat:@"%ld", skillId];
+                [self.fetchTable setObject:fetchState forKey:@(skillId)];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self scheduleFetch:skillId];
+                });
+            //}
+            //count++;
         }
     }];
 }
@@ -97,11 +101,18 @@ static FrontierService *_frontierService;
 
 /** Performs crawl with the state taken from fetch table corresponding to the given skill id as index. */
 - (void)performFetch:(NSNumber *)index {
+    debug(@"fetch table count: %ld", [self.fetchTable count]);
     debug(@"perform fetch %@", index);
     UserFetchState *fetchState = [self.fetchTable objectForKey:index];
     if (fetchState) {
         [self.crawlerService getUsersForSkill:fetchState.skillId page:fetchState.page max:[Const maxUserLimit] callback:^(UserSearchResponse * _Nonnull resp) {
             debug(@"user search response: %@", resp);
+            User *user;
+            bool ret;
+            for (user in resp.usersList) {
+                ret = [self.fdbService insertUser:user];
+                debug(@"insert status: %d", ret);
+            }
         }];
         [self.runTable setObject:fetchState forKey:index];  // clear the state from fetch table
         [self.fetchTable removeObjectForKey:index];  // add the state to run table
