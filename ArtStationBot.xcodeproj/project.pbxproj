@@ -43,10 +43,7 @@
 		9E4C607D22F0D6C50027B2BB /* Skill.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6322F0B7CE000D6780 /* Skill.m */; };
 		9E4C607E22F0D6C50027B2BB /* Software.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6622F0B816000D6780 /* Software.m */; };
 		9E4C607F22F0D6C50027B2BB /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E5D22F0B4A7000D6780 /* User.m */; };
-		9E5BD92022E643FB00C972A9 /* libfdb_c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E5BD91E22E643FB00C972A9 /* libfdb_c.dylib */; };
-		9E5BD92122E6443500C972A9 /* libfdb_c.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E5BD91E22E643FB00C972A9 /* libfdb_c.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		9E5BD92522E644CA00C972A9 /* FoundationDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5BD92422E644CA00C972A9 /* FoundationDBService.m */; };
-		9E5BD92822E6455C00C972A9 /* fdb.options in Resources */ = {isa = PBXBuildFile; fileRef = 9E5BD92622E6455C00C972A9 /* fdb.options */; };
 		9E66CE0622EB92B300F748D9 /* config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E66CE0522EB92B300F748D9 /* config.plist */; };
 		9E70E79922F74BBF009FF504 /* ModelUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E70E79822F74BBF009FF504 /* ModelUtils.m */; };
 		9E70E79C22F74C60009FF504 /* StateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E70E79B22F74C60009FF504 /* StateData.m */; };
@@ -86,7 +83,6 @@
 			files = (
 				9E0DDE3E22EDE7BB00C9DF84 /* libmongoc-1.0.0.0.0.dylib in Embed Frameworks */,
 				9E0DDE3D22EDE7BB00C9DF84 /* libbson-1.0.0.0.0.dylib in Embed Frameworks */,
-				9E5BD92122E6443500C972A9 /* libfdb_c.dylib in Embed Frameworks */,
 				9E15D0CE22E45C9300CC1453 /* DLLogger.framework in Embed Frameworks */,
 				9E15D0D322E46C4500CC1453 /* DLDynamicSpace.framework in Embed Frameworks */,
 			);
@@ -140,15 +136,9 @@
 		9E3B992522E48713007C94A7 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		9E3B992722E48A3E007C94A7 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		9E4C607822F0D6650027B2BB /* ArtStationBotTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ArtStationBotTests-Bridging-Header.h"; sourceTree = "<group>"; };
-		9E5BD91C22E643FB00C972A9 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		9E5BD91D22E643FB00C972A9 /* fdb_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fdb_c.h; sourceTree = "<group>"; };
-		9E5BD91E22E643FB00C972A9 /* libfdb_c.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libfdb_c.dylib; sourceTree = "<group>"; };
-		9E5BD91F22E643FB00C972A9 /* CFoundationDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFoundationDB.h; sourceTree = "<group>"; };
 		9E5BD92222E644C900C972A9 /* ArtStationBot-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ArtStationBot-Bridging-Header.h"; sourceTree = "<group>"; };
 		9E5BD92322E644CA00C972A9 /* FoundationDBService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FoundationDBService.h; sourceTree = "<group>"; };
 		9E5BD92422E644CA00C972A9 /* FoundationDBService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FoundationDBService.m; sourceTree = "<group>"; };
-		9E5BD92622E6455C00C972A9 /* fdb.options */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fdb.options; sourceTree = "<group>"; };
-		9E5BD92722E6455C00C972A9 /* fdb_c_options.g.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fdb_c_options.g.h; sourceTree = "<group>"; };
 		9E66CE0522EB92B300F748D9 /* config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = config.plist; sourceTree = "<group>"; };
 		9E70E79722F74BBF009FF504 /* ModelUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelUtils.h; sourceTree = "<group>"; };
 		9E70E79822F74BBF009FF504 /* ModelUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModelUtils.m; sourceTree = "<group>"; };
@@ -177,7 +167,6 @@
 				9E0DDE3B22EDE7B100C9DF84 /* libbson-1.0.0.0.0.dylib in Frameworks */,
 				9E15D0CC22E45C8C00CC1453 /* DLLogger.framework in Frameworks */,
 				9E15D0D122E46C3300CC1453 /* DLDynamicSpace.framework in Frameworks */,
-				9E5BD92022E643FB00C972A9 /* libfdb_c.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,7 +237,6 @@
 				9E39025222E230E5009D1A36 /* Assets.xcassets */,
 				9E39025722E230E5009D1A36 /* Info.plist */,
 				9E39025822E230E5009D1A36 /* ArtStationBot.entitlements */,
-				9E39024F22E230DE009D1A36 /* ArtStationBot.xcdatamodeld */,
 			);
 			path = ArtStationBot;
 			sourceTree = "<group>";
@@ -310,6 +298,7 @@
 		9E39027D22E23428009D1A36 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				9E39024F22E230DE009D1A36 /* ArtStationBot.xcdatamodeld */,
 				9E296E4A22F59605001BED13 /* Availability.h */,
 				9E296E4B22F59605001BED13 /* Availability.m */,
 				9E296E4422F58509001BED13 /* Country.h */,
@@ -360,12 +349,6 @@
 		9E5BD91B22E643F000C972A9 /* Libs */ = {
 			isa = PBXGroup;
 			children = (
-				9E5BD92722E6455C00C972A9 /* fdb_c_options.g.h */,
-				9E5BD92622E6455C00C972A9 /* fdb.options */,
-				9E5BD91F22E643FB00C972A9 /* CFoundationDB.h */,
-				9E5BD91D22E643FB00C972A9 /* fdb_c.h */,
-				9E5BD91E22E643FB00C972A9 /* libfdb_c.dylib */,
-				9E5BD91C22E643FB00C972A9 /* module.modulemap */,
 			);
 			path = Libs;
 			sourceTree = "<group>";
@@ -483,7 +466,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9E39025322E230E5009D1A36 /* Assets.xcassets in Resources */,
-				9E5BD92822E6455C00C972A9 /* fdb.options in Resources */,
 				9E2F29FF22E474C500D5B28A /* Localizable.strings in Resources */,
 				9E66CE0622EB92B300F748D9 /* config.plist in Resources */,
 				9ECAFABB22E2FA6500953081 /* artstationbot.js in Resources */,
