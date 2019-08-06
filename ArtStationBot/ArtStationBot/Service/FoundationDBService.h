@@ -18,14 +18,16 @@ NS_ASSUME_NONNULL_BEGIN
 + (FoundationDBService *)shared;
 @property (nonatomic, readwrite) NSString *configPath;
 - (bool)initDocLayer;
+- (void)getUsersWithOffset:(NSUInteger)userId limit:(NSUInteger)limit callback:(void (^) (NSArray<User *> *))callback;
 - (void)insertFilters:(Filters *)filters callback:(void (^)(BOOL))callback;
 - (bool)upsertSkills:(NSMutableArray<Skill *> *)skills;
 - (bool)upsertSoftware:(NSMutableArray<Software *> *)software;
 - (bool)upsertAvailabilities:(NSMutableArray<Availability *> *)availabilities;
 - (bool)upsertCountries:(NSMutableArray<Country *> *)countries;
-- (bool)insertUser:(User *)user;
+- (void)insertUser:(User *)user;
+- (void)insertUser:(User *)user callback:(void  (^ _Nullable)(bool))callback;
 - (void)test;
-- (void)getUsersWithOffset:(NSUInteger)userId limit:(NSUInteger)limit callback:(void (^) (NSArray<User *> *))callback;
+- (bool)updateCrawlerState:(NSString *)skillName page:(NSUInteger)page totalCount:(NSUInteger)totalCount;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -7,7 +7,6 @@
 
 #import "CrawlService.h"
 #import "ArtStationBot-Swift.h"
-#import "Constants.h"
 
 @interface CrawlService ()
 @property (nonatomic, readwrite) NetworkService *nwsvc;
@@ -126,6 +125,7 @@
 }
 
 - (void)getUsersForSkill:(NSString *)skillId page:(NSUInteger)page max:(NSUInteger)max callback:(void (^) (UserSearchResponse *))callback {
+    debug(@"Fetching users for skill: %@ for page: %ld", skillId, page);
     [self getCSRFToken:^(NSString * _Nonnull csrfToken) {
         NSMutableDictionary *dict = [NSMutableDictionary new];
         [dict setValue:@"" forKey:@"query"];
@@ -139,7 +139,6 @@
         [self.nwsvc postWithUrl:[Constants searchUsersURL] body:body
                         headers:@{[Constants csrfTokenHeader]: csrfToken, [Constants cloudFlareCSRFTokenHeader]: csrfToken}
                        callback:^(NSData * _Nullable data, NSURLResponse * _Nullable resp, NSError * _Nullable err) {
-           debug(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
            NSError *aErr;
            NSMutableDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&aErr];
            UserSearchResponse *uresp = [UserSearchResponse new];

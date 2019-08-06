@@ -11,6 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UserFetchState : NSObject
 @property (nonatomic, readwrite) NSString *skillId;
+@property (nonatomic, readwrite) NSString *skillName;
 @property (nonatomic, readwrite) NSUInteger page;
 @property (nonatomic, readwrite) NSUInteger totalCount;
 @end

@@ -6,10 +6,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Filters.h"
 #import "User.h"
 #import "UserSearchResponse.h"
 #import "ModelUtils.h"
+#import "Constants.h"
+#import "Filters.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

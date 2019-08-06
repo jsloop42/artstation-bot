@@ -15,7 +15,6 @@
 //#import "bson/bcon.h"
 
 static const char *dbName = "artstation";
-static const char *appName = "artstationbot";
 static const char *skills_coll_name = "skills";
 static const char *users_coll_name = "users";
 static const char *software_coll_name = "software";
@@ -23,13 +22,7 @@ static const char *availabilities_coll_name = "availabilities";
 static const char *countries_coll_name = "countries";
 
 static mongoc_uri_t *mongouri;
-static mongoc_client_t *client;
-static mongoc_database_t *database;
-static mongoc_collection_t *skills_coll;
-static mongoc_collection_t *users_coll;
-static mongoc_collection_t *software_coll;
-static mongoc_collection_t *availabilities_coll;
-static mongoc_collection_t *countries_coll;
+static mongoc_client_pool_t *pool;
 static FoundationDBService *fdb;
 
 @interface FoundationDBService ()
@@ -63,14 +56,8 @@ static FoundationDBService *fdb;
 }
 
 - (void)dealloc {
-    mongoc_collection_destroy(skills_coll);
-    mongoc_collection_destroy(users_coll);
-    mongoc_collection_destroy(software_coll);
-    mongoc_collection_destroy(availabilities_coll);
-    mongoc_collection_destroy(countries_coll);
-    mongoc_database_destroy(database);
     mongoc_uri_destroy(mongouri);
-    mongoc_client_destroy(client);
+    mongoc_client_pool_destroy(pool);
     mongoc_cleanup();
 }
 
@@ -80,7 +67,7 @@ static FoundationDBService *fdb;
 }
 
 - (void)bootstrap {
-    self.dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    self.dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
     NSString *url = [Utils getDocLayerURL];
     _docLayerURL = (char *)[url UTF8String];
 }
@@ -90,15 +77,7 @@ static FoundationDBService *fdb;
     mongoc_init();
     mongouri = mongoc_uri_new_with_error(_docLayerURL, &err);
     if (!mongouri) return [self fail:err];
-    client = mongoc_client_new_from_uri(mongouri);
-    if (!client) return [self fail:err];
-    mongoc_client_set_appname(client, appName);
-    database = mongoc_client_get_database(client, dbName);
-    skills_coll = mongoc_client_get_collection(client, dbName, skills_coll_name);
-    users_coll = mongoc_client_get_collection(client, dbName, users_coll_name);
-    software_coll = mongoc_client_get_collection(client, dbName, software_coll_name);
-    availabilities_coll = mongoc_client_get_collection(client, dbName, availabilities_coll_name);
-    countries_coll = mongoc_client_get_collection(client, dbName, countries_coll_name);
+    pool = mongoc_client_pool_new(mongouri);
     return true;
 }
 
@@ -110,6 +89,8 @@ static FoundationDBService *fdb;
         const bson_t *doc;
         bson_t *query = BCON_NEW("_id", "{", "$gte", BCON_INT64((int64_t)userId), "}");
         bson_t *opts = BCON_NEW("limit", BCON_INT64((int64_t)limit));
+        mongoc_client_t *client = mongoc_client_pool_pop(pool);
+        mongoc_collection_t *users_coll = mongoc_client_get_collection(client, dbName, users_coll_name);
         cursor = mongoc_collection_find_with_opts(users_coll, query, opts, NULL);
         char *str;
         NSMutableArray<User *> *users = [NSMutableArray new];
@@ -120,17 +101,19 @@ static FoundationDBService *fdb;
         while (mongoc_cursor_next(cursor, &doc)) {
             user = [User new];
             str = bson_as_canonical_extended_json(doc, NULL);
-            MONGOC_INFO("str: %s", str);
+            //MONGOC_INFO("str: %s", str);
             data = [NSData dataWithBytes:str length:(NSUInteger)strlen(str)];
             userDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
             user = [ModelUtils.shared userFromDictionary:userDict convertType:ConvertTypeBSON];
-            debug(@"user obj: %@", user);
+            //debug(@"user obj: %@", user);
             if (user) [users addObject:user];
-            debug(@"user dict: %@", userDict);
+            //debug(@"user dict: %@", userDict);
             bson_free(str);
         }
+        mongoc_client_pool_push(pool, client);
         bson_destroy(query);
         mongoc_cursor_destroy(cursor);
+        mongoc_collection_destroy(users_coll);
         callback(users);
     });
 }
@@ -176,6 +159,8 @@ static FoundationDBService *fdb;
     bool ret;
     bson_t opts = BSON_INITIALIZER;
     BSON_APPEND_BOOL(&opts, "ordered", false);
+    mongoc_client_t *client = mongoc_client_pool_pop(pool);
+    mongoc_collection_t *skills_coll = mongoc_client_get_collection(client, dbName, skills_coll_name);
     mongoc_bulk_operation_t *bulk = mongoc_collection_create_bulk_operation_with_opts(skills_coll, &opts);
     bson_destroy(&opts);
     for (skill in skills) {
@@ -184,6 +169,8 @@ static FoundationDBService *fdb;
         bson_destroy(skill_doc);
     }
     ret = mongoc_bulk_operation_execute(bulk, &reply, &err);
+    mongoc_client_pool_push(pool, client);
+    mongoc_collection_destroy(skills_coll);
     bson_destroy(&reply);
     mongoc_bulk_operation_destroy(bulk);
     if (!ret) [self fail:err];
@@ -198,6 +185,8 @@ static FoundationDBService *fdb;
     bool ret;
     bson_t opts = BSON_INITIALIZER;
     BSON_APPEND_BOOL(&opts, "ordered", false);
+    mongoc_client_t *client = mongoc_client_pool_pop(pool);
+    mongoc_collection_t *software_coll = mongoc_client_get_collection(client, dbName, software_coll_name);
     mongoc_bulk_operation_t *bulk = mongoc_collection_create_bulk_operation_with_opts(software_coll, &opts);
     bson_destroy(&opts);
     for (sw in software) {
@@ -207,6 +196,8 @@ static FoundationDBService *fdb;
     }
     ret = mongoc_bulk_operation_execute(bulk, &reply, &err);
     bson_destroy(&reply);
+    mongoc_client_pool_push(pool, client);
+    mongoc_collection_destroy(software_coll);
     mongoc_bulk_operation_destroy(bulk);
     if (!ret) [self fail:err];
     return true;
@@ -220,6 +211,8 @@ static FoundationDBService *fdb;
     bool ret;
     bson_t opts = BSON_INITIALIZER;
     BSON_APPEND_BOOL(&opts, "ordered", false);
+    mongoc_client_t *client = mongoc_client_pool_pop(pool);
+    mongoc_collection_t *availabilities_coll = mongoc_client_get_collection(client, dbName, availabilities_coll_name);
     mongoc_bulk_operation_t *bulk = mongoc_collection_create_bulk_operation_with_opts(availabilities_coll, &opts);
     bson_destroy(&opts);
     for (availability in availabilities) {
@@ -228,6 +221,8 @@ static FoundationDBService *fdb;
         bson_destroy(availability_doc);
     }
     ret = mongoc_bulk_operation_execute(bulk, &reply, &err);
+    mongoc_client_pool_push(pool, client);
+    mongoc_collection_destroy(availabilities_coll);
     bson_destroy(&reply);
     mongoc_bulk_operation_destroy(bulk);
     if (!ret) [self fail:err];
@@ -242,6 +237,8 @@ static FoundationDBService *fdb;
     bool ret;
     bson_t opts = BSON_INITIALIZER;
     BSON_APPEND_BOOL(&opts, "ordered", false);
+    mongoc_client_t *client = mongoc_client_pool_pop(pool);
+    mongoc_collection_t *countries_coll = mongoc_client_get_collection(client, dbName, countries_coll_name);
     mongoc_bulk_operation_t *bulk = mongoc_collection_create_bulk_operation_with_opts(countries_coll, &opts);
     bson_destroy(&opts);
     for (country in countries) {
@@ -250,6 +247,8 @@ static FoundationDBService *fdb;
         bson_destroy(country_doc);
     }
     ret = mongoc_bulk_operation_execute(bulk, &reply, &err);
+    mongoc_client_pool_push(pool, client);
+    mongoc_collection_destroy(countries_coll);
     bson_destroy(&reply);
     mongoc_bulk_operation_destroy(bulk);
     if (!ret) [self fail:err];
@@ -280,49 +279,82 @@ static FoundationDBService *fdb;
     [self insertUser:user];
 }
 
+- (void)insertUser:(User *)user {
+    [self insertUser:user callback:nil];
+}
+
 /** Inserts user info to `user` collection and a reference to the `user` to `skills["skill name"].users` collection. */
-- (bool)insertUser:(User *)user {
+- (void)insertUser:(User *)user callback:(void (^)(bool))callback {
     // db.users.insert({"_id": 123, "username": "Jane Doe", ..})
     // db.skills["2D Art"].users.insert({"_id": 1, "messaged": false, "message_info": []})
-    bson_error_t err;
-    // users
-    bson_t *user_doc = constructUserBSON(self, user);
-    bson_t reply;
-    int skills_len = (int)user.skills.count;
-    int i = 0;
-    // skills
-    mongoc_collection_t *skill_user_coll;
-    bson_t *skill_user_doc;
-    char *skill_coll_name = NULL;
-    char *skill_name = NULL;
-    bool ret = mongoc_collection_insert_one(users_coll, user_doc, NULL, &reply, &err);
-    bson_destroy(&reply);
-    bson_destroy(user_doc);
-    if (!ret) {
-        if (err.code == MONGOC_ERROR_DUPLICATE_KEY) {
-            MONGOC_INFO("Document with %d already exists. Ignoring...", (int)user.userId);
-        } else {
-            [self fail:err];
-        }
-    }
-    // Insert succeeded. Update the skills collections.
-    for(i = 0; i < skills_len; i++) {
-        skill_name = (char *)[user.skills[i].name UTF8String];
-        skill_coll_name = (char *)[[NSString stringWithFormat:@"skills.%s.users", skill_name] UTF8String];
-        skill_user_coll = mongoc_client_get_collection(client, dbName, skill_coll_name);
-        skill_user_doc = BCON_NEW("_id", BCON_INT64(user.userId),
-                                  "messaged", BCON_BOOL(NO),
-                                  "message_info", "[","]");
-        ret = mongoc_collection_insert_one(skill_user_coll, skill_user_doc, NULL, NULL, &err);
-        bson_destroy(skill_user_doc);
+    dispatch_async(self.dispatchQueue, ^{
+        bool status = true;
+        bson_error_t err;
+        // users
+        mongoc_client_t *client = mongoc_client_pool_pop(pool);
+        mongoc_collection_t *user_coll = mongoc_client_get_collection(client, dbName, users_coll_name);
+        bson_t *user_doc = constructUserBSON(self, user);
+        bson_t reply;
+        int skills_len = (int)user.skills.count;
+        int i = 0;
+        // skills
+        mongoc_collection_t *skill_user_coll;
+        bson_t *skill_user_doc;
+        char *skill_coll_name = NULL;
+        char *skill_name = NULL;
+        bool ret = mongoc_collection_insert_one(user_coll, user_doc, NULL, &reply, &err);
+        mongoc_client_pool_push(pool, client);
+        mongoc_collection_destroy(user_coll);
+        bson_destroy(&reply);
+        bson_destroy(user_doc);
         if (!ret) {
             if (err.code == MONGOC_ERROR_DUPLICATE_KEY) {
-                MONGOC_INFO("User with id: %d already exists for skill: %s. Ignoring...", (int)user.userId, skill_name);
+                MONGOC_INFO("Document with %d already exists. Ignoring...", (int)user.userId);
             } else {
-                [self fail:err];
+                MONGOC_ERROR("Error adding user. %d, %s", err.code, err.message);
+                status = false;
             }
         }
-    }
+        // Insert succeeded. Update the skills collections.
+        for(i = 0; i < skills_len; i++) {
+            skill_name = (char *)[user.skills[i].name UTF8String];
+            skill_coll_name = (char *)[[NSString stringWithFormat:@"skills.%s.users", skill_name] UTF8String];
+            mongoc_client_t *client = mongoc_client_pool_pop(pool);
+            skill_user_coll = mongoc_client_get_collection(client, dbName, skill_coll_name);
+            skill_user_doc = BCON_NEW("_id", BCON_INT64(user.userId),
+                                      "messaged", BCON_BOOL(NO),
+                                      "message_info", "[","]");
+            ret = mongoc_collection_insert_one(skill_user_coll, skill_user_doc, NULL, NULL, &err);
+            mongoc_client_pool_push(pool, client);
+            bson_destroy(skill_user_doc);
+            if (!ret) {
+                if (err.code == MONGOC_ERROR_DUPLICATE_KEY) {
+                    MONGOC_INFO("User with id: %d already exists for skill: %s. Ignoring...", (int)user.userId, skill_name);
+                } else {
+                    MONGOC_ERROR("Error adding user to skill. %d, %s", err.code, err.message);
+                    status = false;
+                }
+            }
+        }
+        if (callback) callback(status);
+    });
+}
+
+- (bool)updateCrawlerState:(NSString *)skillName page:(NSUInteger)page totalCount:(NSUInteger)totalCount {
+    bson_error_t err;
+    bson_t opts = BSON_INITIALIZER;
+    BSON_APPEND_BOOL(&opts, "upsert", true);
+    mongoc_client_t *client = mongoc_client_pool_pop(pool);
+    mongoc_collection_t *coll = mongoc_client_get_collection(client, dbName, [[NSString stringWithFormat:@"skills.%@", skillName] UTF8String]);
+    bson_t *state_doc = BCON_NEW("$set", "{",
+                                 "page", BCON_INT64((int64_t)page),
+                                 "total_count", BCON_INT64((int64_t)totalCount), "}");
+    bson_t *selector = BCON_NEW("_id", BCON_UTF8("crawl_state"));
+    bool ret = mongoc_collection_update_one(coll, selector, state_doc, &opts, NULL, &err);
+    mongoc_client_pool_push(pool, client);
+    if (!ret) [self fail:err];
+    bson_destroy(selector);
+    bson_destroy(state_doc);
     return true;
 }
 
@@ -420,7 +452,6 @@ bson_t *constructUserBSON(FoundationDBService *fbd, User *user) {
     }
     bson_append_array_end(user_doc, &sample_project);
     str = bson_as_canonical_extended_json(user_doc, NULL);
-    MONGOC_INFO("user doc: %s", str);
     bson_free(str);
     return user_doc;
 }
