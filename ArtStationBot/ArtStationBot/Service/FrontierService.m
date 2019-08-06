@@ -20,8 +20,9 @@ static FrontierService *_frontierService;
 @property (nonatomic, readwrite) dispatch_queue_t dispatchQueue;
 @property (atomic, readwrite) NSUInteger totalDelay;
 @property (nonatomic, readwrite) FoundationDBService *fdbService;
-@property (nonatomic, readwrite) NSMutableArray *meanList;  // [[mean, standard deviation], ..]
+@property (nonatomic, readwrite) NSMutableArray *meanList;  // [[mean, standard deviation], ..] in seconds
 @property (nonatomic, readwrite) NSUInteger batchCount;
+@property (nonatomic, readwrite) BOOL isPaused;
 @end
 
 @implementation FrontierService
@@ -50,6 +51,7 @@ static FrontierService *_frontierService;
     self.dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     self.totalDelay = 0;
     self.batchCount = 1;
+    self.isPaused = NO;
 }
 
 /**
@@ -65,6 +67,7 @@ static FrontierService *_frontierService;
 //    [self.fdbService getSkills:^{
 //        debug(@"Skills state updated with count: %ld", StateData.shared.skills.count);
 //    }];
+    self.isPaused = NO;
     [self.crawlerService getFilterList:^(Filters * _Nonnull filters) {
         debug(@"Filters list fetched");
         [self.fdbService insertFilters:filters callback:^(BOOL status) {
@@ -81,6 +84,7 @@ static FrontierService *_frontierService;
 
 /** Pause scroll for the next batch. */
 - (void)pauseCrawl {
+    self.isPaused = YES;
 }
 
 - (void)crawlNextBatch:(NSMutableArray<Skill *> *)skills {
@@ -99,13 +103,17 @@ static FrontierService *_frontierService;
             } else {
                 page = fetchState.page + 1;
             }
-            fetchState.page = page;
-            fetchState.skillId = [NSString stringWithFormat:@"%ld", skillId];
-            fetchState.skillName = skill.name;
-            [self.fetchTable setObject:fetchState forKey:@(skillId)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self scheduleFetch:skillId];
-            });
+            if (fetchState.page <= ceil(fetchState.totalCount / [Const maxUserLimit] * 1.0)) {
+                fetchState.page = page;
+                fetchState.skillId = [NSString stringWithFormat:@"%ld", skillId];
+                fetchState.skillName = skill.name;
+                [self.fetchTable setObject:fetchState forKey:@(skillId)];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self scheduleFetch:skillId];
+                });
+            } else {
+                debug(@"All users fetched for skill: %@", skill.name);
+            }
         }
         count++;
     }
@@ -144,7 +152,7 @@ static FrontierService *_frontierService;
     }
     debug(@"fetch table count: %ld", [self.fetchTable count]);
     /* Queue the next batch */
-    if ([self.fetchTable count] == 0) {
+    if ([self.fetchTable count] == 0 && !self.isPaused) {
         ++self.batchCount;
         NSArray *meanArr = (self.batchCount % 2 == 0) ? self.meanList[1] : self.meanList[0];
         int mean = [(NSNumber *)meanArr[0] intValue];
