@@ -103,12 +103,12 @@ static FoundationDBService *fdb;
             str = bson_as_canonical_extended_json(doc, NULL);
             //MONGOC_INFO("str: %s", str);
             data = [NSData dataWithBytes:str length:(NSUInteger)strlen(str)];
+            bson_free(str);
             userDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
             user = [ModelUtils.shared userFromDictionary:userDict convertType:ConvertTypeBSON];
             //debug(@"user obj: %@", user);
             if (user) [users addObject:user];
             //debug(@"user dict: %@", userDict);
-            bson_free(str);
         }
         mongoc_client_pool_push(pool, client);
         bson_destroy(query);
@@ -117,6 +117,40 @@ static FoundationDBService *fdb;
         callback(users);
     });
 }
+
+- (void)getUsersForSkill:(NSString *)skillName limit:(NSUInteger)limit isMessaged:(BOOL)isMessaged callback:(void (^) (NSArray<User *> *))callback {
+    dispatch_async(self.dispatchQueue, ^{
+        mongoc_cursor_t *cursor;
+        const bson_t *doc;
+        bson_t *query = BCON_NEW("messaged", BCON_BOOL(isMessaged));
+        bson_t *opts = BCON_NEW("limit", BCON_INT64((int64_t)limit));
+        mongoc_client_t *client = mongoc_client_pool_pop(pool);
+        mongoc_collection_t *users_coll = mongoc_client_get_collection(client, dbName, [[NSString stringWithFormat:@"skills.%@.users", skillName] UTF8String]);
+        cursor = mongoc_collection_find_with_opts(users_coll, query, opts, NULL);
+        char *str;
+        NSMutableArray<User *> *users = [NSMutableArray new];
+        User *user;
+        NSData *data;
+        NSError *err;
+        NSDictionary *userDict;
+        while (mongoc_cursor_next(cursor, &doc)) {
+            user = [User new];
+            str = bson_as_canonical_extended_json(doc, NULL);
+            //MONGOC_INFO("str: %s", str);
+            bson_free(str);
+            data = [NSData dataWithBytes:str length:(NSUInteger)strlen(str)];
+            userDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
+            user = [ModelUtils.shared userFromDictionary:userDict convertType:ConvertTypeBSON];
+            if (user) [users addObject:user];
+        }
+        mongoc_client_pool_push(pool, client);
+        bson_destroy(query);
+        mongoc_cursor_destroy(cursor);
+        mongoc_collection_destroy(users_coll);
+        callback(users);
+    });
+}
+
 
 - (void)getSkills:(void (^)(void))callback {
     dispatch_async(self.dispatchQueue, ^{
@@ -134,10 +168,10 @@ static FoundationDBService *fdb;
         while (mongoc_cursor_next(cursor, &doc)) {
             str = bson_as_canonical_extended_json(doc, NULL);
             dict = [NSJSONSerialization JSONObjectWithData:[NSData dataWithBytes:str length:strlen(str)] options:NSJSONReadingMutableContainers error:&err];
+            bson_free(str);
             skill = [ModelUtils.shared skillFromDictionary:dict];
             debug(@"Skill name: %@", skill.name);
             [skills addObject:skill];
-            bson_free(str);
         }
         mongoc_client_pool_push(pool, client);
         bson_destroy(&query);
@@ -172,9 +206,9 @@ static FoundationDBService *fdb;
             while (mongoc_cursor_next(cursor, &doc)) {
                 str = bson_as_canonical_extended_json(doc, NULL);
                 dict = [NSJSONSerialization JSONObjectWithData:[NSData dataWithBytes:str length:strlen(str)] options:NSJSONReadingMutableContainers error:&err];
+                bson_free(str);
                 userFetchState = [ModelUtils.shared userFetchStateFromDictionary:dict forSkill:skill];
                 [state.fetchState setObject:userFetchState forKey:@(skill.skillId)];
-                bson_free(str);
             }
             mongoc_client_pool_push(pool, client);
             bson_destroy(query);

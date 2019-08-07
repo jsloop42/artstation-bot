@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readwrite) NSString *configPath;
 - (bool)initDocLayer;
 - (void)getUsersWithOffset:(NSUInteger)userId limit:(NSUInteger)limit callback:(void (^) (NSArray<User *> *))callback;
+- (void)getUsersForSkill:(NSString *)skillName limit:(NSUInteger)limit isMessaged:(BOOL)isMessaged callback:(void (^) (NSArray<User *> *))callback;
 - (void)getSkills:(void (^)(void))callback;
 - (void)getCrawlerState:(void(^)(CrawlerState *))callback;
 - (void)insertFilters:(Filters *)filters callback:(void (^)(BOOL))callback;
