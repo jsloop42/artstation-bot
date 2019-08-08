@@ -83,7 +83,7 @@ static FoundationDBService *fdb;
 
 #pragma mark Read
 
-- (void)getUsersWithOffset:(NSUInteger)userId limit:(NSUInteger)limit callback:(void (^) (NSArray<User *> *))callback {
+- (void)getUsersWithOffset:(NSUInteger)userId limit:(NSUInteger)limit callback:(void (^) (NSArray<User *> *users))callback {
     dispatch_async(self.dispatchQueue, ^{
         mongoc_cursor_t *cursor;
         const bson_t *doc;
@@ -118,7 +118,7 @@ static FoundationDBService *fdb;
     });
 }
 
-- (void)getUsersForSkill:(NSString *)skillName limit:(NSUInteger)limit isMessaged:(BOOL)isMessaged callback:(void (^) (NSArray<User *> *))callback {
+- (void)getUsersForSkill:(NSString *)skillName limit:(NSUInteger)limit isMessaged:(BOOL)isMessaged callback:(void (^) (NSArray<User *> *users))callback {
     dispatch_async(self.dispatchQueue, ^{
         mongoc_cursor_t *cursor;
         const bson_t *doc;
@@ -151,7 +151,6 @@ static FoundationDBService *fdb;
     });
 }
 
-
 - (void)getSkills:(void (^)(void))callback {
     dispatch_async(self.dispatchQueue, ^{
         mongoc_cursor_t *cursor;
@@ -170,7 +169,6 @@ static FoundationDBService *fdb;
             dict = [NSJSONSerialization JSONObjectWithData:[NSData dataWithBytes:str length:strlen(str)] options:NSJSONReadingMutableContainers error:&err];
             bson_free(str);
             skill = [ModelUtils.shared skillFromDictionary:dict];
-            debug(@"Skill name: %@", skill.name);
             [skills addObject:skill];
         }
         mongoc_client_pool_push(pool, client);
@@ -182,12 +180,7 @@ static FoundationDBService *fdb;
     });
 }
 
-- (void)getCrawlState:(NSString *)skillName callback:(void(^)(UserFetchState *))callback {
-    dispatch_async(self.dispatchQueue, ^{
-    });
-}
-
-- (void)getCrawlerState:(void(^)(CrawlerState *))callback {
+- (void)getCrawlerState:(void(^)(CrawlerState *state))callback {
     dispatch_async(self.dispatchQueue, ^{
         Skill *skill;
         char *str;
@@ -221,10 +214,10 @@ static FoundationDBService *fdb;
 
 #pragma mark Insert
 
-- (void)insertFilters:(Filters *)filters callback:(void (^)(BOOL))callback {
+- (void)insertFilters:(Filters *)filters callback:(void (^)(bool status))callback {
     StateData.shared.countries = filters.countries;
     StateData.shared.skills = filters.skills;
-    BOOL __block isSuccess = YES;
+    bool __block isSuccess = true;
     NSLock *lock = [NSLock new];
     dispatch_group_t group = dispatch_group_create();
     dispatch_group_enter(group);
@@ -239,7 +232,7 @@ static FoundationDBService *fdb;
             ret = [self upsertSkills:filters.skills];
             if (!ret) {
                 [lock lock];
-                isSuccess = NO;
+                isSuccess = false;
                 [lock unlock];
             }
         }
@@ -253,7 +246,7 @@ static FoundationDBService *fdb;
             ret = [self upsertSoftware:filters.software];
             if (!ret) {
                 [lock lock];
-                isSuccess = NO;
+                isSuccess = false;
                 [lock unlock];
             }
         }
@@ -267,7 +260,7 @@ static FoundationDBService *fdb;
             ret = [self upsertAvailabilities:filters.availabilities];
             if (!ret) {
                 [lock lock];
-                isSuccess = NO;
+                isSuccess = false;
                 [lock unlock];
             }
         }
@@ -280,7 +273,7 @@ static FoundationDBService *fdb;
             ret = [self upsertCountries:filters.countries];
             if (!ret) {
                 [lock lock];
-                isSuccess = NO;
+                isSuccess = false;
                 [lock unlock];
             }
         }
@@ -420,7 +413,7 @@ static FoundationDBService *fdb;
 }
 
 /** Inserts user info to `user` collection and a reference to the `user` to `skills["skill name"].users` collection. */
-- (void)insertUser:(User *)user callback:(void (^)(bool))callback {
+- (void)insertUser:(User *)user callback:(void (^)(bool status))callback {
     // db.users.insert({"_id": 123, "username": "Jane Doe", ..})
     // db.skills["2D Art"].users.insert({"_id": 1, "messaged": false, "message_info": []})
     dispatch_async(self.dispatchQueue, ^{
@@ -476,22 +469,50 @@ static FoundationDBService *fdb;
     });
 }
 
-- (bool)updateCrawlerState:(NSString *)skillName page:(NSUInteger)page totalCount:(NSUInteger)totalCount {
-    bson_error_t err;
-    bson_t opts = BSON_INITIALIZER;
-    BSON_APPEND_BOOL(&opts, "upsert", true);
-    mongoc_client_t *client = mongoc_client_pool_pop(pool);
-    mongoc_collection_t *coll = mongoc_client_get_collection(client, dbName, [[NSString stringWithFormat:@"skills.%@", skillName] UTF8String]);
-    bson_t *state_doc = BCON_NEW("$set", "{",
-                                 "page", BCON_INT64((int64_t)page),
-                                 "total_count", BCON_INT64((int64_t)totalCount), "}");
-    bson_t *selector = BCON_NEW("_id", BCON_UTF8("crawl_state"));
-    bool ret = mongoc_collection_update_one(coll, selector, state_doc, &opts, NULL, &err);
-    mongoc_client_pool_push(pool, client);
-    if (!ret) [self fail:err];
-    bson_destroy(selector);
-    bson_destroy(state_doc);
-    return true;
+- (void)updateCrawlerState:(NSString *)skillName page:(NSUInteger)page totalCount:(NSUInteger)totalCount callback:(void (^)(bool status))callback {
+    dispatch_async(self.dispatchQueue, ^{
+        bool status = true;
+        bson_error_t err;
+        bson_t opts = BSON_INITIALIZER;
+        BSON_APPEND_BOOL(&opts, "upsert", true);
+        mongoc_client_t *client = mongoc_client_pool_pop(pool);
+        mongoc_collection_t *coll = mongoc_client_get_collection(client, dbName, [[NSString stringWithFormat:@"skills.%@", skillName] UTF8String]);
+        bson_t *state_doc = BCON_NEW("$set", "{",
+                                     "page", BCON_INT64((int64_t)page),
+                                     "total_count", BCON_INT64((int64_t)totalCount), "}");
+        bson_t *selector = BCON_NEW("_id", BCON_UTF8("crawl_state"));
+        bool ret = mongoc_collection_update_one(coll, selector, state_doc, &opts, NULL, &err);
+        mongoc_client_pool_push(pool, client);
+        if (!ret) {
+            MONGOC_ERROR("Error updating crawler state: %d, %s", err.code, err.message);
+            status = false;
+        }
+        bson_destroy(selector);
+        bson_destroy(state_doc);
+        callback(status);
+    });
+}
+
+- (void)updateMessage:(NSString *)message forSkill:(Skill *)skill callback:(void (^)(bool status))callback {
+    dispatch_async(self.dispatchQueue, ^{
+        bool status = true;
+        bson_error_t err;
+        bson_t opts = BSON_INITIALIZER;
+        BSON_APPEND_BOOL(&opts, "upsert", true);
+        mongoc_client_t *client = mongoc_client_pool_pop(pool);
+        mongoc_collection_t *coll = mongoc_client_get_collection(client, dbName, skills_coll_name);
+        bson_t *skill_doc = BCON_NEW("$set", "{", "message", BCON_UTF8([message UTF8String]), "}");
+        bson_t *selector = BCON_NEW("_id", BCON_INT64((int64_t)skill.skillId));
+        bool ret = mongoc_collection_update_one(coll, selector, skill_doc, &opts, NULL, &err);
+        mongoc_client_pool_push(pool, client);
+        if (!ret) {
+            MONGOC_ERROR("Error updating skill message: %d, %s", err.code, err.message);
+            status = false;
+        }
+        bson_destroy(selector);
+        bson_destroy(skill_doc);
+        callback(status);
+    });
 }
 
 #pragma mark BSON

@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FrontierService : NSObject
 @property (nonatomic, readwrite) CrawlService *crawlerService;
+@property (nonatomic, readwrite) BOOL isCrawlPaused;
+@property (nonatomic, readwrite) BOOL isMessengerPaused;
 + (instancetype)shared;
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)new NS_UNAVAILABLE;
@@ -22,6 +24,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)pauseCrawl;
 - (void)scheduleFetch:(NSUInteger)index;
 - (void)performFetch:(NSNumber *)index;
+- (void)startMessenger;
+- (void)pauseMessenger;
+- (void)updateMessageForSkill:(Skill *)skill message:(NSString *)message;
 @end
 
 NS_ASSUME_NONNULL_END

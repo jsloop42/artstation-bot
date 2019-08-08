@@ -42,6 +42,8 @@ static ModelUtils *_modelUtils;
     if (val && val != [NSNull null]) skill.skillId = (NSUInteger)[[(NSMutableDictionary *)val objectForKey:@"$numberLong"] integerValue];
     val = [dict valueForKey:@"name"];
     if (val && val != [NSNull null]) skill.name = (NSString *)val;
+    val = [dict valueForKey:@"message"];
+    if (val && val != [NSNull null]) skill.message = (NSString *)val;
     return skill;
 }
 

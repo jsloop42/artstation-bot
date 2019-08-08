@@ -91,6 +91,7 @@ class MainWindowController: NSWindowController {
 
     func initEvents() {
         self.crawlBtn.action = #selector(crawlButtonDidClick)
+        self.messageBtn.action = #selector(messageButtonDidClick)
     }
 }
 
@@ -116,7 +117,11 @@ extension MainWindowController {
 //            self.log.debug("total users count: \(userResp.totalCount)")
 //            self.log.debug("first user's id: \((userResp.usersList.firstObject as! User).userId)")
 //        })
-        self.frontierService.startCrawl()
+        self.frontierService.isCrawlPaused ? self.frontierService.startCrawl() : self.frontierService.pauseCrawl()
+    }
+
+    @objc func messageButtonDidClick() {
+        self.frontierService.isMessengerPaused ? self.frontierService.startMessenger() : self.frontierService.pauseMessenger()
     }
 }
 

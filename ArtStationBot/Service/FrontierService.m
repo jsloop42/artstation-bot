@@ -22,7 +22,6 @@ static FrontierService *_frontierService;
 @property (nonatomic, readwrite) FoundationDBService *fdbService;
 @property (nonatomic, readwrite) NSMutableArray *meanList;  // [[mean, standard deviation], ..] in seconds
 @property (nonatomic, readwrite) NSUInteger batchCount;
-@property (nonatomic, readwrite) BOOL isPaused;
 @end
 
 @implementation FrontierService
@@ -51,8 +50,16 @@ static FrontierService *_frontierService;
     self.dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     self.totalDelay = 0;
     self.batchCount = 1;
-    self.isPaused = NO;
+    self.isCrawlPaused = NO;
+    self.isMessengerPaused = NO;
 }
+
+/** Get random number with normal distribution characteristics that has a standard deviation from the set mean. */
+- (NSInteger)random {
+    return self.gaussianDistribution.nextInt;
+}
+
+#pragma mark Crawler
 
 /**
  Basic algorithm for crawling
@@ -64,13 +71,10 @@ static FrontierService *_frontierService;
  6. For each element in the queue, execute getUsersForSkill to fetch the users' list.
  */
 - (void)startCrawl {
-//    [self.fdbService getSkills:^{
-//        debug(@"Skills state updated with count: %ld", StateData.shared.skills.count);
-//    }];
-    self.isPaused = NO;
+    self.isCrawlPaused = NO;
     [self.crawlerService getFilterList:^(Filters * _Nonnull filters) {
         debug(@"Filters list fetched");
-        [self.fdbService insertFilters:filters callback:^(BOOL status) {
+        [self.fdbService insertFilters:filters callback:^(bool status) {
             debug(@"Filters list updated");
             debug(@"Skills state updated with count: %ld", StateData.shared.skills.count);
             [self.fdbService getCrawlerState:^(CrawlerState * _Nonnull state) {
@@ -82,9 +86,26 @@ static FrontierService *_frontierService;
     }];
 }
 
+- (void)checkSkills:(void (^)(BOOL))callback {
+    NSMutableArray<Skill *> *skills = StateData.shared.skills;
+    NSUInteger len = skills.count;
+    BOOL __block status = YES;
+    if (len == 0) {
+        [self.fdbService getSkills:^{
+            if (StateData.shared.skills.count == 0) {
+                error(@"Skills collection is empty. Please crawl to fetch the skills list.");
+                status = NO;
+            }
+            callback(status);
+        }];
+    } else {
+        callback(status);
+    }
+}
+
 /** Pause scroll for the next batch. */
 - (void)pauseCrawl {
-    self.isPaused = YES;
+    self.isCrawlPaused = YES;
 }
 
 - (void)crawlNextBatch:(NSMutableArray<Skill *> *)skills {
@@ -119,11 +140,6 @@ static FrontierService *_frontierService;
     }
 }
 
-/** Get random number with normal distribution characteristics that has a standard deviation from the set mean. */
-- (NSInteger)random {
-    return self.gaussianDistribution.nextInt;
-}
-
 /** Schedules a fetch with a delay with the past scheduled delays taken in account. The overlap of two fetches is minimal. */
 - (void)scheduleFetch:(NSUInteger)index {
     NSUInteger rand = [self random];
@@ -139,20 +155,23 @@ static FrontierService *_frontierService;
     UserFetchState *fetchState = [self.fetchTable objectForKey:index];
     if (fetchState) {
         [self.crawlerService getUsersForSkill:fetchState.skillId page:fetchState.page max:[Const maxUserLimit] callback:^(UserSearchResponse * _Nonnull resp) {
-            [self.fdbService updateCrawlerState:fetchState.skillName page:resp.page totalCount:resp.totalCount];
-            User *user;
-            for (user in resp.usersList) {
-                [self.fdbService insertUser:user callback:^(bool status) {
-                    debug(@"insert status for %lu: %d", (unsigned long)user.userId, status);
-                }];
-            }
+            [self.fdbService updateCrawlerState:fetchState.skillName page:resp.page totalCount:resp.totalCount callback:^(bool status) {
+                if (status) {
+                    User *user;
+                    for (user in resp.usersList) {
+                        [self.fdbService insertUser:user callback:^(bool status) {
+                            debug(@"insert status for %lu: %d", (unsigned long)user.userId, status);
+                        }];
+                    }
+                }
+            }];
         }];
         [self.runTable setObject:fetchState forKey:index];  // clear the state from fetch table
         [self.fetchTable removeObjectForKey:index];  // add the state to run table
     }
     debug(@"fetch table count: %ld", [self.fetchTable count]);
     /* Queue the next batch */
-    if ([self.fetchTable count] == 0 && !self.isPaused) {
+    if ([self.fetchTable count] == 0 && !self.isCrawlPaused) {
         ++self.batchCount;
         NSArray *meanArr = (self.batchCount % 2 == 0) ? self.meanList[1] : self.meanList[0];
         int mean = [(NSNumber *)meanArr[0] intValue];
@@ -162,5 +181,42 @@ static FrontierService *_frontierService;
         [self crawlNextBatch:StateData.shared.skills];
     }
 }
+
+#pragma mark Messenger
+
+- (void)startMessenger {
+    self.isMessengerPaused = NO;
+    if (!StateData.shared.skills || StateData.shared.skills.count == 0) {
+        [self checkSkills:^(BOOL status) {
+            //[self updateMessageForSkill:StateData.shared.skills.firstObject message:@"Message to 2D Animation user"];
+            if (status) [self sendMessage]; // TODO:
+        }];
+    }
+}
+
+/*
+ 1. For each skill, get list of users who had not been messaged, and get the message for the skill
+ 2. For each user in the list, schedule sending message
+ */
+- (void)sendMessage {
+    Skill *skill;
+    for (skill in StateData.shared.skills) {
+        [self.fdbService getUsersForSkill:skill.name limit:[Const maxUserLimit] isMessaged:NO callback:^(NSArray<User *> * _Nonnull users) {
+            debug(@"Get users for skill callback %ld", users.count);
+            // TODO: schedule sending message
+        }];
+    }
+}
+
+- (void)pauseMessenger {
+    self.isMessengerPaused = YES;
+}
+
+- (void)updateMessageForSkill:(Skill *)skill message:(NSString *)message {
+    [self.fdbService updateMessage:message forSkill:skill callback:^(bool status) {
+        debug(@"Message update status for skill %@: %d", skill.name, status);
+    }];
+}
+
 
 @end
