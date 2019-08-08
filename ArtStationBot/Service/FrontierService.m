@@ -15,12 +15,16 @@ static FrontierService *_frontierService;
 @property (atomic, readwrite) NSMutableDictionary<NSNumber *, UserFetchState *> *fetchTable;  // skillId, userFetchState
 /* Table that keeps the current running crawls */
 @property (atomic, readwrite) NSMutableDictionary<NSNumber *, UserFetchState *> *runTable;  // skillId, userFetchState
-@property (atomic, readwrite) GKARC4RandomSource *arc4RandomSource;
-@property (atomic, readwrite) GKGaussianDistribution *gaussianDistribution;
+@property (atomic, readwrite) GKARC4RandomSource *crawlerARC4RandomSource;
+@property (atomic, readwrite) GKGaussianDistribution *crawlerGaussianDistribution;
+@property (atomic, readwrite) GKARC4RandomSource *messengerARC4RandomSource;
+@property (atomic, readwrite) GKGaussianDistribution *messengerGaussianDistribution;
 @property (nonatomic, readwrite) dispatch_queue_t dispatchQueue;
-@property (atomic, readwrite) NSUInteger totalDelay;
+@property (atomic, readwrite) NSUInteger crawlerTotalDelay;
+@property (atomic, readwrite) NSUInteger messengerTotalDelay;
 @property (nonatomic, readwrite) FoundationDBService *fdbService;
-@property (nonatomic, readwrite) NSMutableArray *meanList;  // [[mean, standard deviation], ..] in seconds
+@property (nonatomic, readwrite) NSMutableArray *crawlerMeanList;  // [[mean, standard deviation], ..] in seconds
+@property (nonatomic, readwrite) NSMutableArray *messengerMeanList;  // [[mean, standard deviation], ..] in seconds
 @property (nonatomic, readwrite) NSUInteger batchCount;
 @end
 
@@ -38,25 +42,40 @@ static FrontierService *_frontierService;
     self.crawlerService = [CrawlService new];
     self.fdbService = FoundationDBService.shared;
     self.fetchTable = [NSMutableDictionary new];
-    self.arc4RandomSource = [GKARC4RandomSource new];
-    [self.arc4RandomSource dropValuesWithCount:764];
+    // crawler
+    self.crawlerARC4RandomSource = [GKARC4RandomSource new];
+    [self.crawlerARC4RandomSource dropValuesWithCount:764];
     //[self.meanList addObject:@[@(10), @(1)]];
-    self.meanList = [NSMutableArray new];
-    [self.meanList addObject:@[@(30), @(10)]];
-    [self.meanList addObject:@[@(40), @(10)]];
-    NSMutableArray *arr = self.meanList[0];
-    self.gaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.arc4RandomSource mean:[(NSNumber *)arr[0] intValue]
-                                                                           deviation:[(NSNumber *)arr[1] intValue]];
+    self.crawlerMeanList = [NSMutableArray new];
+    [self.crawlerMeanList addObject:@[@(30), @(10)]];
+    [self.crawlerMeanList addObject:@[@(40), @(10)]];
+    NSMutableArray *carr = self.crawlerMeanList[0];
+    self.crawlerGaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.crawlerARC4RandomSource mean:[(NSNumber *)carr[0] intValue]
+                                                                                  deviation:[(NSNumber *)carr[1] intValue]];
+    // messenger
+    self.messengerARC4RandomSource = [GKARC4RandomSource new];
+    [self.messengerARC4RandomSource dropValuesWithCount:764];
+    //[self.meanList addObject:@[@(10), @(1)]];
+    self.messengerMeanList = [NSMutableArray new];
+    [self.messengerMeanList addObject:@[@(25), @(15)]];
+    [self.messengerMeanList addObject:@[@(35), @(15)]];
+    NSMutableArray *marr = self.messengerMeanList[0];
+    self.messengerGaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.messengerARC4RandomSource mean:[(NSNumber *)marr[0] intValue]
+                                                                                    deviation:[(NSNumber *)marr[1] intValue]];
     self.dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    self.totalDelay = 0;
+    self.crawlerTotalDelay = 0;
     self.batchCount = 1;
     self.isCrawlPaused = NO;
     self.isMessengerPaused = NO;
 }
 
-/** Get random number with normal distribution characteristics that has a standard deviation from the set mean. */
-- (NSInteger)random {
-    return self.gaussianDistribution.nextInt;
+/** Get random number for crawler with normal distribution characteristics that has a standard deviation from the set mean. */
+- (NSInteger)crawlerRandom {
+    return self.crawlerGaussianDistribution.nextInt;
+}
+
+- (NSInteger)messengerRandom {
+    return self.messengerGaussianDistribution.nextInt;
 }
 
 #pragma mark Crawler
@@ -142,11 +161,11 @@ static FrontierService *_frontierService;
 
 /** Schedules a fetch with a delay with the past scheduled delays taken in account. The overlap of two fetches is minimal. */
 - (void)scheduleFetch:(NSUInteger)index {
-    NSUInteger rand = [self random];
+    NSUInteger rand = [self crawlerRandom];
     debug(@"rand: %ld", rand);
-    self.totalDelay += rand;
-    debug(@"total delay: %ld", self.totalDelay);
-    [self performSelector:@selector(performFetch:) withObject:@(index) afterDelay:self.totalDelay];
+    self.crawlerTotalDelay += rand;
+    debug(@"total delay: %ld", self.crawlerTotalDelay);
+    [self performSelector:@selector(performFetch:) withObject:@(index) afterDelay:self.crawlerTotalDelay];
 }
 
 /** Performs crawl with the state taken from fetch table corresponding to the given skill id as index. */
@@ -173,10 +192,10 @@ static FrontierService *_frontierService;
     /* Queue the next batch */
     if ([self.fetchTable count] == 0 && !self.isCrawlPaused) {
         ++self.batchCount;
-        NSArray *meanArr = (self.batchCount % 2 == 0) ? self.meanList[1] : self.meanList[0];
+        NSArray *meanArr = (self.batchCount % 2 == 0) ? self.crawlerMeanList[1] : self.crawlerMeanList[0];
         int mean = [(NSNumber *)meanArr[0] intValue];
         int deviation = [(NSNumber *)meanArr[1] intValue];
-        self.gaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.arc4RandomSource mean:mean deviation:deviation];
+        self.crawlerGaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.crawlerARC4RandomSource mean:mean deviation:deviation];
         debug(@"Queueing the next batch: %ld", self.batchCount);
         [self crawlNextBatch:StateData.shared.skills];
     }
@@ -204,6 +223,7 @@ static FrontierService *_frontierService;
         [self.fdbService getUsersForSkill:skill.name limit:[Const maxUserLimit] isMessaged:NO callback:^(NSArray<User *> * _Nonnull users) {
             debug(@"Get users for skill callback %ld", users.count);
             // TODO: schedule sending message
+
         }];
     }
 }
@@ -217,6 +237,5 @@ static FrontierService *_frontierService;
         debug(@"Message update status for skill %@: %d", skill.name, status);
     }];
 }
-
 
 @end
