@@ -11,21 +11,30 @@
 static FrontierService *_frontierService;
 
 @interface FrontierService ()
+
+@property (nonatomic, readwrite) dispatch_queue_t dispatchQueue;
+@property (nonatomic, readwrite) FoundationDBService *fdbService;
+
+/* Crawler */
 /* Table that keeps info on the crawls that can to be scheduled */
-@property (atomic, readwrite) NSMutableDictionary<NSNumber *, UserFetchState *> *fetchTable;  // skillId, userFetchState
+@property (atomic, readwrite) NSMutableDictionary<NSNumber *, UserFetchState *> *fetchTable;  /* skillId, userFetchState */
 /* Table that keeps the current running crawls */
-@property (atomic, readwrite) NSMutableDictionary<NSNumber *, UserFetchState *> *runTable;  // skillId, userFetchState
+@property (atomic, readwrite) NSMutableDictionary<NSNumber *, UserFetchState *> *crawlerRunTable;  /* skillId, userFetchState */
 @property (atomic, readwrite) GKARC4RandomSource *crawlerARC4RandomSource;
 @property (atomic, readwrite) GKGaussianDistribution *crawlerGaussianDistribution;
+@property (atomic, readwrite) NSUInteger crawlerTotalDelay;
+@property (nonatomic, readwrite) NSMutableArray *crawlerMeanList;  /* [[mean, standard deviation], ..] in seconds */
+@property (nonatomic, readwrite) NSUInteger crawlerBatchCount;  /* Used to choose different delay for each batch run */
+
+/* Messenger */
+@property (atomic, readwrite) NSMutableDictionary<NSNumber *, User *> *messageTable;  /* skillId, user */
+@property (atomic, readwrite) NSMutableDictionary<NSNumber *, User *> *messengerRunTable;  /* skillId, user */
 @property (atomic, readwrite) GKARC4RandomSource *messengerARC4RandomSource;
 @property (atomic, readwrite) GKGaussianDistribution *messengerGaussianDistribution;
-@property (nonatomic, readwrite) dispatch_queue_t dispatchQueue;
-@property (atomic, readwrite) NSUInteger crawlerTotalDelay;
 @property (atomic, readwrite) NSUInteger messengerTotalDelay;
-@property (nonatomic, readwrite) FoundationDBService *fdbService;
-@property (nonatomic, readwrite) NSMutableArray *crawlerMeanList;  // [[mean, standard deviation], ..] in seconds
-@property (nonatomic, readwrite) NSMutableArray *messengerMeanList;  // [[mean, standard deviation], ..] in seconds
-@property (nonatomic, readwrite) NSUInteger batchCount;
+@property (nonatomic, readwrite) NSMutableArray *messengerMeanList;  /* [[mean, standard deviation], ..] in seconds */
+@property (nonatomic, readwrite) NSUInteger messengerBatchCount;
+
 @end
 
 @implementation FrontierService
@@ -42,7 +51,7 @@ static FrontierService *_frontierService;
     self.crawlerService = [CrawlService new];
     self.fdbService = FoundationDBService.shared;
     self.fetchTable = [NSMutableDictionary new];
-    // crawler
+    /* crawler */
     self.crawlerARC4RandomSource = [GKARC4RandomSource new];
     [self.crawlerARC4RandomSource dropValuesWithCount:764];
     //[self.meanList addObject:@[@(10), @(1)]];
@@ -52,7 +61,7 @@ static FrontierService *_frontierService;
     NSMutableArray *carr = self.crawlerMeanList[0];
     self.crawlerGaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.crawlerARC4RandomSource mean:[(NSNumber *)carr[0] intValue]
                                                                                   deviation:[(NSNumber *)carr[1] intValue]];
-    // messenger
+    /* messenger */
     self.messengerARC4RandomSource = [GKARC4RandomSource new];
     [self.messengerARC4RandomSource dropValuesWithCount:764];
     //[self.meanList addObject:@[@(10), @(1)]];
@@ -64,7 +73,7 @@ static FrontierService *_frontierService;
                                                                                     deviation:[(NSNumber *)marr[1] intValue]];
     self.dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     self.crawlerTotalDelay = 0;
-    self.batchCount = 1;
+    self.crawlerBatchCount = 1;
     self.isCrawlPaused = NO;
     self.isMessengerPaused = NO;
 }
@@ -185,18 +194,18 @@ static FrontierService *_frontierService;
                 }
             }];
         }];
-        [self.runTable setObject:fetchState forKey:index];  // clear the state from fetch table
-        [self.fetchTable removeObjectForKey:index];  // add the state to run table
+        [self.crawlerRunTable setObject:fetchState forKey:index];  /* clear the state from fetch table */
+        [self.fetchTable removeObjectForKey:index];  /* add the state to run table */
     }
     debug(@"fetch table count: %ld", [self.fetchTable count]);
     /* Queue the next batch */
     if ([self.fetchTable count] == 0 && !self.isCrawlPaused) {
-        ++self.batchCount;
-        NSArray *meanArr = (self.batchCount % 2 == 0) ? self.crawlerMeanList[1] : self.crawlerMeanList[0];
+        ++self.crawlerBatchCount;
+        NSArray *meanArr = (self.crawlerBatchCount % 2 == 0) ? self.crawlerMeanList[1] : self.crawlerMeanList[0];
         int mean = [(NSNumber *)meanArr[0] intValue];
         int deviation = [(NSNumber *)meanArr[1] intValue];
         self.crawlerGaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.crawlerARC4RandomSource mean:mean deviation:deviation];
-        debug(@"Queueing the next batch: %ld", self.batchCount);
+        debug(@"Queueing the next batch: %ld", self.crawlerBatchCount);
         [self crawlNextBatch:StateData.shared.skills];
     }
 }
@@ -223,7 +232,6 @@ static FrontierService *_frontierService;
         [self.fdbService getUsersForSkill:skill.name limit:[Const maxUserLimit] isMessaged:NO callback:^(NSArray<User *> * _Nonnull users) {
             debug(@"Get users for skill callback %ld", users.count);
             // TODO: schedule sending message
-
         }];
     }
 }
