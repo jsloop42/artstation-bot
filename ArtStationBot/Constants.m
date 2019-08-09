@@ -78,3 +78,20 @@ static NSUInteger _maxUserLimit;
 }
 
 @end
+
+@implementation ASNotification
+static NSString *_sendMessage = @"sendMessage";
+static NSString *_sendMessageACK = @"sendMessageACK";
+
+@dynamic sendMessage;
+@dynamic sendMessageACK;
+
++ (NSString *)sendMessage {
+    return _sendMessage;
+}
+
++ (NSString *)sendMessageACK {
+    return _sendMessageACK;
+}
+
+@end

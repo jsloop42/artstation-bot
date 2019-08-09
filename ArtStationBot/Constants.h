@@ -22,6 +22,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 #define Const Constants
 
+@interface ASNotification : NSObject
+@property (class) NSString *sendMessage;
+@property (class) NSString *sendMessageACK;
+@end
+
 @interface Constants : NSObject
 + (NSString *)seedURL;
 + (NSString *)csrfTokenURL;

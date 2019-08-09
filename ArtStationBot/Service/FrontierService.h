@@ -10,6 +10,7 @@
 #import "CrawlerState.h"
 #import "CrawlService.h"
 #import "FoundationDBService.h"
+#import "UserMessageState.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

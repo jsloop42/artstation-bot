@@ -71,6 +71,10 @@ class WebKitViewController: NSViewController {
     var state: WebViewState = WebViewState()
     var shouldSignIn = false
 
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
     override func loadView() {
         self.view = NSView()
         self.log.debug("webkit load view")
@@ -121,7 +125,8 @@ class WebKitViewController: NSViewController {
     }
 
     func initEvents() {
-
+        NotificationCenter.default.addObserver(self, selector: #selector(sendMessage(_:)), name: NSNotification.Name(rawValue: ASNotification.sendMessage),
+                                               object: nil)
     }
 
     func initData() {
@@ -144,6 +149,14 @@ class WebKitViewController: NSViewController {
         self.webView.evaluateJavaScript(aScript) { _, err in
             if err != nil { self.log.error("Script execution error: \(err!)" as Any) }
         }
+    }
+
+    @objc func sendMessage(_ notif: Notification) {
+        if let info = notif.userInfo, let key = info["key"] as? UserMessageKey, let state = info["state"] as? UserMessageState {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: ASNotification.sendMessageACK), object: self,
+                                            userInfo: ["status": true, "key": key, "state": state])
+        }
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: ASNotification.sendMessageACK), object: self, userInfo: ["status": false])
     }
 }
 

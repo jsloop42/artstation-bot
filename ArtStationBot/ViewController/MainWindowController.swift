@@ -55,6 +55,7 @@ class MainWindowController: NSWindowController {
         xs.insert(self.dspaceId, at: 3)
         return xs
     }()
+    private lazy var webkitWindow: WebKitWindowController = { return UI.createWebKitWindow() }()
 
     override init(window: NSWindow?) {
         super.init(window: window)
@@ -87,6 +88,7 @@ class MainWindowController: NSWindowController {
 
     func show() {
         self.showWindow(NSApp)
+        self.webkitWindow.vc.setShouldSignIn(false)
     }
 
     func initEvents() {
@@ -121,6 +123,7 @@ extension MainWindowController {
     }
 
     @objc func messageButtonDidClick() {
+        self.webkitWindow.show()
         self.frontierService.isMessengerPaused ? self.frontierService.startMessenger() : self.frontierService.pauseMessenger()
     }
 }

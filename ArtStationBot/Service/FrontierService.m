@@ -27,8 +27,8 @@ static FrontierService *_frontierService;
 @property (nonatomic, readwrite) NSUInteger crawlerBatchCount;  /* Used to choose different delay for each batch run */
 
 /* Messenger */
-@property (atomic, readwrite) NSMutableDictionary<NSNumber *, User *> *messageTable;  /* skillId, user */
-@property (atomic, readwrite) NSMutableDictionary<NSNumber *, User *> *messengerRunTable;  /* skillId, user */
+@property (atomic, readwrite) NSMutableDictionary<UserMessageKey *, UserMessageState *> *messageTable;  /* skillId, user */
+@property (atomic, readwrite) NSMutableDictionary<UserMessageKey *, UserMessageState *> *messengerRunTable;  /* skillId, user */
 @property (atomic, readwrite) GKARC4RandomSource *messengerARC4RandomSource;
 @property (atomic, readwrite) GKGaussianDistribution *messengerGaussianDistribution;
 @property (atomic, readwrite) NSUInteger messengerTotalDelay;
@@ -47,25 +47,33 @@ static FrontierService *_frontierService;
     return _frontierService;
 }
 
+- (void)dealloc {
+    [NSNotificationCenter.defaultCenter removeObserver:self];
+}
+
 - (void)bootstrap {
     self.crawlerService = [CrawlService new];
     self.fdbService = FoundationDBService.shared;
-    self.fetchTable = [NSMutableDictionary new];
+
     /* crawler */
+    self.fetchTable = [NSMutableDictionary new];
+    self.crawlerRunTable = [NSMutableDictionary new];
     self.crawlerARC4RandomSource = [GKARC4RandomSource new];
     [self.crawlerARC4RandomSource dropValuesWithCount:764];
-    //[self.meanList addObject:@[@(10), @(1)]];
     self.crawlerMeanList = [NSMutableArray new];
+    //[self.crawlerMeanList addObject:@[@(10), @(1)]];
     [self.crawlerMeanList addObject:@[@(30), @(10)]];
     [self.crawlerMeanList addObject:@[@(40), @(10)]];
     NSMutableArray *carr = self.crawlerMeanList[0];
     self.crawlerGaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.crawlerARC4RandomSource mean:[(NSNumber *)carr[0] intValue]
                                                                                   deviation:[(NSNumber *)carr[1] intValue]];
     /* messenger */
+    self.messageTable = [NSMutableDictionary new];
+    self.messengerRunTable = [NSMutableDictionary new];
     self.messengerARC4RandomSource = [GKARC4RandomSource new];
     [self.messengerARC4RandomSource dropValuesWithCount:764];
-    //[self.meanList addObject:@[@(10), @(1)]];
     self.messengerMeanList = [NSMutableArray new];
+    [self.messengerMeanList addObject:@[@(5), @(1)]];
     [self.messengerMeanList addObject:@[@(25), @(15)]];
     [self.messengerMeanList addObject:@[@(35), @(15)]];
     NSMutableArray *marr = self.messengerMeanList[0];
@@ -74,8 +82,14 @@ static FrontierService *_frontierService;
     self.dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     self.crawlerTotalDelay = 0;
     self.crawlerBatchCount = 1;
-    self.isCrawlPaused = NO;
-    self.isMessengerPaused = NO;
+    self.isCrawlPaused = YES;
+    self.isMessengerPaused = YES;
+
+    [self initEvents];
+}
+
+- (void)initEvents {
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(sendMessageACKDidReceive:) name:ASNotification.sendMessageACK object:nil];
 }
 
 /** Get random number for crawler with normal distribution characteristics that has a standard deviation from the set mean. */
@@ -173,7 +187,7 @@ static FrontierService *_frontierService;
     NSUInteger rand = [self crawlerRandom];
     debug(@"rand: %ld", rand);
     self.crawlerTotalDelay += rand;
-    debug(@"total delay: %ld", self.crawlerTotalDelay);
+    debug(@"craweler total delay: %ld", self.crawlerTotalDelay);
     [self performSelector:@selector(performFetch:) withObject:@(index) afterDelay:self.crawlerTotalDelay];
 }
 
@@ -194,8 +208,8 @@ static FrontierService *_frontierService;
                 }
             }];
         }];
-        [self.crawlerRunTable setObject:fetchState forKey:index];  /* clear the state from fetch table */
-        [self.fetchTable removeObjectForKey:index];  /* add the state to run table */
+        [self.crawlerRunTable setObject:fetchState forKey:index];  /* add the state to run table */
+        [self.fetchTable removeObjectForKey:index];  /* clear the state from fetch table */
     }
     debug(@"fetch table count: %ld", [self.fetchTable count]);
     /* Queue the next batch */
@@ -217,7 +231,7 @@ static FrontierService *_frontierService;
     if (!StateData.shared.skills || StateData.shared.skills.count == 0) {
         [self checkSkills:^(BOOL status) {
             //[self updateMessageForSkill:StateData.shared.skills.firstObject message:@"Message to 2D Animation user"];
-            if (status) [self sendMessage]; // TODO:
+            if (status) [self sendMessage];
         }];
     }
 }
@@ -228,12 +242,67 @@ static FrontierService *_frontierService;
  */
 - (void)sendMessage {
     Skill *skill;
-    for (skill in StateData.shared.skills) {
+    //for (skill in StateData.shared.skills) {  // TODO: uncomment
+    skill = StateData.shared.skills.firstObject;
         [self.fdbService getUsersForSkill:skill.name limit:[Const maxUserLimit] isMessaged:NO callback:^(NSArray<User *> * _Nonnull users) {
             debug(@"Get users for skill callback %ld", users.count);
             // TODO: schedule sending message
+            User *user = nil;
+            UserMessageState *state = nil;
+            UserMessageKey *key = nil;
+            NSUInteger count = 0;
+            for (user in users) {
+                if (count <= 2) {
+                    state = [UserMessageState new];
+                    state.skill = skill;
+                    state.user = user;
+                    key = [UserMessageKey new];
+                    key.skillId = @(skill.skillId);
+                    key.userId = @(user.userId);
+                    [self.messageTable setObject:state forKey:key];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self scheduleMessaging:key];
+                    });
+                }
+                count++;
+            }
         }];
+    //}
+}
+
+- (void)scheduleMessaging:(UserMessageKey *)key {
+    NSUInteger rand = [self messengerRandom];
+    debug(@"rand: %ld", rand);
+    self.messengerTotalDelay += rand;
+    debug(@"total messenger delay: %ld", self.messengerTotalDelay);
+    [self performSelector:@selector(performMessaging:) withObject:key afterDelay:self.messengerTotalDelay];
+}
+
+- (void)performMessaging:(UserMessageKey *)key {
+    UserMessageState *state = [self.messageTable objectForKey:key];
+    if (state) {
+        // TODO: send message, once send, remove the user from message run table, queue next batch
+        [NSNotificationCenter.defaultCenter postNotificationName:ASNotification.sendMessage object:self userInfo:@{@"key": key, @"state": state}];
+        [self.messengerRunTable setObject:state forKey:key];
+        [self.messageTable removeObjectForKey:key];
     }
+}
+
+- (void)queueNextMessengerBatch {
+    /* Queue the next batch */
+    if ([self.messengerRunTable count] == 0 && !self.isMessengerPaused) {
+        ++self.messengerBatchCount;
+        NSArray *meanArr = (self.messengerBatchCount % 2 == 0) ? self.messengerMeanList[1] : self.messengerMeanList[0];
+        int mean = [(NSNumber *)meanArr[0] intValue];
+        int deviation = [(NSNumber *)meanArr[1] intValue];
+        self.messengerGaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.messengerARC4RandomSource mean:mean deviation:deviation];
+        debug(@"Queueing the next messenger batch: %ld", self.messengerBatchCount);
+        [self sendMessage];
+    }
+}
+
+- (void)sendMessageACKDidReceive:(NSNotification *)notif {
+    debug(@"send message ack");
 }
 
 - (void)pauseMessenger {

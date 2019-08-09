@@ -40,7 +40,9 @@ class UI {
     static func setWindowBounds(_ window: NSWindow, width: CGFloat? = 500, height: CGFloat? = 500) {
         let w: CGFloat = { if let aw = width { return aw }; return 500 }()
         let h: CGFloat = { if let ah = height { return ah }; return 500 }()
-        window.setFrame(NSMakeRect(NSApp.mainWindow!.frame.maxX, NSApp.mainWindow!.frame.maxY - h, w, h), display: true)
+        if let mainWindow = NSApp.mainWindow {
+            window.setFrame(NSMakeRect(mainWindow.frame.maxX, mainWindow.frame.maxY - h, w, h), display: true)
+        }
     }
 
     static func createToolbar(id: NSToolbar.Identifier) -> NSToolbar {

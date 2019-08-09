@@ -45,6 +45,7 @@
 		9E4C607F22F0D6C50027B2BB /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E5D22F0B4A7000D6780 /* User.m */; };
 		9E5BD92522E644CA00C972A9 /* FoundationDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5BD92422E644CA00C972A9 /* FoundationDBService.m */; };
 		9E66CE0622EB92B300F748D9 /* config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E66CE0522EB92B300F748D9 /* config.plist */; };
+		9E70CFCA22FDFD2A00BD1001 /* UserMessageState.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E70CFC922FDFD2A00BD1001 /* UserMessageState.m */; };
 		9E70E79922F74BBF009FF504 /* ModelUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E70E79822F74BBF009FF504 /* ModelUtils.m */; };
 		9E70E79C22F74C60009FF504 /* StateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E70E79B22F74C60009FF504 /* StateData.m */; };
 		9E70E79F22F7526F009FF504 /* UserSearchResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E70E79E22F7526F009FF504 /* UserSearchResponse.m */; };
@@ -140,6 +141,8 @@
 		9E5BD92322E644CA00C972A9 /* FoundationDBService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FoundationDBService.h; sourceTree = "<group>"; };
 		9E5BD92422E644CA00C972A9 /* FoundationDBService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FoundationDBService.m; sourceTree = "<group>"; };
 		9E66CE0522EB92B300F748D9 /* config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = config.plist; sourceTree = "<group>"; };
+		9E70CFC822FDFD2A00BD1001 /* UserMessageState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserMessageState.h; sourceTree = "<group>"; };
+		9E70CFC922FDFD2A00BD1001 /* UserMessageState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserMessageState.m; sourceTree = "<group>"; };
 		9E70E79722F74BBF009FF504 /* ModelUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelUtils.h; sourceTree = "<group>"; };
 		9E70E79822F74BBF009FF504 /* ModelUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModelUtils.m; sourceTree = "<group>"; };
 		9E70E79A22F74C60009FF504 /* StateData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StateData.h; sourceTree = "<group>"; };
@@ -322,6 +325,8 @@
 				9E70E79B22F74C60009FF504 /* StateData.m */,
 				9E70E7A922F8907C009FF504 /* UserFetchState.h */,
 				9E70E7AA22F8907C009FF504 /* UserFetchState.m */,
+				9E70CFC822FDFD2A00BD1001 /* UserMessageState.h */,
+				9E70CFC922FDFD2A00BD1001 /* UserMessageState.m */,
 				9E70E79D22F7526F009FF504 /* UserSearchResponse.h */,
 				9E70E79E22F7526F009FF504 /* UserSearchResponse.m */,
 			);
@@ -515,6 +520,7 @@
 				9E3B992622E48713007C94A7 /* NetworkService.swift in Sources */,
 				9E70E79922F74BBF009FF504 /* ModelUtils.m in Sources */,
 				9E39027F22E236A8009D1A36 /* WebKitViewController.swift in Sources */,
+				9E70CFCA22FDFD2A00BD1001 /* UserMessageState.m in Sources */,
 				9E296E4322F58437001BED13 /* Filters.m in Sources */,
 				9E296E3D22F35F99001BED13 /* CrawlService.m in Sources */,
 				9E3B992822E48A3E007C94A7 /* Enums.swift in Sources */,
