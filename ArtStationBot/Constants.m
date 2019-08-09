@@ -16,8 +16,11 @@ static NSString *_searchUsers;
 static NSString *_csrfTokenHeader;
 static NSString *_cfCSRFTokenHeader;
 static NSUInteger _maxUserLimit;
+static NSString *_serviceName;
 
 @implementation Constants
+
+@dynamic serviceName;
 
 + (void)initialize {
     if (self == [self class]) {
@@ -35,6 +38,7 @@ static NSUInteger _maxUserLimit;
     _csrfTokenHeader = @"PUBLIC-CSRF-TOKEN";
     _cfCSRFTokenHeader = @"x-csrf-token";
     _maxUserLimit = 15;
+    _serviceName = @"artstationbot";
 }
 
 + (NSString *)seedURL {
@@ -75,6 +79,10 @@ static NSUInteger _maxUserLimit;
 
 + (NSUInteger)maxUserLimit {
     return _maxUserLimit;
+}
+
++ (NSString *)serviceName {
+    return _serviceName;
 }
 
 @end

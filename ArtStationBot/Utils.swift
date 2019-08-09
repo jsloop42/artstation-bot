@@ -63,4 +63,28 @@ class Utils: NSObject {
         }
         return ""
     }
+
+    static func getAllAccountsFromKeychain() -> [KeychainAccount] {
+        var kcacc: [KeychainAccount] = []
+        if let accounts = SSKeychain.accounts(forService: Const.serviceName) {
+            for account in accounts {
+                if let acc = account as? NSDictionary {
+                    let kc = KeychainAccount()
+                    kc.accountName = acc[kSSKeychainAccountKey] as? String ?? ""
+                    kc.serviceName = Const.serviceName
+                    kc.password = getAccountFromKeychain(name: kc.accountName)
+                    kcacc.append(kc)
+                }
+            }
+        }
+        return kcacc
+    }
+
+    static func setAccountToKeychain(name: String, password: String) -> Bool {
+        return SSKeychain.setPassword(password, forService: Const.serviceName, account: name)
+    }
+
+    static func getAccountFromKeychain(name: String) -> String {
+        return SSKeychain.password(forService: Const.serviceName, account: name)
+    }
 }
