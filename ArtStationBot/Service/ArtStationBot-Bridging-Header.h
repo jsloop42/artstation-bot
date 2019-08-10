@@ -16,3 +16,4 @@
 #import "FrontierService.h"
 #import "SSKeychain.h"
 #import "KeychainAccount.h"
+#import "MessageTemplateRenderer.h"

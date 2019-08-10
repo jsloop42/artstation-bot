@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B55C59522FEBACF00E58D2C /* ArtStationBotTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B55C59422FEBACF00E58D2C /* ArtStationBotTests.m */; };
+		1B55C59C22FEBC3000E58D2C /* MessageTemplateRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD8B30822FEB31A00A8663E /* MessageTemplateRenderer.m */; };
+		1B55C59E22FED79B00E58D2C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1B55C59D22FED79A00E58D2C /* README.md */; };
+		1BD8B30622FEA60000A8663E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD8B30522FEA60000A8663E /* SettingsViewController.swift */; };
+		1BD8B30922FEB31A00A8663E /* MessageTemplateRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD8B30822FEB31A00A8663E /* MessageTemplateRenderer.m */; };
 		9E044E5E22F0B4A7000D6780 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E5D22F0B4A7000D6780 /* User.m */; };
 		9E044E6122F0B738000D6780 /* SampleProject.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6022F0B738000D6780 /* SampleProject.m */; };
 		9E044E6422F0B7CE000D6780 /* Skill.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6322F0B7CE000D6780 /* Skill.m */; };
@@ -28,8 +33,6 @@
 		9E2F29FF22E474C500D5B28A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9E2F29FD22E474C400D5B28A /* Localizable.strings */; };
 		9E39024E22E230DE009D1A36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39024D22E230DE009D1A36 /* AppDelegate.swift */; };
 		9E39025322E230E5009D1A36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E39025222E230E5009D1A36 /* Assets.xcassets */; };
-		9E39026222E230E5009D1A36 /* ArtStationBotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39026122E230E5009D1A36 /* ArtStationBotTests.swift */; };
-		9E39026D22E230E5009D1A36 /* ArtStationBotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39026C22E230E5009D1A36 /* ArtStationBotUITests.swift */; };
 		9E39027F22E236A8009D1A36 /* WebKitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39027E22E236A8009D1A36 /* WebKitViewController.swift */; };
 		9E39028C22E23A05009D1A36 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39028B22E23A05009D1A36 /* MainWindowController.swift */; };
 		9E39029522E23C61009D1A36 /* UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39029422E23C61009D1A36 /* UI.swift */; };
@@ -37,11 +40,6 @@
 		9E39029922E240C7009D1A36 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39029822E240C7009D1A36 /* main.swift */; };
 		9E3B992622E48713007C94A7 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992522E48713007C94A7 /* NetworkService.swift */; };
 		9E3B992822E48A3E007C94A7 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992722E48A3E007C94A7 /* Enums.swift */; };
-		9E4C607B22F0D6B90027B2BB /* FoundationDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5BD92422E644CA00C972A9 /* FoundationDBService.m */; };
-		9E4C607C22F0D6C50027B2BB /* SampleProject.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6022F0B738000D6780 /* SampleProject.m */; };
-		9E4C607D22F0D6C50027B2BB /* Skill.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6322F0B7CE000D6780 /* Skill.m */; };
-		9E4C607E22F0D6C50027B2BB /* Software.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6622F0B816000D6780 /* Software.m */; };
-		9E4C607F22F0D6C50027B2BB /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E5D22F0B4A7000D6780 /* User.m */; };
 		9E5BD92522E644CA00C972A9 /* FoundationDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5BD92422E644CA00C972A9 /* FoundationDBService.m */; };
 		9E66CE0622EB92B300F748D9 /* config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E66CE0522EB92B300F748D9 /* config.plist */; };
 		9E6720ED22FE256B00F5DC96 /* ArtStationBot.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9E6720EB22FE256B00F5DC96 /* ArtStationBot.xcdatamodeld */; };
@@ -62,14 +60,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		9E39025E22E230E5009D1A36 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 9E39024222E230DD009D1A36 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9E39024922E230DE009D1A36;
-			remoteInfo = ArtStationBot;
-		};
-		9E39026922E230E5009D1A36 /* PBXContainerItemProxy */ = {
+		1B55C59722FEBACF00E58D2C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9E39024222E230DD009D1A36 /* Project object */;
 			proxyType = 1;
@@ -96,6 +87,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1B55C59222FEBACF00E58D2C /* ArtStationBotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArtStationBotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B55C59422FEBACF00E58D2C /* ArtStationBotTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ArtStationBotTests.m; sourceTree = "<group>"; };
+		1B55C59622FEBACF00E58D2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1B55C59D22FED79A00E58D2C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1BD8B30522FEA60000A8663E /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		1BD8B30722FEB31A00A8663E /* MessageTemplateRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageTemplateRenderer.h; sourceTree = "<group>"; };
+		1BD8B30822FEB31A00A8663E /* MessageTemplateRenderer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MessageTemplateRenderer.m; sourceTree = "<group>"; };
 		9E044E5C22F0B4A7000D6780 /* User.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		9E044E5D22F0B4A7000D6780 /* User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		9E044E5F22F0B738000D6780 /* SampleProject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SampleProject.h; sourceTree = "<group>"; };
@@ -125,12 +123,6 @@
 		9E39025222E230E5009D1A36 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9E39025722E230E5009D1A36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9E39025822E230E5009D1A36 /* ArtStationBot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ArtStationBot.entitlements; sourceTree = "<group>"; };
-		9E39025D22E230E5009D1A36 /* ArtStationBotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArtStationBotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9E39026122E230E5009D1A36 /* ArtStationBotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtStationBotTests.swift; sourceTree = "<group>"; };
-		9E39026322E230E5009D1A36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9E39026822E230E5009D1A36 /* ArtStationBotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArtStationBotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9E39026C22E230E5009D1A36 /* ArtStationBotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtStationBotUITests.swift; sourceTree = "<group>"; };
-		9E39026E22E230E5009D1A36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9E39027E22E236A8009D1A36 /* WebKitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebKitViewController.swift; sourceTree = "<group>"; };
 		9E39028B22E23A05009D1A36 /* MainWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		9E39029422E23C61009D1A36 /* UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI.swift; sourceTree = "<group>"; };
@@ -138,7 +130,6 @@
 		9E39029822E240C7009D1A36 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		9E3B992522E48713007C94A7 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		9E3B992722E48A3E007C94A7 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
-		9E4C607822F0D6650027B2BB /* ArtStationBotTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ArtStationBotTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		9E5BD92222E644C900C972A9 /* ArtStationBot-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ArtStationBot-Bridging-Header.h"; sourceTree = "<group>"; };
 		9E5BD92322E644CA00C972A9 /* FoundationDBService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FoundationDBService.h; sourceTree = "<group>"; };
 		9E5BD92422E644CA00C972A9 /* FoundationDBService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FoundationDBService.m; sourceTree = "<group>"; };
@@ -170,6 +161,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1B55C58F22FEBACF00E58D2C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9E39024722E230DE009D1A36 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -182,23 +180,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9E39025A22E230E5009D1A36 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9E39026522E230E5009D1A36 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1B55C59322FEBACF00E58D2C /* ArtStationBotTests */ = {
+			isa = PBXGroup;
+			children = (
+				1B55C59422FEBACF00E58D2C /* ArtStationBotTests.m */,
+				1B55C59622FEBACF00E58D2C /* Info.plist */,
+			);
+			path = ArtStationBotTests;
+			sourceTree = "<group>";
+		};
 		9E22C2FE22E2F8AE00772681 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
@@ -210,9 +203,9 @@
 		9E39024122E230DD009D1A36 = {
 			isa = PBXGroup;
 			children = (
+				1B55C59D22FED79A00E58D2C /* README.md */,
 				9E39024C22E230DE009D1A36 /* ArtStationBot */,
-				9E39026022E230E5009D1A36 /* ArtStationBotTests */,
-				9E39026B22E230E5009D1A36 /* ArtStationBotUITests */,
+				1B55C59322FEBACF00E58D2C /* ArtStationBotTests */,
 				9E39024B22E230DE009D1A36 /* Products */,
 				9E39028222E2395E009D1A36 /* Frameworks */,
 			);
@@ -222,8 +215,7 @@
 			isa = PBXGroup;
 			children = (
 				9E39024A22E230DE009D1A36 /* ArtStationBot.app */,
-				9E39025D22E230E5009D1A36 /* ArtStationBotTests.xctest */,
-				9E39026822E230E5009D1A36 /* ArtStationBotUITests.xctest */,
+				1B55C59222FEBACF00E58D2C /* ArtStationBotTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -253,30 +245,12 @@
 			path = ArtStationBot;
 			sourceTree = "<group>";
 		};
-		9E39026022E230E5009D1A36 /* ArtStationBotTests */ = {
-			isa = PBXGroup;
-			children = (
-				9E39026122E230E5009D1A36 /* ArtStationBotTests.swift */,
-				9E39026322E230E5009D1A36 /* Info.plist */,
-				9E4C607822F0D6650027B2BB /* ArtStationBotTests-Bridging-Header.h */,
-			);
-			path = ArtStationBotTests;
-			sourceTree = "<group>";
-		};
-		9E39026B22E230E5009D1A36 /* ArtStationBotUITests */ = {
-			isa = PBXGroup;
-			children = (
-				9E39026C22E230E5009D1A36 /* ArtStationBotUITests.swift */,
-				9E39026E22E230E5009D1A36 /* Info.plist */,
-			);
-			path = ArtStationBotUITests;
-			sourceTree = "<group>";
-		};
 		9E39027A22E23415009D1A36 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
 				9E39028B22E23A05009D1A36 /* MainWindowController.swift */,
 				9E39029622E23CFE009D1A36 /* MainViewController.swift */,
+				1BD8B30522FEA60000A8663E /* SettingsViewController.swift */,
 				9E39027E22E236A8009D1A36 /* WebKitViewController.swift */,
 				9E22C2FC22E272F700772681 /* WebKitWindowController.swift */,
 			);
@@ -300,6 +274,8 @@
 				9E5BD92422E644CA00C972A9 /* FoundationDBService.m */,
 				9E70E7A322F88A8D009FF504 /* FrontierService.h */,
 				9E70E7A422F88A8D009FF504 /* FrontierService.m */,
+				1BD8B30722FEB31A00A8663E /* MessageTemplateRenderer.h */,
+				1BD8B30822FEB31A00A8663E /* MessageTemplateRenderer.m */,
 				9E3B992522E48713007C94A7 /* NetworkService.swift */,
 				9ECAFABE22E319D500953081 /* WebViewMessageService.swift */,
 				9E5BD92222E644C900C972A9 /* ArtStationBot-Bridging-Header.h */,
@@ -375,6 +351,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1B55C59122FEBACF00E58D2C /* ArtStationBotTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1B55C59B22FEBACF00E58D2C /* Build configuration list for PBXNativeTarget "ArtStationBotTests" */;
+			buildPhases = (
+				1B55C58E22FEBACF00E58D2C /* Sources */,
+				1B55C58F22FEBACF00E58D2C /* Frameworks */,
+				1B55C59022FEBACF00E58D2C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1B55C59822FEBACF00E58D2C /* PBXTargetDependency */,
+			);
+			name = ArtStationBotTests;
+			productName = ArtStationBotTests;
+			productReference = 1B55C59222FEBACF00E58D2C /* ArtStationBotTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		9E39024922E230DE009D1A36 /* ArtStationBot */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9E39027122E230E5009D1A36 /* Build configuration list for PBXNativeTarget "ArtStationBot" */;
@@ -393,42 +387,6 @@
 			productReference = 9E39024A22E230DE009D1A36 /* ArtStationBot.app */;
 			productType = "com.apple.product-type.application";
 		};
-		9E39025C22E230E5009D1A36 /* ArtStationBotTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9E39027422E230E5009D1A36 /* Build configuration list for PBXNativeTarget "ArtStationBotTests" */;
-			buildPhases = (
-				9E39025922E230E5009D1A36 /* Sources */,
-				9E39025A22E230E5009D1A36 /* Frameworks */,
-				9E39025B22E230E5009D1A36 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				9E39025F22E230E5009D1A36 /* PBXTargetDependency */,
-			);
-			name = ArtStationBotTests;
-			productName = ArtStationBotTests;
-			productReference = 9E39025D22E230E5009D1A36 /* ArtStationBotTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		9E39026722E230E5009D1A36 /* ArtStationBotUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9E39027722E230E5009D1A36 /* Build configuration list for PBXNativeTarget "ArtStationBotUITests" */;
-			buildPhases = (
-				9E39026422E230E5009D1A36 /* Sources */,
-				9E39026522E230E5009D1A36 /* Frameworks */,
-				9E39026622E230E5009D1A36 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				9E39026A22E230E5009D1A36 /* PBXTargetDependency */,
-			);
-			name = ArtStationBotUITests;
-			productName = ArtStationBotUITests;
-			productReference = 9E39026822E230E5009D1A36 /* ArtStationBotUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -439,6 +397,10 @@
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
+					1B55C59122FEBACF00E58D2C = {
+						CreatedOnToolsVersion = 10.3;
+						TestTargetID = 9E39024922E230DE009D1A36;
+					};
 					9E39024922E230DE009D1A36 = {
 						CreatedOnToolsVersion = 10.2.1;
 						LastSwiftMigration = 1020;
@@ -447,15 +409,6 @@
 								enabled = 0;
 							};
 						};
-					};
-					9E39025C22E230E5009D1A36 = {
-						CreatedOnToolsVersion = 10.2.1;
-						LastSwiftMigration = 1020;
-						TestTargetID = 9E39024922E230DE009D1A36;
-					};
-					9E39026722E230E5009D1A36 = {
-						CreatedOnToolsVersion = 10.2.1;
-						TestTargetID = 9E39024922E230DE009D1A36;
 					};
 				};
 			};
@@ -473,47 +426,50 @@
 			projectRoot = "";
 			targets = (
 				9E39024922E230DE009D1A36 /* ArtStationBot */,
-				9E39025C22E230E5009D1A36 /* ArtStationBotTests */,
-				9E39026722E230E5009D1A36 /* ArtStationBotUITests */,
+				1B55C59122FEBACF00E58D2C /* ArtStationBotTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1B55C59022FEBACF00E58D2C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9E39024822E230DE009D1A36 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				9E39025322E230E5009D1A36 /* Assets.xcassets in Resources */,
 				9E2F29FF22E474C500D5B28A /* Localizable.strings in Resources */,
+				1B55C59E22FED79B00E58D2C /* README.md in Resources */,
 				9E66CE0622EB92B300F748D9 /* config.plist in Resources */,
 				9ECAFABB22E2FA6500953081 /* artstationbot.js in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9E39025B22E230E5009D1A36 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9E39026622E230E5009D1A36 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1B55C58E22FEBACF00E58D2C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B55C59C22FEBC3000E58D2C /* MessageTemplateRenderer.m in Sources */,
+				1B55C59522FEBACF00E58D2C /* ArtStationBotTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9E39024622E230DE009D1A36 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				9E6720ED22FE256B00F5DC96 /* ArtStationBot.xcdatamodeld in Sources */,
 				9E22C2FD22E272F700772681 /* WebKitWindowController.swift in Sources */,
+				1BD8B30622FEA60000A8663E /* SettingsViewController.swift in Sources */,
 				9E39029722E23CFE009D1A36 /* MainViewController.swift in Sources */,
 				9E044E6722F0B816000D6780 /* Software.m in Sources */,
 				9E044E5E22F0B4A7000D6780 /* User.m in Sources */,
@@ -539,6 +495,7 @@
 				9E70CFCA22FDFD2A00BD1001 /* UserMessageState.m in Sources */,
 				9E296E4322F58437001BED13 /* Filters.m in Sources */,
 				9E296E3D22F35F99001BED13 /* CrawlService.m in Sources */,
+				1BD8B30922FEB31A00A8663E /* MessageTemplateRenderer.m in Sources */,
 				9E3B992822E48A3E007C94A7 /* Enums.swift in Sources */,
 				9E5BD92522E644CA00C972A9 /* FoundationDBService.m in Sources */,
 				9ECAFABD22E3098500953081 /* ScriptResult.swift in Sources */,
@@ -547,39 +504,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9E39025922E230E5009D1A36 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9E4C607F22F0D6C50027B2BB /* User.m in Sources */,
-				9E4C607B22F0D6B90027B2BB /* FoundationDBService.m in Sources */,
-				9E4C607E22F0D6C50027B2BB /* Software.m in Sources */,
-				9E4C607D22F0D6C50027B2BB /* Skill.m in Sources */,
-				9E39026222E230E5009D1A36 /* ArtStationBotTests.swift in Sources */,
-				9E4C607C22F0D6C50027B2BB /* SampleProject.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9E39026422E230E5009D1A36 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9E39026D22E230E5009D1A36 /* ArtStationBotUITests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		9E39025F22E230E5009D1A36 /* PBXTargetDependency */ = {
+		1B55C59822FEBACF00E58D2C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 9E39024922E230DE009D1A36 /* ArtStationBot */;
-			targetProxy = 9E39025E22E230E5009D1A36 /* PBXContainerItemProxy */;
-		};
-		9E39026A22E230E5009D1A36 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 9E39024922E230DE009D1A36 /* ArtStationBot */;
-			targetProxy = 9E39026922E230E5009D1A36 /* PBXContainerItemProxy */;
+			targetProxy = 1B55C59722FEBACF00E58D2C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -595,6 +526,50 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		1B55C59922FEBACF00E58D2C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 7S7UE44956;
+				HEADER_SEARCH_PATHS = $CONFIGURATION_TEMP_DIR/ArtStationBot.build/DerivedSources;
+				INFOPLIST_FILE = ArtStationBotTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.ArtStationBotTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArtStationBot.app/Contents/MacOS/ArtStationBot";
+			};
+			name = Debug;
+		};
+		1B55C59A22FEBACF00E58D2C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 7S7UE44956;
+				HEADER_SEARCH_PATHS = $CONFIGURATION_TEMP_DIR/ArtStationBot.build/DerivedSources;
+				INFOPLIST_FILE = ArtStationBotTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.ArtStationBotTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArtStationBot.app/Contents/MacOS/ArtStationBot";
+			};
+			name = Release;
+		};
 		9E39026F22E230E5009D1A36 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -797,96 +772,18 @@
 			};
 			name = Release;
 		};
-		9E39027522E230E5009D1A36 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 7S7UE44956;
-				INFOPLIST_FILE = ArtStationBotTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dreamlisp.ArtStationBotTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "ArtStationBotTests/ArtStationBotTests-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArtStationBot.app/Contents/MacOS/ArtStationBot";
-			};
-			name = Debug;
-		};
-		9E39027622E230E5009D1A36 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 7S7UE44956;
-				INFOPLIST_FILE = ArtStationBotTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dreamlisp.ArtStationBotTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "ArtStationBotTests/ArtStationBotTests-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArtStationBot.app/Contents/MacOS/ArtStationBot";
-			};
-			name = Release;
-		};
-		9E39027822E230E5009D1A36 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 7S7UE44956;
-				INFOPLIST_FILE = ArtStationBotUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dreamlisp.ArtStationBotUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = ArtStationBot;
-			};
-			name = Debug;
-		};
-		9E39027922E230E5009D1A36 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 7S7UE44956;
-				INFOPLIST_FILE = ArtStationBotUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dreamlisp.ArtStationBotUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = ArtStationBot;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1B55C59B22FEBACF00E58D2C /* Build configuration list for PBXNativeTarget "ArtStationBotTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1B55C59922FEBACF00E58D2C /* Debug */,
+				1B55C59A22FEBACF00E58D2C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		9E39024522E230DD009D1A36 /* Build configuration list for PBXProject "ArtStationBot" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -901,24 +798,6 @@
 			buildConfigurations = (
 				9E39027222E230E5009D1A36 /* Debug */,
 				9E39027322E230E5009D1A36 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		9E39027422E230E5009D1A36 /* Build configuration list for PBXNativeTarget "ArtStationBotTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9E39027522E230E5009D1A36 /* Debug */,
-				9E39027622E230E5009D1A36 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		9E39027722E230E5009D1A36 /* Build configuration list for PBXNativeTarget "ArtStationBotUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9E39027822E230E5009D1A36 /* Debug */,
-				9E39027922E230E5009D1A36 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
