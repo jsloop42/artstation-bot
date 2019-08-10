@@ -9,15 +9,17 @@ import Foundation
 import WebKit
 import DLLogger
 
+// MARK: - State
+
 class WebViewState {
-    private var urlStack: [String] = [Constants.seedURL()]
+    private var urlStack: [String] = [Const.seedURL()]
     private var navStack: [NavigationPage] = [.home]
     private var isSignedIn = false
 
     // MARK: - Get
 
     func getCurrentURL() -> String {
-        return self.urlStack.last ?? Constants.seedURL()
+        return self.urlStack.last ?? Const.seedURL()
     }
 
     func getCurrentPage() -> NavigationPage {
@@ -57,6 +59,8 @@ class WebViewState {
     }
 }
 
+// MARK: - WebKit view controller
+
 class WebKitViewController: NSViewController {
     private let log = Logger()
     lazy var webView: WKWebView = {
@@ -70,6 +74,7 @@ class WebKitViewController: NSViewController {
     }()
     var state: WebViewState = WebViewState()
     var shouldSignIn = false
+    private var queue: [(UserMessageKey, UserMessageState)] = []
 
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -130,7 +135,7 @@ class WebKitViewController: NSViewController {
     }
 
     func initData() {
-        if let url = URL(string: Constants.seedURL()) {
+        if let url = URL(string: Const.seedURL()) {
             self.webView.load(URLRequest(url: url))
         }
     }
@@ -151,8 +156,18 @@ class WebKitViewController: NSViewController {
         }
     }
 
+    // MARK: - Notification handlers
+
     @objc func sendMessage(_ notif: Notification) {
         if let info = notif.userInfo, let key = info["key"] as? UserMessageKey, let state = info["state"] as? UserMessageState {
+            /*
+              1. Check sign-in, if not, sign-in.
+              2. Load the user's profile page
+              3. Invoke send message button click,
+              4. Fill the fields and invoke send
+              5. Notifiy ack
+            */
+            // TODO: send msg
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: ASNotification.sendMessageACK), object: self,
                                             userInfo: ["status": true, "key": key, "state": state])
         }

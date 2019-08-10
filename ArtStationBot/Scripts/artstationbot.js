@@ -41,6 +41,10 @@ ASB.prototype.isSignedIn = function() {
     ASB.msg.postMessage({"id": "is-signed-in?", "status": true, "value": this.internal.isSignedIn()})
 }
 
+ASB.prototype.sendMessage = function() {
+    
+}
+
 ASB.prototype.internal = {
     "isSignedIn": function () {
         return window.user_id != null && typeof window.user_id === "number"

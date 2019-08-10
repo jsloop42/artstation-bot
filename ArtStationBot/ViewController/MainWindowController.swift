@@ -19,7 +19,8 @@ class MainWindowController: NSWindowController {
     private lazy var win: NSWindow = { return UI.createWindow() }()
     private lazy var toolbar: NSToolbar = { return UI.createToolbar(id: self.toolbarId) }()
     private lazy var segmentedControl: NSSegmentedControl = {
-        return UI.createSegmentedControl(labels: [UI.lmsg("Dashboard"), UI.lmsg("Crawler"), UI.lmsg("Messenger")])
+        return UI.createSegmentedControl(labels: [UI.lmsg("Dashboard"), UI.lmsg("Data"), UI.lmsg("Settings")],
+                                         action: #selector(MainWindowController.segmentedControlDidClick(sender:)))
     }()
     private lazy var toolbarId: NSToolbar.Identifier = { return NSToolbar.Identifier("mainToolbar") }()
     private lazy var toolbarCrawlBtnId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarCrawlButton") }()
@@ -95,35 +96,21 @@ class MainWindowController: NSWindowController {
         self.crawlBtn.action = #selector(crawlButtonDidClick)
         self.messageBtn.action = #selector(messageButtonDidClick)
     }
+
+    @objc func segmentedControlDidClick(sender: NSSegmentedControl) {
+        print("segmented control index: \(sender.selectedSegment)")
+    }
 }
 
 // MARK: - Event handlers
 extension MainWindowController {
     @objc func crawlButtonDidClick() {
-//        self.crawlService.getCSRFToken { token in
-//            self.log.debug("CSRF token: \(token)")
-//            self.crawlService.getFilterList { filters in
-//                self.log.debug("Filters: \(filters)")
-//                self.dbService.insert(filters, callback: { status in
-//                    DispatchQueue.main.async {
-//                        self.log.debug("Filters insert status: \(status)")
-//                    }
-//                })
-//            }
-//        }
-        //self.dbService.test()
-//        self.dbService.getUsersWithOffset(1, limit: 2, callback: { users in
-//            self.log.debug(users)
-//        })
-//        self.crawlService.getUsersForSkill("1", page: 1, max: 15, callback: { userResp  in
-//            self.log.debug("total users count: \(userResp.totalCount)")
-//            self.log.debug("first user's id: \((userResp.usersList.firstObject as! User).userId)")
-//        })
         self.frontierService.isCrawlPaused ? self.frontierService.startCrawl() : self.frontierService.pauseCrawl()
     }
 
     @objc func messageButtonDidClick() {
         self.webkitWindow.show()
+        //self.webkitWindow.vc.setShouldSignIn(true)
         self.frontierService.isMessengerPaused ? self.frontierService.startMessenger() : self.frontierService.pauseMessenger()
     }
 }

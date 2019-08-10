@@ -8,7 +8,7 @@
 import Foundation
 import AppKit
 
-class UI {
+class UI: NSObject {
     private static var enStringBundle: Bundle?
 
     static func createMainWindow() {
@@ -52,8 +52,8 @@ class UI {
         return toolbar
     }
 
-    static func createSegmentedControl(labels: [String]) -> NSSegmentedControl {
-        let sc = NSSegmentedControl(labels: labels, trackingMode: .selectOne, target: self, action: nil)
+    static func createSegmentedControl(labels: [String], action: Selector) -> NSSegmentedControl {
+        let sc = NSSegmentedControl(labels: labels, trackingMode: .selectOne, target: nil, action: action)
         sc.setSelected(true, forSegment: 0)
         return sc
     }
