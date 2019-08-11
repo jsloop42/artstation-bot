@@ -11,6 +11,8 @@
 #import "CrawlService.h"
 #import "FoundationDBService.h"
 #import "UserMessageState.h"
+#import "SenderDetails.h"
+#import "KeychainAccount.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -28,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startMessenger;
 - (void)pauseMessenger;
 - (void)updateMessageForSkill:(Skill *)skill message:(NSString *)message;
+- (void)updateSenderDetails:(SenderDetails *)sender callback:(void (^)(bool status))callback;
 @end
 
 NS_ASSUME_NONNULL_END

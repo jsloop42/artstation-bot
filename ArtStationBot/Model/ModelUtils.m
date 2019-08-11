@@ -58,6 +58,19 @@ static ModelUtils *_modelUtils;
     return fetchState;
 }
 
+- (SenderDetails *)senderDetailsFromDictionary:(NSDictionary *)dict {
+    SenderDetails *sender = [SenderDetails new];
+    id val = [dict valueForKey:@"_id"];
+    if (val && val != [NSNull null]) sender.artStationEmail = (NSString *)val;
+    val = [dict valueForKey:@"name"];
+    if (val && val != [NSNull null]) sender.name = (NSString *)val;
+    val = [dict valueForKey:@"contact_email"];
+    if (val && val != [NSNull null]) sender.contactEmail = (NSString *)val;
+    val = [dict valueForKey:@"url"];
+    if (val && val != [NSNull null]) sender.url = (NSString *)val;
+    return sender;
+}
+
 - (User *)userFromDictionary:(NSDictionary *)dict convertType:(enum ConvertType)convertType {
     User *user = [User new];
     id val;

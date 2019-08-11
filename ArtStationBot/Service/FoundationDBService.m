@@ -20,6 +20,7 @@ static const char *users_coll_name = "users";
 static const char *software_coll_name = "software";
 static const char *availabilities_coll_name = "availabilities";
 static const char *countries_coll_name = "countries";
+static const char *sender_coll_name = "senders";
 
 static mongoc_uri_t *mongouri;
 static mongoc_client_pool_t *pool;
@@ -212,6 +213,33 @@ static FoundationDBService *fdb;
     });
 }
 
+- (void)getSenderDetails:(void(^)(NSMutableArray<SenderDetails *> *senders))callback {
+    dispatch_async(self.dispatchQueue, ^{
+        const bson_t *sender_doc;
+        mongoc_client_t *client = mongoc_client_pool_pop(pool);
+        mongoc_collection_t *sender_coll = mongoc_client_get_collection(client, dbName, sender_coll_name);
+        bson_t query = BSON_INITIALIZER;
+        mongoc_cursor_t *cursor = mongoc_collection_find_with_opts(sender_coll, &query, NULL, NULL);
+        NSMutableArray<SenderDetails *> *senders = [NSMutableArray new];
+        NSError *err;
+        NSMutableDictionary *dict;
+        SenderDetails *sender;
+        char *str;
+        while (mongoc_cursor_next(cursor, &sender_doc)) {
+            str = bson_as_canonical_extended_json(sender_doc, NULL);
+            dict = [NSJSONSerialization JSONObjectWithData:[NSData dataWithBytes:str length:strlen(str)] options:NSJSONReadingMutableContainers error:&err];
+            sender = [ModelUtils.shared senderDetailsFromDictionary:dict];
+            if (sender) [senders addObject:sender];
+            bson_free(str);
+        }
+        mongoc_client_pool_push(pool, client);
+        bson_destroy(&query);
+        mongoc_cursor_destroy(cursor);
+        mongoc_collection_destroy(sender_coll);
+        callback(senders);
+    });
+}
+
 #pragma mark Insert
 
 - (void)insertFilters:(Filters *)filters callback:(void (^)(bool status))callback {
@@ -384,6 +412,32 @@ static FoundationDBService *fdb;
     return true;
 }
 
+- (void)upsertSender:(SenderDetails *)sender callback:(void (^)(bool status))callback {
+    dispatch_async(self.dispatchQueue, ^{
+        bool status = true;
+        bson_error_t err;
+        mongoc_client_t *client = mongoc_client_pool_pop(pool);
+        mongoc_collection_t *sender_coll = mongoc_client_get_collection(client, dbName, sender_coll_name);
+        bson_t opts = BSON_INITIALIZER;
+        BSON_APPEND_BOOL(&opts, "upsert", true);
+        bson_t *sender_doc = BCON_NEW("$set", "{", "name", BCON_UTF8([sender.name UTF8String]),
+                                      "contact_email", BCON_UTF8([sender.contactEmail UTF8String]),
+                                      "url", BCON_UTF8([sender.url UTF8String]),
+                                      "modified", BCON_DATE_TIME([Utils getTimestamp]), "}");
+        bson_t *selector = BCON_NEW("_id", BCON_UTF8([sender.artStationEmail UTF8String]));
+        bool ret = mongoc_collection_update_one(sender_coll, selector, sender_doc, &opts, NULL, &err);
+        mongoc_client_pool_push(pool, client);
+        if (!ret) {
+            MONGOC_ERROR("Error updating sender details: %d, %s", err.code, err.message);
+            status = false;
+        }
+        bson_destroy(selector);
+        bson_destroy(sender_doc);
+        mongoc_collection_destroy(sender_coll);
+        callback(status);
+    });
+}
+
 - (void)test {
     User *user = [User new];
     user.userId = 1;
@@ -456,6 +510,7 @@ static FoundationDBService *fdb;
             ret = mongoc_collection_insert_one(skill_user_coll, skill_user_doc, NULL, NULL, &err);
             mongoc_client_pool_push(pool, client);
             bson_destroy(skill_user_doc);
+            mongoc_collection_destroy(skill_user_coll);
             if (!ret) {
                 if (err.code == MONGOC_ERROR_DUPLICATE_KEY) {
                     MONGOC_INFO("User with id: %d already exists for skill: %s. Ignoring...", (int)user.userId, skill_name);
@@ -489,6 +544,7 @@ static FoundationDBService *fdb;
         }
         bson_destroy(selector);
         bson_destroy(state_doc);
+        mongoc_collection_destroy(coll);
         callback(status);
     });
 }
@@ -511,6 +567,7 @@ static FoundationDBService *fdb;
         }
         bson_destroy(selector);
         bson_destroy(skill_doc);
+        mongoc_collection_destroy(coll);
         callback(status);
     });
 }

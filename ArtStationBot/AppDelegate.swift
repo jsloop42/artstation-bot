@@ -12,12 +12,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private let log = Logger()
 
     override init() {
+        _ = FoundationDBService.shared().initDocLayer()
         UI.createMainWindow()
         StateData.shared().isDarkMode = Utils.isDarkMode()
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        _ = FoundationDBService.shared().initDocLayer()
         initEvents()
     }
 

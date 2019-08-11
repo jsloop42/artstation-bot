@@ -15,6 +15,11 @@ class SettingsView: NSView {
     @IBOutlet weak var emailTextField: ASTextField!
     @IBOutlet weak var passwordTextField: NSSecureTextField!
     @IBOutlet weak var tableViewContainer: NSView!
+    @IBOutlet weak var senderNameTextField: NSTextField!
+    @IBOutlet weak var senderContactEmailTextField: NSTextField!
+    @IBOutlet weak var senderURLTextField: NSTextField!
+    @IBOutlet weak var cancelEditBtn: NSButton!
+    @IBOutlet weak var statusBarLabel: NSTextField!
     
     required init?(coder decoder: NSCoder) {
         super.init(coder: decoder)

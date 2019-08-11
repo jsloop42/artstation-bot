@@ -46,6 +46,7 @@
 		9E3B992622E48713007C94A7 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992522E48713007C94A7 /* NetworkService.swift */; };
 		9E3B992822E48A3E007C94A7 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992722E48A3E007C94A7 /* Enums.swift */; };
 		9E3F12EE2300448A00CA907D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E3F12ED2300448A00CA907D /* MainMenu.xib */; };
+		9E3F12F123007BC300CA907D /* SenderDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E3F12F023007BC300CA907D /* SenderDetails.m */; };
 		9E5BD92522E644CA00C972A9 /* FoundationDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5BD92422E644CA00C972A9 /* FoundationDBService.m */; };
 		9E66CE0622EB92B300F748D9 /* config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E66CE0522EB92B300F748D9 /* config.plist */; };
 		9E6720ED22FE256B00F5DC96 /* ArtStationBot.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9E6720EB22FE256B00F5DC96 /* ArtStationBot.xcdatamodeld */; };
@@ -143,7 +144,9 @@
 		9E3B992522E48713007C94A7 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		9E3B992722E48A3E007C94A7 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		9E3F12ED2300448A00CA907D /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
-		9E5BD92222E644C900C972A9 /* ArtStationBot-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ArtStationBot-Bridging-Header.h"; sourceTree = "<group>"; };
+		9E3F12EF23007BC300CA907D /* SenderDetails.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SenderDetails.h; sourceTree = "<group>"; };
+		9E3F12F023007BC300CA907D /* SenderDetails.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SenderDetails.m; sourceTree = "<group>"; };
+		9E5BD92222E644C900C972A9 /* ArtStationBot-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ArtStationBot-Bridging-Header.h"; path = "Service/ArtStationBot-Bridging-Header.h"; sourceTree = "<group>"; };
 		9E5BD92322E644CA00C972A9 /* FoundationDBService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FoundationDBService.h; sourceTree = "<group>"; };
 		9E5BD92422E644CA00C972A9 /* FoundationDBService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FoundationDBService.m; sourceTree = "<group>"; };
 		9E66CE0522EB92B300F748D9 /* config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = config.plist; sourceTree = "<group>"; };
@@ -244,6 +247,7 @@
 				9E39027B22E2341E009D1A36 /* View */,
 				9E39027A22E23415009D1A36 /* ViewController */,
 				9E39024D22E230DE009D1A36 /* AppDelegate.swift */,
+				9E5BD92222E644C900C972A9 /* ArtStationBot-Bridging-Header.h */,
 				9E296E3E22F363BE001BED13 /* Constants.h */,
 				9E296E3F22F363BE001BED13 /* Constants.m */,
 				9E3B992722E48A3E007C94A7 /* Enums.swift */,
@@ -298,7 +302,6 @@
 				1BD8B30822FEB31A00A8663E /* MessageTemplateRenderer.m */,
 				9E3B992522E48713007C94A7 /* NetworkService.swift */,
 				9ECAFABE22E319D500953081 /* WebViewMessageService.swift */,
-				9E5BD92222E644C900C972A9 /* ArtStationBot-Bridging-Header.h */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -322,6 +325,8 @@
 				9E044E5F22F0B738000D6780 /* SampleProject.h */,
 				9E044E6022F0B738000D6780 /* SampleProject.m */,
 				9ECAFABC22E3098500953081 /* ScriptResult.swift */,
+				9E3F12EF23007BC300CA907D /* SenderDetails.h */,
+				9E3F12F023007BC300CA907D /* SenderDetails.m */,
 				9E70E79A22F74C60009FF504 /* StateData.h */,
 				9E70E79B22F74C60009FF504 /* StateData.m */,
 				9E044E6222F0B7CE000D6780 /* Skill.h */,
@@ -511,6 +516,7 @@
 				9E044E6422F0B7CE000D6780 /* Skill.m in Sources */,
 				9E70E7A222F88862009FF504 /* CrawlerState.m in Sources */,
 				9E39028C22E23A05009D1A36 /* MainWindowController.swift in Sources */,
+				9E3F12F123007BC300CA907D /* SenderDetails.m in Sources */,
 				1BE6886522FF024B0000E9CE /* SettingsView.swift in Sources */,
 				1BE6886722FF2BDB0000E9CE /* ASTextField.swift in Sources */,
 				9ECAFABF22E319D500953081 /* WebViewMessageService.swift in Sources */,

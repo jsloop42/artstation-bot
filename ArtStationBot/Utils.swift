@@ -72,7 +72,7 @@ class Utils: NSObject {
                     let kc = KeychainAccount()
                     kc.accountName = acc[kSSKeychainAccountKey] as? String ?? ""
                     kc.serviceName = Const.serviceName
-                    kc.password = getAccountFromKeychain(name: kc.accountName)
+                    kc.password = getPasswordForAccountFromKeychain(name: kc.accountName)
                     kcacc.append(kc)
                 }
             }
@@ -84,8 +84,12 @@ class Utils: NSObject {
         return SSKeychain.setPassword(password, forService: Const.serviceName, account: name)
     }
 
-    static func getAccountFromKeychain(name: String) -> String {
+    static func getPasswordForAccountFromKeychain(name: String) -> String {
         return SSKeychain.password(forService: Const.serviceName, account: name)
+    }
+
+    static func isValidEmail(_ email: String) -> Bool {
+        return email.range(of: "^(([^<>()\\[\\]\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$", options: .regularExpression, range: nil, locale: nil) != nil
     }
 
     static func isDarkMode() -> Bool {
@@ -93,5 +97,9 @@ class Utils: NSObject {
             return true
         }
         return false
+    }
+
+    static func getTimestamp() -> Int64 {
+        return Int64((Date().timeIntervalSince1970 * 1000.0).rounded())
     }
 }

@@ -81,12 +81,30 @@ class MainWindowController: NSWindowController {
         self.toolbar.displayMode = .iconOnly
         self.toolbar.allowsUserCustomization = true
         self.window?.titleVisibility = .hidden
+        self.window?.minSize = NSMakeSize(960, 768)
         //self.window?.title = "ArtStation Bot"
         self.window?.toolbar = self.toolbar
+        initMainMenu()
+        initData()
+    }
+
+    func initMainMenu() {
         Bundle.main.loadNibNamed("MainMenu", owner: self, topLevelObjects: &menuObjects)
         guard let results = self.menuObjects else { return }
         let views = Array<Any>(results).filter { $0 is NSMenu }
         NSApplication.shared.mainMenu = views.last as? NSMenu
+    }
+
+    func initData() {
+        self.dbService.getSenderDetails { arr in
+            if arr.count > 0 {
+                if let sender = arr.firstObject as? SenderDetails {
+                    let pass = Utils.getPasswordForAccountFromKeychain(name: sender.artStationEmail)
+                    if !pass.isEmpty { sender.password = pass }
+                    StateData.shared().senderDetails = sender
+                }
+            }
+        }
     }
 
     func show() {

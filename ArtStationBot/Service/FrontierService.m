@@ -7,6 +7,7 @@
 
 #import "FrontierService.h"
 #import "Constants.h"
+#import "ArtStationBot-Swift.h"
 
 static FrontierService *_frontierService;
 
@@ -312,6 +313,20 @@ static FrontierService *_frontierService;
 - (void)updateMessageForSkill:(Skill *)skill message:(NSString *)message {
     [self.fdbService updateMessage:message forSkill:skill callback:^(bool status) {
         debug(@"Message update status for skill %@: %d", skill.name, status);
+    }];
+}
+
+- (void)updateSenderDetails:(SenderDetails *)sender callback:(void (^)(bool status))callback {
+    BOOL ret = NO;
+    /* Save credentials to macOS keychain */
+    ret = [Utils setAccountToKeychainWithName:sender.artStationEmail password:sender.password];
+    if (!ret) {
+        callback(ret);
+        return;
+    }
+    /* Update sender details in the DB */
+    [self.fdbService upsertSender:sender callback:^(bool status) {
+        callback(status);
     }];
 }
 
