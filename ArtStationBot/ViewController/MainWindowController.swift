@@ -17,6 +17,8 @@ class MainWindowController: NSWindowController {
     private lazy var dbService = { return FoundationDBService.shared() }()
     private lazy var windowName: String = { NSStringFromClass(type(of: self)) }()
     private lazy var win: NSWindow = { return UI.createWindow() }()
+    private lazy var mainWindowVC: MainViewController = { return MainViewController() }()
+    private lazy var settingsWindowVC: SettingsViewController = { return SettingsViewController() }()
     private lazy var toolbar: NSToolbar = { return UI.createToolbar(id: self.toolbarId) }()
     private lazy var segmentedControl: NSSegmentedControl = {
         return UI.createSegmentedControl(labels: [UI.lmsg("Dashboard"), UI.lmsg("Data"), UI.lmsg("Settings")],
@@ -57,6 +59,7 @@ class MainWindowController: NSWindowController {
         return xs
     }()
     private lazy var webkitWindow: WebKitWindowController = { return UI.createWebKitWindow() }()
+    private var segmentSelectedIndex: Int = 0
 
     override init(window: NSWindow?) {
         super.init(window: window)
@@ -74,7 +77,7 @@ class MainWindowController: NSWindowController {
     }
 
     func initUI() {
-        self.win.contentViewController = MainViewController()
+        self.win.contentViewController = self.mainWindowVC
         self.shouldCascadeWindows = true
         self.contentViewController = win.contentViewController
         UI.setMainWindowBounds(self.win)
@@ -99,6 +102,17 @@ class MainWindowController: NSWindowController {
 
     @objc func segmentedControlDidClick(sender: NSSegmentedControl) {
         print("segmented control index: \(sender.selectedSegment)")
+        if self.segmentSelectedIndex == sender.selectedSegment { return }
+        self.segmentSelectedIndex = sender.selectedSegment
+        if sender.selectedSegment == 2 {  // Settings
+            self.window!.contentViewController = self.settingsWindowVC
+            UI.setMainWindowBounds(self.window!)
+        } else if sender.selectedSegment == 1 {  // Data
+
+        } else if sender.selectedSegment == 0 {  // Dashboard
+            self.window!.contentViewController = self.mainWindowVC
+            UI.setMainWindowBounds(self.window!)
+        }
     }
 }
 

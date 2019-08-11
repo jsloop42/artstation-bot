@@ -82,7 +82,7 @@ class WebKitViewController: NSViewController {
 
     override func loadView() {
         self.view = NSView()
-        self.log.debug("webkit load view")
+        //self.log.debug("webkit load view")
         self.webView.navigationDelegate = self
         self.webView.uiDelegate = self
         self.webView.customUserAgent = Utils.getRandomUserAgent()
@@ -192,15 +192,15 @@ extension WebKitViewController: WKScriptMessageHandler {
 
 extension WebKitViewController: WKNavigationDelegate, WKUIDelegate {
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        self.log.debug("webview is loading")
+        //self.log.debug("webview is loading")
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        self.log.debug("webview did fail to provision")
+        //self.log.debug("webview did fail to provision")
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        self.log.debug("webview did finish")
+        //self.log.debug("webview did finish")
         switch self.state.getCurrentPage() {
         case .home:
             if !self.state.getIsSignedIn() && self.shouldSignIn { self.signIn() }
@@ -211,11 +211,11 @@ extension WebKitViewController: WKNavigationDelegate, WKUIDelegate {
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        self.log.debug("webview did fail")
+        //self.log.debug("webview did fail")
     }
 
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        self.log.debug("webview did commit")
+        //self.log.debug("webview did commit")
     }
 }
 

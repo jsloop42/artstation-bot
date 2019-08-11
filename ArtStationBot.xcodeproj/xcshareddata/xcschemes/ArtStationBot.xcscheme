@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1BD8B30D22FEB99200A8663E"
+               BlueprintIdentifier = "1B55C59122FEBACF00E58D2C"
                BuildableName = "ArtStationBotTests.xctest"
                BlueprintName = "ArtStationBotTests"
                ReferencedContainer = "container:ArtStationBot.xcodeproj">
@@ -71,6 +71,12 @@
             ReferencedContainer = "container:ArtStationBot.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints YES"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>

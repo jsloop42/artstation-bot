@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="c22-O7-iKe" customClass="SettingsView" customModule="ArtStationBot" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="1147" height="319"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="12" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="18d-zq-ecf">
+                    <rect key="frame" x="16" y="8" width="1115" height="303"/>
+                    <subviews>
+                        <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5KW-Np-PFm">
+                            <rect key="frame" x="0.0" y="236" width="1115" height="67"/>
+                            <subviews>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hWm-fL-Mud">
+                                    <rect key="frame" x="-2" y="50" width="1119" height="17"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" title="Sender Credential" id="kSP-Ng-a0d">
+                                        <font key="font" usesAppearanceFont="YES"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <stackView distribution="fillEqually" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dFI-Z0-cSP">
+                                    <rect key="frame" x="0.0" y="0.0" width="1115" height="42"/>
+                                    <subviews>
+                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NvL-Je-bHd" customClass="ASTextField" customModule="ArtStationBot" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="20" width="538" height="22"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Email" drawsBackground="YES" usesSingleLineMode="YES" id="Z1A-La-1ya">
+                                                <font key="font" usesAppearanceFont="YES"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <connections>
+                                                <action selector="click:" target="c22-O7-iKe" id="uaX-ul-Sy0"/>
+                                            </connections>
+                                        </textField>
+                                        <secureTextField verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="Ywc-y3-xuh" customClass="ASSecureTextField" customModule="ArtStationBot" customModuleProvider="target">
+                                            <rect key="frame" x="546" y="20" width="537" height="22"/>
+                                            <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Password" drawsBackground="YES" usesSingleLineMode="YES" id="Qxp-zE-uri">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                <allowedInputSourceLocales>
+                                                    <string>NSAllRomanInputSourcesLocaleIdentifier</string>
+                                                </allowedInputSourceLocales>
+                                            </secureTextFieldCell>
+                                        </secureTextField>
+                                        <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aI3-0r-FSf">
+                                            <rect key="frame" x="1085" y="14" width="36" height="32"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="24" id="eUy-3g-4wO"/>
+                                            </constraints>
+                                            <buttonCell key="cell" type="push" bezelStyle="rounded" image="edit" imagePosition="only" alignment="center" alternateImage="edit" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ZBT-FK-xD8">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </button>
+                                    </subviews>
+                                    <visibilityPriorities>
+                                        <integer value="1000"/>
+                                        <integer value="1000"/>
+                                        <integer value="1000"/>
+                                    </visibilityPriorities>
+                                    <customSpacing>
+                                        <real value="3.4028234663852886e+38"/>
+                                        <real value="3.4028234663852886e+38"/>
+                                        <real value="3.4028234663852886e+38"/>
+                                    </customSpacing>
+                                </stackView>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="hWm-fL-Mud" firstAttribute="leading" secondItem="5KW-Np-PFm" secondAttribute="leading" id="CKV-WC-l6i"/>
+                                <constraint firstItem="hWm-fL-Mud" firstAttribute="top" secondItem="5KW-Np-PFm" secondAttribute="top" id="DoJ-uy-IN9"/>
+                                <constraint firstItem="dFI-Z0-cSP" firstAttribute="top" secondItem="hWm-fL-Mud" secondAttribute="bottom" constant="8" id="RHz-Ia-GCs"/>
+                                <constraint firstItem="dFI-Z0-cSP" firstAttribute="top" secondItem="hWm-fL-Mud" secondAttribute="bottom" constant="8" id="cEg-um-96X"/>
+                                <constraint firstAttribute="trailing" secondItem="dFI-Z0-cSP" secondAttribute="trailing" id="ixe-f7-x7a"/>
+                                <constraint firstItem="dFI-Z0-cSP" firstAttribute="leading" secondItem="5KW-Np-PFm" secondAttribute="leading" id="nOz-Tp-gdO"/>
+                                <constraint firstAttribute="trailing" secondItem="hWm-fL-Mud" secondAttribute="trailing" id="tzX-uZ-Xri"/>
+                            </constraints>
+                            <visibilityPriorities>
+                                <integer value="1000"/>
+                                <integer value="1000"/>
+                            </visibilityPriorities>
+                            <customSpacing>
+                                <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
+                            </customSpacing>
+                        </stackView>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Xzx-RV-ccq">
+                            <rect key="frame" x="-2" y="207" width="1119" height="17"/>
+                            <textFieldCell key="cell" lineBreakMode="clipping" title="Message For Skill" id="H9X-wm-fhV">
+                                <font key="font" usesAppearanceFont="YES"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="h4H-t0-eCI">
+                            <rect key="frame" x="0.0" y="0.0" width="1115" height="195"/>
+                        </customView>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="Xzx-RV-ccq" firstAttribute="leading" secondItem="18d-zq-ecf" secondAttribute="leading" id="7YA-Bt-UT6"/>
+                        <constraint firstItem="h4H-t0-eCI" firstAttribute="leading" secondItem="18d-zq-ecf" secondAttribute="leading" id="9ey-A2-2oF"/>
+                        <constraint firstAttribute="trailing" secondItem="Xzx-RV-ccq" secondAttribute="trailing" id="Chs-Fi-jb4"/>
+                        <constraint firstAttribute="trailing" secondItem="5KW-Np-PFm" secondAttribute="trailing" id="Oo1-eZ-yRV"/>
+                        <constraint firstItem="5KW-Np-PFm" firstAttribute="leading" secondItem="18d-zq-ecf" secondAttribute="leading" id="WlL-As-Stg"/>
+                        <constraint firstItem="5KW-Np-PFm" firstAttribute="top" secondItem="18d-zq-ecf" secondAttribute="top" id="Yk8-8D-0Cg"/>
+                        <constraint firstAttribute="trailing" secondItem="h4H-t0-eCI" secondAttribute="trailing" id="ZWF-Cs-0ng"/>
+                    </constraints>
+                    <visibilityPriorities>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
+                    </visibilityPriorities>
+                    <customSpacing>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
+                    </customSpacing>
+                </stackView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="18d-zq-ecf" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="16" id="a10-W3-NB7"/>
+                <constraint firstItem="18d-zq-ecf" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="8" id="f07-WH-UaH"/>
+                <constraint firstAttribute="trailing" secondItem="18d-zq-ecf" secondAttribute="trailing" constant="16" id="lda-dA-8Wf"/>
+                <constraint firstAttribute="bottom" secondItem="18d-zq-ecf" secondAttribute="bottom" constant="8" id="sbf-7B-hIS"/>
+            </constraints>
+            <connections>
+                <outlet property="credsEditBtn" destination="aI3-0r-FSf" id="jP7-NS-nhp"/>
+                <outlet property="emailTextField" destination="NvL-Je-bHd" id="Iqg-Bf-cqI"/>
+                <outlet property="passwordTextField" destination="Ywc-y3-xuh" id="GDK-MX-SYS"/>
+            </connections>
+        </customView>
+    </objects>
+    <resources>
+        <image name="edit" width="22" height="22"/>
+    </resources>
+</document>

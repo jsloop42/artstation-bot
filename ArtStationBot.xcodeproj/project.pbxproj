@@ -12,6 +12,11 @@
 		1B55C59E22FED79B00E58D2C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1B55C59D22FED79A00E58D2C /* README.md */; };
 		1BD8B30622FEA60000A8663E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD8B30522FEA60000A8663E /* SettingsViewController.swift */; };
 		1BD8B30922FEB31A00A8663E /* MessageTemplateRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD8B30822FEB31A00A8663E /* MessageTemplateRenderer.m */; };
+		1BE6886322FF01D50000E9CE /* SettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BE6886222FF01D50000E9CE /* SettingsView.xib */; };
+		1BE6886522FF024B0000E9CE /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE6886422FF024B0000E9CE /* SettingsView.swift */; };
+		1BE6886722FF2BDB0000E9CE /* ASTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE6886622FF2BDB0000E9CE /* ASTextField.swift */; };
+		1BE6887122FF4AAB0000E9CE /* ASTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE6887022FF4AAB0000E9CE /* ASTableView.m */; };
+		1BE688C322FFF7FB0000E9CE /* ASSecureTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE688C222FFF7FB0000E9CE /* ASSecureTextField.swift */; };
 		9E044E5E22F0B4A7000D6780 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E5D22F0B4A7000D6780 /* User.m */; };
 		9E044E6122F0B738000D6780 /* SampleProject.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6022F0B738000D6780 /* SampleProject.m */; };
 		9E044E6422F0B7CE000D6780 /* Skill.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6322F0B7CE000D6780 /* Skill.m */; };
@@ -94,6 +99,12 @@
 		1BD8B30522FEA60000A8663E /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		1BD8B30722FEB31A00A8663E /* MessageTemplateRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageTemplateRenderer.h; sourceTree = "<group>"; };
 		1BD8B30822FEB31A00A8663E /* MessageTemplateRenderer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MessageTemplateRenderer.m; sourceTree = "<group>"; };
+		1BE6886222FF01D50000E9CE /* SettingsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsView.xib; sourceTree = "<group>"; };
+		1BE6886422FF024B0000E9CE /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		1BE6886622FF2BDB0000E9CE /* ASTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTextField.swift; sourceTree = "<group>"; };
+		1BE6886F22FF4AAB0000E9CE /* ASTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ASTableView.h; sourceTree = "<group>"; };
+		1BE6887022FF4AAB0000E9CE /* ASTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ASTableView.m; sourceTree = "<group>"; };
+		1BE688C222FFF7FB0000E9CE /* ASSecureTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASSecureTextField.swift; sourceTree = "<group>"; };
 		9E044E5C22F0B4A7000D6780 /* User.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		9E044E5D22F0B4A7000D6780 /* User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		9E044E5F22F0B738000D6780 /* SampleProject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SampleProject.h; sourceTree = "<group>"; };
@@ -260,6 +271,12 @@
 		9E39027B22E2341E009D1A36 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1BE688C222FFF7FB0000E9CE /* ASSecureTextField.swift */,
+				1BE6886F22FF4AAB0000E9CE /* ASTableView.h */,
+				1BE6887022FF4AAB0000E9CE /* ASTableView.m */,
+				1BE6886622FF2BDB0000E9CE /* ASTextField.swift */,
+				1BE6886422FF024B0000E9CE /* SettingsView.swift */,
+				1BE6886222FF01D50000E9CE /* SettingsView.xib */,
 				9E39029422E23C61009D1A36 /* UI.swift */,
 			);
 			path = View;
@@ -446,6 +463,7 @@
 				9E39025322E230E5009D1A36 /* Assets.xcassets in Resources */,
 				9E2F29FF22E474C500D5B28A /* Localizable.strings in Resources */,
 				1B55C59E22FED79B00E58D2C /* README.md in Resources */,
+				1BE6886322FF01D50000E9CE /* SettingsView.xib in Resources */,
 				9E66CE0622EB92B300F748D9 /* config.plist in Resources */,
 				9ECAFABB22E2FA6500953081 /* artstationbot.js in Resources */,
 			);
@@ -477,7 +495,9 @@
 				9E044E6122F0B738000D6780 /* SampleProject.m in Sources */,
 				9E296E4022F363BE001BED13 /* Constants.m in Sources */,
 				9E71EDC722FE17DD0055830B /* SSKeychain.m in Sources */,
+				1BE688C322FFF7FB0000E9CE /* ASSecureTextField.swift in Sources */,
 				9E39029922E240C7009D1A36 /* main.swift in Sources */,
+				1BE6887122FF4AAB0000E9CE /* ASTableView.m in Sources */,
 				9E70E79C22F74C60009FF504 /* StateData.m in Sources */,
 				9E296E4622F58509001BED13 /* Country.m in Sources */,
 				9E70E7A522F88A8D009FF504 /* FrontierService.m in Sources */,
@@ -487,6 +507,8 @@
 				9E044E6422F0B7CE000D6780 /* Skill.m in Sources */,
 				9E70E7A222F88862009FF504 /* CrawlerState.m in Sources */,
 				9E39028C22E23A05009D1A36 /* MainWindowController.swift in Sources */,
+				1BE6886522FF024B0000E9CE /* SettingsView.swift in Sources */,
+				1BE6886722FF2BDB0000E9CE /* ASTextField.swift in Sources */,
 				9ECAFABF22E319D500953081 /* WebViewMessageService.swift in Sources */,
 				9E39029522E23C61009D1A36 /* UI.swift in Sources */,
 				9E3B992622E48713007C94A7 /* NetworkService.swift in Sources */,

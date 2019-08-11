@@ -65,6 +65,15 @@ class UI: NSObject {
         return btn
     }
 
+    static func createStackView() -> NSStackView {
+        let sv = NSStackView(frame: NSMakeRect(0, 0, 0, 0))
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        sv.distribution = .fill
+        sv.alignment = .left
+        sv.orientation = .vertical
+        return sv
+    }
+
     static func lmsg(_ key: String) -> String {
         return lmsg(key, "en")  // Using en as default as there is only one localization at present
     }
@@ -91,7 +100,8 @@ class UI: NSObject {
         if let path = mainBundle.path(forResource: lang, ofType: "lproj") {
             if lang == "en" { self.enStringBundle = Bundle(path: path) }
         }
-    }}
+    }
+}
 
 extension NSWindow {
     public func setFrameOriginToCenterOfScreen() {

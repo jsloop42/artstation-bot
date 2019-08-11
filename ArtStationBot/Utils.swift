@@ -87,4 +87,11 @@ class Utils: NSObject {
     static func getAccountFromKeychain(name: String) -> String {
         return SSKeychain.password(forService: Const.serviceName, account: name)
     }
+
+    static func isDarkMode() -> Bool {
+        if let style = UserDefaults.standard.string(forKey: "AppleInterfaceStyle"), style == "Dark" {
+            return true
+        }
+        return false
+    }
 }
