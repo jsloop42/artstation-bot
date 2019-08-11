@@ -41,12 +41,6 @@ class MainWindowController: NSWindowController {
         btn.toolTip = UI.lmsg("Start Messenger")
         return btn
     }()
-    private lazy var credsBtn: NSButton = {
-        let btn = UI.createButton()
-        btn.title = UI.lmsg("Credential")
-        btn.toolTip = UI.lmsg("Set credentials")
-        return btn
-    }()
     private lazy var dspaceId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarDynamicSpace") }()
     private lazy var dspace: DynamicSpace = { return DynamicSpace(itemIdentifier: self.dspaceId) }()
     private lazy var toolbarItems: [NSToolbarItem.Identifier] = {
@@ -145,10 +139,6 @@ extension MainWindowController: NSToolbarDelegate {
             toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
             toolbarItem.label = UI.lmsg("Message")
             toolbarItem.view = self.messageBtn
-        case self.toolbarCredsBtnId:
-            toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
-            toolbarItem.label = UI.lmsg("Credential")
-            toolbarItem.view = self.credsBtn
         case self.dspaceId:
             toolbarItem = self.dspace
         default:
@@ -158,7 +148,7 @@ extension MainWindowController: NSToolbarDelegate {
     }
 
     func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        return [self.toolbarCrawlBtnId, self.toolbarMessageBtnId, self.toolbarCredsBtnId, self.toolbarSegmentedControlId, self.dspaceId, .space, .flexibleSpace]
+        return [self.toolbarCrawlBtnId, self.toolbarMessageBtnId, self.toolbarSegmentedControlId, self.dspaceId, .space, .flexibleSpace]
     }
 
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {

@@ -14,6 +14,7 @@ class SettingsView: NSView {
     @IBOutlet weak var credsEditBtn: NSButton!
     @IBOutlet weak var emailTextField: ASTextField!
     @IBOutlet weak var passwordTextField: NSSecureTextField!
+    @IBOutlet weak var tableViewContainer: NSView!
     
     required init?(coder decoder: NSCoder) {
         super.init(coder: decoder)

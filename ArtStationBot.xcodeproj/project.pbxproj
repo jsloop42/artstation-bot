@@ -15,7 +15,7 @@
 		1BE6886322FF01D50000E9CE /* SettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BE6886222FF01D50000E9CE /* SettingsView.xib */; };
 		1BE6886522FF024B0000E9CE /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE6886422FF024B0000E9CE /* SettingsView.swift */; };
 		1BE6886722FF2BDB0000E9CE /* ASTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE6886622FF2BDB0000E9CE /* ASTextField.swift */; };
-		1BE6887122FF4AAB0000E9CE /* ASTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE6887022FF4AAB0000E9CE /* ASTableView.m */; };
+		1BE6887122FF4AAB0000E9CE /* ASTableViewBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE6887022FF4AAB0000E9CE /* ASTableViewBuilder.m */; };
 		1BE688C322FFF7FB0000E9CE /* ASSecureTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE688C222FFF7FB0000E9CE /* ASSecureTextField.swift */; };
 		9E044E5E22F0B4A7000D6780 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E5D22F0B4A7000D6780 /* User.m */; };
 		9E044E6122F0B738000D6780 /* SampleProject.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E044E6022F0B738000D6780 /* SampleProject.m */; };
@@ -102,8 +102,8 @@
 		1BE6886222FF01D50000E9CE /* SettingsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsView.xib; sourceTree = "<group>"; };
 		1BE6886422FF024B0000E9CE /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1BE6886622FF2BDB0000E9CE /* ASTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTextField.swift; sourceTree = "<group>"; };
-		1BE6886F22FF4AAB0000E9CE /* ASTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ASTableView.h; sourceTree = "<group>"; };
-		1BE6887022FF4AAB0000E9CE /* ASTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ASTableView.m; sourceTree = "<group>"; };
+		1BE6886F22FF4AAB0000E9CE /* ASTableViewBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ASTableViewBuilder.h; sourceTree = "<group>"; };
+		1BE6887022FF4AAB0000E9CE /* ASTableViewBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ASTableViewBuilder.m; sourceTree = "<group>"; };
 		1BE688C222FFF7FB0000E9CE /* ASSecureTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASSecureTextField.swift; sourceTree = "<group>"; };
 		9E044E5C22F0B4A7000D6780 /* User.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		9E044E5D22F0B4A7000D6780 /* User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
@@ -272,8 +272,8 @@
 			isa = PBXGroup;
 			children = (
 				1BE688C222FFF7FB0000E9CE /* ASSecureTextField.swift */,
-				1BE6886F22FF4AAB0000E9CE /* ASTableView.h */,
-				1BE6887022FF4AAB0000E9CE /* ASTableView.m */,
+				1BE6886F22FF4AAB0000E9CE /* ASTableViewBuilder.h */,
+				1BE6887022FF4AAB0000E9CE /* ASTableViewBuilder.m */,
 				1BE6886622FF2BDB0000E9CE /* ASTextField.swift */,
 				1BE6886422FF024B0000E9CE /* SettingsView.swift */,
 				1BE6886222FF01D50000E9CE /* SettingsView.xib */,
@@ -497,7 +497,7 @@
 				9E71EDC722FE17DD0055830B /* SSKeychain.m in Sources */,
 				1BE688C322FFF7FB0000E9CE /* ASSecureTextField.swift in Sources */,
 				9E39029922E240C7009D1A36 /* main.swift in Sources */,
-				1BE6887122FF4AAB0000E9CE /* ASTableView.m in Sources */,
+				1BE6887122FF4AAB0000E9CE /* ASTableViewBuilder.m in Sources */,
 				9E70E79C22F74C60009FF504 /* StateData.m in Sources */,
 				9E296E4622F58509001BED13 /* Country.m in Sources */,
 				9E70E7A522F88A8D009FF504 /* FrontierService.m in Sources */,
