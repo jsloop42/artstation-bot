@@ -45,6 +45,7 @@
 		9E39029922E240C7009D1A36 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E39029822E240C7009D1A36 /* main.swift */; };
 		9E3B992622E48713007C94A7 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992522E48713007C94A7 /* NetworkService.swift */; };
 		9E3B992822E48A3E007C94A7 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992722E48A3E007C94A7 /* Enums.swift */; };
+		9E3F12EE2300448A00CA907D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E3F12ED2300448A00CA907D /* MainMenu.xib */; };
 		9E5BD92522E644CA00C972A9 /* FoundationDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5BD92422E644CA00C972A9 /* FoundationDBService.m */; };
 		9E66CE0622EB92B300F748D9 /* config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E66CE0522EB92B300F748D9 /* config.plist */; };
 		9E6720ED22FE256B00F5DC96 /* ArtStationBot.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9E6720EB22FE256B00F5DC96 /* ArtStationBot.xcdatamodeld */; };
@@ -141,6 +142,7 @@
 		9E39029822E240C7009D1A36 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		9E3B992522E48713007C94A7 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		9E3B992722E48A3E007C94A7 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		9E3F12ED2300448A00CA907D /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		9E5BD92222E644C900C972A9 /* ArtStationBot-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ArtStationBot-Bridging-Header.h"; sourceTree = "<group>"; };
 		9E5BD92322E644CA00C972A9 /* FoundationDBService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FoundationDBService.h; sourceTree = "<group>"; };
 		9E5BD92422E644CA00C972A9 /* FoundationDBService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FoundationDBService.m; sourceTree = "<group>"; };
@@ -275,6 +277,7 @@
 				1BE6886F22FF4AAB0000E9CE /* ASTableViewBuilder.h */,
 				1BE6887022FF4AAB0000E9CE /* ASTableViewBuilder.m */,
 				1BE6886622FF2BDB0000E9CE /* ASTextField.swift */,
+				9E3F12ED2300448A00CA907D /* MainMenu.xib */,
 				1BE6886422FF024B0000E9CE /* SettingsView.swift */,
 				1BE6886222FF01D50000E9CE /* SettingsView.xib */,
 				9E39029422E23C61009D1A36 /* UI.swift */,
@@ -465,6 +468,7 @@
 				1B55C59E22FED79B00E58D2C /* README.md in Resources */,
 				1BE6886322FF01D50000E9CE /* SettingsView.xib in Resources */,
 				9E66CE0622EB92B300F748D9 /* config.plist in Resources */,
+				9E3F12EE2300448A00CA907D /* MainMenu.xib in Resources */,
 				9ECAFABB22E2FA6500953081 /* artstationbot.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

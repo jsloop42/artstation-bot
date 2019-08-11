@@ -54,6 +54,7 @@ class MainWindowController: NSWindowController {
     }()
     private lazy var webkitWindow: WebKitWindowController = { return UI.createWebKitWindow() }()
     private var segmentSelectedIndex: Int = 0
+    private var menuObjects: NSArray?
 
     override init(window: NSWindow?) {
         super.init(window: window)
@@ -82,6 +83,10 @@ class MainWindowController: NSWindowController {
         self.window?.titleVisibility = .hidden
         //self.window?.title = "ArtStation Bot"
         self.window?.toolbar = self.toolbar
+        Bundle.main.loadNibNamed("MainMenu", owner: self, topLevelObjects: &menuObjects)
+        guard let results = self.menuObjects else { return }
+        let views = Array<Any>(results).filter { $0 is NSMenu }
+        NSApplication.shared.mainMenu = views.last as? NSMenu
     }
 
     func show() {
@@ -92,6 +97,7 @@ class MainWindowController: NSWindowController {
     func initEvents() {
         self.crawlBtn.action = #selector(crawlButtonDidClick)
         self.messageBtn.action = #selector(messageButtonDidClick)
+        self.window?.delegate = self
     }
 
     @objc func segmentedControlDidClick(sender: NSSegmentedControl) {
@@ -153,5 +159,16 @@ extension MainWindowController: NSToolbarDelegate {
 
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
         return self.toolbarItems
+    }
+}
+
+extension MainWindowController: NSWindowDelegate {
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        self.log.debug("window should close event")
+        return true
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        self.log.debug("window will close")
     }
 }
