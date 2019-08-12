@@ -121,6 +121,7 @@ static FrontierService *_frontierService;
         [self.fdbService insertFilters:filters callback:^(bool status) {
             debug(@"Filters list updated");
             debug(@"Skills state updated with count: %ld", StateData.shared.skills.count);
+            [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.settingsTableViewShouldReload object:self]];
             [self.fdbService getCrawlerState:^(CrawlerState * _Nonnull state) {
                 debug(@"Crawler state obtained with fetch user count: %ld", state.fetchState.count);
                 self.crawlerService.crawlerState = state;
