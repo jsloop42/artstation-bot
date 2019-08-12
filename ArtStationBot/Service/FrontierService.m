@@ -20,10 +20,6 @@ static FrontierService *_frontierService;
 @property (nonatomic, readwrite) FoundationDBService *fdbService;
 
 /* Crawler */
-/* Table that keeps info on the crawls that can to be scheduled */
-@property (atomic, readwrite) NSMutableDictionary<NSNumber *, UserFetchState *> *fetchTable;  /* skillId, userFetchState */
-/* Table that keeps the current running crawls */
-@property (atomic, readwrite) NSMutableDictionary<NSNumber *, UserFetchState *> *crawlerRunTable;  /* skillId, userFetchState */
 @property (atomic, readwrite) GKARC4RandomSource *crawlerARC4RandomSource;
 @property (atomic, readwrite) GKGaussianDistribution *crawlerGaussianDistribution;
 @property (atomic, readwrite) NSUInteger crawlerTotalDelay;
@@ -31,8 +27,6 @@ static FrontierService *_frontierService;
 @property (nonatomic, readwrite) NSUInteger crawlerBatchCount;  /* Used to choose different delay for each batch run */
 
 /* Messenger */
-@property (atomic, readwrite) NSMutableDictionary<UserMessageKey *, UserMessageState *> *messageTable;  /* Message schedule queue (table) - skillId, user */
-@property (atomic, readwrite) NSMutableDictionary<UserMessageKey *, UserMessageState *> *messengerRunTable;  /*  skillId, user */
 /* Send message proccessing queue, but the message is not yet run. The message state has been picked from the messageTable, but not yet ready for sending
    (waiting for the WebKit window to load), after which it will be added to the message run table */
 @property (atomic, readwrite) NSMutableArray<UserMessageState *> *messageStartQueue;
@@ -178,6 +172,7 @@ static FrontierService *_frontierService;
                 fetchState.page = page;
                 fetchState.skillId = [NSString stringWithFormat:@"%ld", skillId];
                 fetchState.skillName = skill.name;
+                fetchState.scheduledTime = [NSDate dateWithTimeInterval:self.crawlerTotalDelay + 60 sinceDate:[NSDate new]];  // initial data
                 [self.fetchTable setObject:fetchState forKey:@(skillId)];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self scheduleFetch:skillId];
@@ -188,6 +183,7 @@ static FrontierService *_frontierService;
         //}
         count++;
     }
+    [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.dashboardTableViewShouldReload object:self]];
 }
 
 /** Schedules a fetch with a delay with the past scheduled delays taken in account. The overlap of two fetches is minimal. */
@@ -196,6 +192,9 @@ static FrontierService *_frontierService;
     debug(@"rand: %ld", rand);
     self.crawlerTotalDelay += rand;
     debug(@"craweler total delay: %ld", self.crawlerTotalDelay);
+    UserFetchState *fetchState = [self.fetchTable objectForKey:@(index)];
+    fetchState.scheduledTime = [NSDate dateWithTimeInterval:self.crawlerTotalDelay sinceDate:[NSDate new]];
+    [self.fetchTable setObject:fetchState forKey:@(index)];
     [self performSelector:@selector(performFetch:) withObject:@(index) afterDelay:self.crawlerTotalDelay];
 }
 
@@ -211,6 +210,9 @@ static FrontierService *_frontierService;
                     for (user in resp.usersList) {
                         [self.fdbService insertUser:user callback:^(bool status) {
                             debug(@"insert status for %lu: %d", (unsigned long)user.userId, status);
+                            [self.crawlerRunTable removeObjectForKey:index];
+                            [NSNotificationCenter.defaultCenter
+                             postNotification:[NSNotification notificationWithName:ASNotification.dashboardTableViewShouldReload object:self]];
                         }];
                     }
                 }
@@ -218,6 +220,7 @@ static FrontierService *_frontierService;
         }];
         [self.crawlerRunTable setObject:fetchState forKey:index];  /* add the state to run table */
         [self.fetchTable removeObjectForKey:index];  /* clear the state from fetch table */
+        [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.dashboardTableViewShouldReload object:self]];
     }
     debug(@"fetch table count: %ld", [self.fetchTable count]);
     /* Queue the next batch */
@@ -265,6 +268,7 @@ static FrontierService *_frontierService;
                     state = [UserMessageState new];
                     state.skill = skill;
                     state.user = user;
+                    state.scheduledTime = [NSDate dateWithTimeInterval:self.messengerTotalDelay + 60 sinceDate:[NSDate new]];  // inital data
                     key = [UserMessageKey new];
                     key.skillId = @(skill.skillId);
                     key.userId = @(user.userId);
@@ -284,6 +288,10 @@ static FrontierService *_frontierService;
     debug(@"rand: %ld", rand);
     self.messengerTotalDelay += rand;
     debug(@"total messenger delay: %ld", self.messengerTotalDelay);
+    UserMessageState *state = [self.messageTable objectForKey:key];
+    state.scheduledTime = [NSDate dateWithTimeInterval:self.messengerTotalDelay sinceDate:[NSDate new]];
+    [self.messageTable setObject:state forKey:key];
+    [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.dashboardTableViewShouldReload object:self]];
     [self performSelector:@selector(performMessaging:) withObject:key afterDelay:self.messengerTotalDelay];
 }
 
@@ -364,9 +372,12 @@ static FrontierService *_frontierService;
             }
             [self.messengerRunTable removeObjectForKey:key];
             [self queueNextMessengerBatch];
+            [NSNotificationCenter.defaultCenter
+             postNotification:[NSNotification notificationWithName:ASNotification.dashboardTableViewShouldReload object:self]];
         }];
         [self.messengerRunTable setObject:state forKey:key];
         [self.messageTable removeObjectForKey:key];
+        [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.dashboardTableViewShouldReload object:self]];
     }
 }
 

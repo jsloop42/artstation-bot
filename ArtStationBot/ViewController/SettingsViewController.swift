@@ -17,7 +17,8 @@ class SettingsViewController: NSViewController {
     private lazy var tableViewBuilder: ASTableViewBuilder = { return ASTableViewBuilder() }()
     private lazy var tableView: NSTableView = { return self.tableViewBuilder.tableView }()
     private lazy var tableScrollView: NSScrollView = {
-        return self.tableViewBuilder.tableView(with: self.sview!.tableViewContainer, columns: UInt(self.columnIds.count), columnNames: self.columnIds)
+        return self.tableViewBuilder.tableView(with: self.sview!.tableViewContainer, columns: UInt(self.columnIds.count), columnNames: self.columnIds,
+                                               tableViewId: ASTableView.settings)
     }()
     private lazy var db: FoundationDBService = FoundationDBService.shared()
     private var skills: [Skill] = []
@@ -30,6 +31,7 @@ class SettingsViewController: NSViewController {
     private var shouldReloadCell = false
     private var currentEditRow = -1
     private var cellEditTimerDict: [Int: Timer] = [:]
+    private let cellId = "msgCell"
 
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -237,11 +239,11 @@ extension SettingsViewController: NSTableViewDelegate, NSTableViewDataSource {
     }
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        var textView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "myView"), owner: self) as? NSTextView
+        var textView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: self.cellId), owner: self) as? NSTextView
         guard let column = tableColumn else { return nil }
         if textView == nil {
             textView = NSTextView(frame: NSMakeRect(0, 0, column.width, 44))
-            textView!.identifier = NSUserInterfaceItemIdentifier(rawValue: "myView")
+            textView!.identifier = NSUserInterfaceItemIdentifier(rawValue: self.cellId)
             textView!.delegate = self
         }
         switch column.identifier.rawValue {
@@ -258,25 +260,19 @@ extension SettingsViewController: NSTableViewDelegate, NSTableViewDataSource {
             textView!.string = ""
             textView!.isEditable = false
         }
-        textView?.textColor = Utils.isDarkMode() ? NSColor.white : NSColor.black
-        if row % 2 == 0 {
-            textView!.backgroundColor = Utils.isDarkMode() ? NSColor(red:37/255, green:38/255, blue:36/255, alpha:1)
-                                                           : NSColor(red:255/255, green:255/255, blue:255/255, alpha:1)
-        } else {
-            textView!.backgroundColor = Utils.isDarkMode() ? NSColor(red:47/255, green:48/255, blue:46/255, alpha:1)
-                                                           : NSColor(red:244/255, green:244/255, blue:245/255, alpha:1)
-        }
+        UI.setTableTextViewColor(textView!, row: row)
         return textView
     }
 
     func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
-        let tf = NSTextField(string: self.skills[row].message)
-        let frame = tf.frame
+        let tv = NSTextView()
+        tv.string = self.skills[row].message
+        let frame = tv.frame
         if let last = self.tableView.tableColumns.last {
-            tf.frame = NSMakeRect(0, 0, last.width, frame.height)
-            tf.sizeToFit()
+            tv.frame = NSMakeRect(0, 0, last.width, frame.height)
+            tv.sizeToFit()
         }
-        return tf.frame.height < 23 ? 23 : tf.frame.height
+        return tv.frame.height < 23 ? 23 : tv.frame.height
     }
 }
 

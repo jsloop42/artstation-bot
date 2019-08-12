@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (class) NSString *sendMessage;
 @property (class) NSString *sendMessageACK;
 @property (class) NSString *settingsTableViewShouldReload;
+@property (class) NSString *dashboardTableViewShouldReload;
 @end
 
 @interface Constants : NSObject

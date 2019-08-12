@@ -12,6 +12,7 @@ import AppKit
 @objcMembers
 class UI: NSObject {
     private static var enStringBundle: Bundle?
+    private static var topLevelObjects: NSArray?
 
     static func createMainWindow() {
         (MainWindowController()).show()
@@ -28,6 +29,14 @@ class UI: NSObject {
         window.setFrame(NSRect(x: 0, y: 0, width: 500, height: 500), display: true)
         window.setFrameOriginToCenterOfScreen()
         return window
+    }
+
+    static func createFromNib(_ nibName: String) -> NSView? {
+        self.topLevelObjects = nil
+        Bundle.main.loadNibNamed(nibName, owner: self, topLevelObjects: &self.topLevelObjects)
+        guard let results = self.topLevelObjects else { return nil }
+        let views = Array<Any>(results).filter { $0 is NSView }
+        return views.last as? NSView
     }
 
     static func setMainWindowBounds(_ window: NSWindow) {
@@ -101,6 +110,17 @@ class UI: NSObject {
         let mainBundle = Bundle(for: self)
         if let path = mainBundle.path(forResource: lang, ofType: "lproj") {
             if lang == "en" { self.enStringBundle = Bundle(path: path) }
+        }
+    }
+
+    static func setTableTextViewColor(_ textView: NSTextView, row: Int) {
+        textView.textColor = Utils.isDarkMode() ? NSColor.white : NSColor.black
+        if row % 2 == 0 {
+            textView.backgroundColor = Utils.isDarkMode() ? NSColor(red:37/255, green:38/255, blue:36/255, alpha:1)
+                                                          : NSColor(red:255/255, green:255/255, blue:255/255, alpha:1)
+        } else {
+            textView.backgroundColor = Utils.isDarkMode() ? NSColor(red:47/255, green:48/255, blue:46/255, alpha:1)
+                                                          : NSColor(red:244/255, green:244/255, blue:245/255, alpha:1)
         }
     }
 }

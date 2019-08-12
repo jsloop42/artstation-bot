@@ -145,10 +145,10 @@
                                 </textFieldCell>
                             </textField>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="q4t-Qr-5qU" userLabel="TV View">
-                                <rect key="frame" x="0.0" y="33" width="2811" height="288"/>
+                                <rect key="frame" x="0.0" y="24" width="2811" height="297"/>
                                 <subviews>
                                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="afA-0y-OAz">
-                                        <rect key="frame" x="0.0" y="0.0" width="2811" height="288"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="2811" height="297"/>
                                     </customView>
                                 </subviews>
                                 <constraints>
@@ -159,12 +159,12 @@
                                 </constraints>
                             </customView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aFd-iC-Kue" userLabel="Status Bar Label">
-                                <rect key="frame" x="-2" y="8" width="2815" height="17"/>
+                                <rect key="frame" x="-2" y="4" width="2815" height="14"/>
                                 <shadow key="shadow">
                                     <color key="color" name="findHighlightColor" catalog="System" colorSpace="catalog"/>
                                 </shadow>
-                                <textFieldCell key="cell" lineBreakMode="truncatingTail" allowsUndo="NO" usesSingleLineMode="YES" id="mV4-TM-4oX">
-                                    <font key="font" metaFont="system"/>
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" allowsUndo="NO" title="Hello world" usesSingleLineMode="YES" id="mV4-TM-4oX">
+                                    <font key="font" metaFont="system" size="11"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
@@ -179,7 +179,7 @@
                             <constraint firstItem="Xzx-RV-ccq" firstAttribute="top" secondItem="Z9A-8G-iDu" secondAttribute="bottom" constant="8" id="Kfz-pN-ap7"/>
                             <constraint firstItem="hWm-fL-Mud" firstAttribute="leading" secondItem="BpU-RP-yat" secondAttribute="leading" id="MWt-VK-8Lb"/>
                             <constraint firstAttribute="trailing" secondItem="Xzx-RV-ccq" secondAttribute="trailing" id="PfH-Mj-Mes"/>
-                            <constraint firstItem="aFd-iC-Kue" firstAttribute="top" secondItem="q4t-Qr-5qU" secondAttribute="bottom" constant="8" id="S4v-O7-y29"/>
+                            <constraint firstItem="aFd-iC-Kue" firstAttribute="top" secondItem="q4t-Qr-5qU" secondAttribute="bottom" constant="6" id="S4v-O7-y29"/>
                             <constraint firstItem="Z9A-8G-iDu" firstAttribute="top" secondItem="dFI-Z0-cSP" secondAttribute="bottom" constant="8" id="VRx-2C-eqP"/>
                             <constraint firstAttribute="trailing" secondItem="q4t-Qr-5qU" secondAttribute="trailing" id="WhI-4P-vkD"/>
                             <constraint firstItem="Z9A-8G-iDu" firstAttribute="leading" secondItem="BpU-RP-yat" secondAttribute="leading" id="crT-e3-gCh"/>
@@ -188,7 +188,7 @@
                             <constraint firstItem="q4t-Qr-5qU" firstAttribute="top" secondItem="Xzx-RV-ccq" secondAttribute="bottom" constant="8" id="e3x-zY-lnW"/>
                             <constraint firstItem="hWm-fL-Mud" firstAttribute="top" secondItem="BpU-RP-yat" secondAttribute="top" id="eCB-Uz-8eZ"/>
                             <constraint firstAttribute="trailing" secondItem="aFd-iC-Kue" secondAttribute="trailing" id="fVb-QG-6f1"/>
-                            <constraint firstAttribute="bottom" secondItem="aFd-iC-Kue" secondAttribute="bottom" constant="8" id="u32-tA-Hpt"/>
+                            <constraint firstAttribute="bottom" secondItem="aFd-iC-Kue" secondAttribute="bottom" constant="4" id="u32-tA-Hpt"/>
                             <constraint firstItem="Xzx-RV-ccq" firstAttribute="leading" secondItem="BpU-RP-yat" secondAttribute="leading" id="xqD-zl-5xl"/>
                         </constraints>
                     </view>

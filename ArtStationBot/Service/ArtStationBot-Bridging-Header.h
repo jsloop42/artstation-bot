@@ -19,3 +19,4 @@
 #import "MessageTemplateRenderer.h"
 #import "ASTableViewBuilder.h"
 #import "SenderDetails.h"
+#import "DashboardViewModel.h"

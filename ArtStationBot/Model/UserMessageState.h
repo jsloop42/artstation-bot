@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readwrite) User *user;
 @property (nonatomic, readwrite) Skill *skill;
 @property (nonatomic, readwrite) BOOL isMessaged;
+@property (nonatomic, readwrite) NSDate *scheduledTime;
 @property (nonatomic, readwrite) NSDate *messagedAt;
 @property (nonatomic, readwrite) NSWindowController *webKitWC;
 @end

@@ -91,10 +91,12 @@ static NSString *_serviceName;
 static NSString *_sendMessage = @"sendMessage";
 static NSString *_sendMessageACK = @"sendMessageACK";
 static NSString *_settingsTableViewShouldReload = @"settingsTableViewShouldReload";
+static NSString *_dashboardTableViewShouldReload = @"dashboardTableViewShouldReload";
 
 @dynamic sendMessage;
 @dynamic sendMessageACK;
 @dynamic settingsTableViewShouldReload;
+@dynamic dashboardTableViewShouldReload;
 
 + (NSString *)sendMessage {
     return _sendMessage;
@@ -106,6 +108,10 @@ static NSString *_settingsTableViewShouldReload = @"settingsTableViewShouldReloa
 
 + (NSString *)settingsTableViewShouldReload {
     return _settingsTableViewShouldReload;
+}
+
++ (NSString *)dashboardTableViewShouldReload {
+    return _dashboardTableViewShouldReload;
 }
 
 @end

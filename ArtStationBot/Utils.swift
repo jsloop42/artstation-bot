@@ -102,4 +102,10 @@ class Utils: NSObject {
     static func getTimestamp() -> Int64 {
         return Int64((Date().timeIntervalSince1970 * 1000.0).rounded())
     }
+
+    static func getTimeStringFromDate(_ date: Date) -> String {
+        let df = DateFormatter()
+        df.dateFormat = "HH:mm:ss"
+        return df.string(from: date)
+    }
 }
