@@ -32,6 +32,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func themeChanged(_ notif: NSNotification) {
         self.log.debug("theme changed")
         StateData.shared().isDarkMode = Utils.isDarkMode()
+        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: ASNotification.settingsTableViewShouldReload)))
     }
 
     lazy var persistentContainer: NSPersistentContainer = {

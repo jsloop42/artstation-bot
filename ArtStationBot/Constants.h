@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ASNotification : NSObject
 @property (class) NSString *sendMessage;
 @property (class) NSString *sendMessageACK;
+@property (class) NSString *settingsTableViewShouldReload;
 @end
 
 @interface Constants : NSObject

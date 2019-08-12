@@ -47,6 +47,7 @@
 		9E3B992822E48A3E007C94A7 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3B992722E48A3E007C94A7 /* Enums.swift */; };
 		9E3F12EE2300448A00CA907D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E3F12ED2300448A00CA907D /* MainMenu.xib */; };
 		9E3F12F123007BC300CA907D /* SenderDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E3F12F023007BC300CA907D /* SenderDetails.m */; };
+		9E3F12F22300A32000CA907D /* MessageTemplateRenderer.h in Sources */ = {isa = PBXBuildFile; fileRef = 1BD8B30722FEB31A00A8663E /* MessageTemplateRenderer.h */; };
 		9E5BD92522E644CA00C972A9 /* FoundationDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5BD92422E644CA00C972A9 /* FoundationDBService.m */; };
 		9E66CE0622EB92B300F748D9 /* config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E66CE0522EB92B300F748D9 /* config.plist */; };
 		9E6720ED22FE256B00F5DC96 /* ArtStationBot.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9E6720EB22FE256B00F5DC96 /* ArtStationBot.xcdatamodeld */; };
@@ -485,6 +486,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E3F12F22300A32000CA907D /* MessageTemplateRenderer.h in Sources */,
 				1B55C59C22FEBC3000E58D2C /* MessageTemplateRenderer.m in Sources */,
 				1B55C59522FEBACF00E58D2C /* ArtStationBotTests.m in Sources */,
 			);

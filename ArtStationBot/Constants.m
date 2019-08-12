@@ -90,9 +90,11 @@ static NSString *_serviceName;
 @implementation ASNotification
 static NSString *_sendMessage = @"sendMessage";
 static NSString *_sendMessageACK = @"sendMessageACK";
+static NSString *_settingsTableViewShouldReload = @"settingsTableViewShouldReload";
 
 @dynamic sendMessage;
 @dynamic sendMessageACK;
+@dynamic settingsTableViewShouldReload;
 
 + (NSString *)sendMessage {
     return _sendMessage;
@@ -100,6 +102,10 @@ static NSString *_sendMessageACK = @"sendMessageACK";
 
 + (NSString *)sendMessageACK {
     return _sendMessageACK;
+}
+
++ (NSString *)settingsTableViewShouldReload {
+    return _settingsTableViewShouldReload;
 }
 
 @end

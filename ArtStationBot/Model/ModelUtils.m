@@ -44,6 +44,7 @@ static ModelUtils *_modelUtils;
     if (val && val != [NSNull null]) skill.name = (NSString *)val;
     val = [dict valueForKey:@"message"];
     if (val && val != [NSNull null]) skill.message = (NSString *)val;
+    skill.originalMessage = skill.message;
     return skill;
 }
 

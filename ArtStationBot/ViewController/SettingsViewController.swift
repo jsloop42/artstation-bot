@@ -27,9 +27,15 @@ class SettingsViewController: NSViewController {
     }()
     private var isInEditMode = false
     private let frontierService = FrontierService.shared()
+    private var shouldReloadCell = false
+    private var currentEditRow = -1
+    private var cellEditTimerDict: [Int: Timer] = [:]
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 
     override func viewDidLoad() {
-        self.log.debug("settings view controller did load")
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.reloadData()
@@ -61,6 +67,12 @@ class SettingsViewController: NSViewController {
     }
 
     func configUI() {
+        let columns = self.tableView.tableColumns
+        columns.forEach { col in
+            if col.identifier.rawValue == self.columnIds[0] as! String || col.identifier.rawValue == self.columnIds[1] as! String {
+                col.isEditable = false
+            }
+        }
         self.disableEditForAllTextFields()
         self.sview!.statusBarLabel.isHidden = true
         self.updateSenderDetailsInUI()
@@ -92,10 +104,17 @@ class SettingsViewController: NSViewController {
     func initEvents() {
         self.sview!.credsEditBtn.action = #selector(editBtnDidClick)
         self.sview!.cancelEditBtn.action = #selector(cancelEditBtnDidClick)
+        NotificationCenter.default.addObserver(self, selector: #selector(tableViewShouldReload),
+                                               name: NSNotification.Name(rawValue: ASNotification.settingsTableViewShouldReload), object: nil)
+    }
+
+    @objc func tableViewShouldReload() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 
     @objc func editBtnDidClick() {
-        self.log.debug("edit button did click")
         if isInEditMode {  // => update button did click
             self.updateSenderDetails { status in
                 if status {
@@ -169,7 +188,6 @@ class SettingsViewController: NSViewController {
 
     @objc func cancelEditBtnDidClick() {
         self.isInEditMode = false
-        self.log.debug("cancel edit button did click")
         self.disableEditForAllTextFields()
         self.sview!.credsEditBtn.image = NSImage(named: "edit")
     }
@@ -192,29 +210,100 @@ class SettingsViewController: NSViewController {
             }
         }
     }
+
+    func updateMessage(_ msg: String, for skill: Skill) {
+        self.db.updateMessage(msg, for:skill) { status in
+            DispatchQueue.main.async {
+                if status {
+                    skill.message = msg
+                    skill.originalMessage = msg
+                } else {
+                    skill.message = skill.originalMessage
+                    self.displayMessage(UI.lmsg("Error updating message"), isError: true)
+                }
+                self.tableView.reloadData()
+            }
+        }
+    }
 }
 
 extension SettingsViewController: NSTableViewDelegate, NSTableViewDataSource {
-
     func numberOfRows(in tableView: NSTableView) -> Int {
         return self.skills.count
     }
 
-    func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
-        if let column = tableColumn {
-            let id = column.identifier.rawValue
-            switch id {
-            case columnIds[0] as! String:
-                return String(format: "%ld", self.skills[row].skillId)
-            case columnIds[1] as! String:
-                return self.skills[row].name
-            case columnIds[2] as! String:
-                return self.skills[row].message
-            default:
-                return ""
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        var textView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "myView"), owner: self) as? NSTextView
+        guard let column = tableColumn else { return nil }
+        if textView == nil {
+            textView = NSTextView(frame: NSMakeRect(0, 0, column.width, 44))
+            textView!.identifier = NSUserInterfaceItemIdentifier(rawValue: "myView")
+            textView!.delegate = self
+        }
+        switch column.identifier.rawValue {
+        case self.columnIds[0] as! String:
+            textView!.string = String(format: "%ld", self.skills[row].skillId)
+            textView!.isEditable = false
+        case self.columnIds[1] as! String:
+            textView!.string = self.skills[row].name
+            textView!.isEditable = false
+        case self.columnIds[2] as! String:
+            textView!.string = self.skills[row].message
+            textView!.isEditable = true
+        default:
+            textView!.string = ""
+            textView!.isEditable = false
+        }
+        textView?.textColor = Utils.isDarkMode() ? NSColor.white : NSColor.black
+        if row % 2 == 0 {
+            textView!.backgroundColor = Utils.isDarkMode() ? NSColor(red:37/255, green:38/255, blue:36/255, alpha:1)
+                                                           : NSColor(red:255/255, green:255/255, blue:255/255, alpha:1)
+        } else {
+            textView!.backgroundColor = Utils.isDarkMode() ? NSColor(red:47/255, green:48/255, blue:46/255, alpha:1)
+                                                           : NSColor(red:244/255, green:244/255, blue:245/255, alpha:1)
+        }
+        return textView
+    }
+
+    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
+        let tf = NSTextField(string: self.skills[row].message)
+        let frame = tf.frame
+        if let last = self.tableView.tableColumns.last {
+            tf.frame = NSMakeRect(0, 0, last.width, frame.height)
+            tf.sizeToFit()
+        }
+        return tf.frame.height < 23 ? 23 : tf.frame.height
+    }
+}
+
+extension SettingsViewController: NSTextViewDelegate {
+    func textDidChange(_ notification: Notification) {
+        if let textView = notification.object as? NSTextView {
+            let row = self.tableView.row(for: textView)
+            let skill = self.skills[row]
+            skill.message = textView.string
+            self.shouldReloadCell = false
+            self.tableView.noteHeightOfRows(withIndexesChanged: IndexSet([row]))
+            self.tableView.reloadData(forRowIndexes: IndexSet([row]), columnIndexes: IndexSet([0, 1, 2]))
+            DispatchQueue.main.async {
+                textView.window?.makeFirstResponder(textView)
+                if let timer = self.cellEditTimerDict[row] { timer.invalidate() }
+                let timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false, block: { timer in
+                    timer.invalidate()
+                    self.updateMessage(skill.message, for: skill)
+                })
+                self.cellEditTimerDict[row] = timer
             }
         }
+    }
 
-        return ""
+    func textView(_ textView: NSTextView, shouldChangeTextIn affectedCharRange: NSRange, replacementString: String?) -> Bool {
+        self.log.debug("should change")
+        if replacementString == "\n" { // reload to update the cell height
+            self.shouldReloadCell = true
+        } else {
+            self.shouldReloadCell = false
+        }
+        return true
     }
 }
