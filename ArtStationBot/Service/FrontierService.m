@@ -357,10 +357,16 @@ static FrontierService *_frontierService;
         [wkwc.vc sendMessage:key state:state callback:^(BOOL status) {
             debug(@"Message send ack status: %hhd", status);
             [wkwc close];
-            [self.messageTable removeObjectForKey:key];
+            if (status) {
+                [self.fdbService updateMessageState:state.skill forUser:state.user.userId isMessaged:YES callback:^(bool status) {
+                    debug(@"Sent message updated status: %d", status);
+                }];
+            }
+            [self.messengerRunTable removeObjectForKey:key];
             [self queueNextMessengerBatch];
         }];
         [self.messengerRunTable setObject:state forKey:key];
+        [self.messageTable removeObjectForKey:key];
     }
 }
 

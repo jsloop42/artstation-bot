@@ -541,7 +541,7 @@ static FoundationDBService *fdb;
             skill_user_coll = mongoc_client_get_collection(client, dbName, skill_coll_name);
             skill_user_doc = BCON_NEW("_id", BCON_INT64(user.userId),
                                       "messaged", BCON_BOOL(NO),
-                                      "message_info", "[","]");
+                                      "created", BCON_DATE_TIME([Utils getTimestamp]));
             ret = mongoc_collection_insert_one(skill_user_coll, skill_user_doc, NULL, NULL, &err);
             mongoc_client_pool_push(pool, client);
             bson_destroy(skill_user_doc);
@@ -602,6 +602,27 @@ static FoundationDBService *fdb;
         }
         bson_destroy(selector);
         bson_destroy(skill_doc);
+        mongoc_collection_destroy(coll);
+        callback(status);
+    });
+}
+
+- (void)updateMessageState:(Skill *)skill forUser:(NSUInteger)userId isMessaged:(BOOL)isMessaged callback:(void (^)(bool status))callback {
+    dispatch_async(self.dispatchQueue, ^{
+        bool status = true;
+        bson_error_t err;
+        mongoc_client_t *client = mongoc_client_pool_pop(pool);
+        mongoc_collection_t *coll = mongoc_client_get_collection(client, dbName, [[NSString stringWithFormat:@"skills.%@.users", skill.name] UTF8String]);
+        bson_t *state_doc = BCON_NEW("$set", "{", "messaged", BCON_BOOL(isMessaged), "messaged_time", BCON_DATE_TIME([Utils getTimestamp]), "}");
+        bson_t *selector = BCON_NEW("_id", BCON_INT64((int64_t)userId));
+        bool ret = mongoc_collection_update_one(coll, selector, state_doc, NULL, NULL, &err);
+        mongoc_client_pool_push(pool, client);
+        if (!ret) {
+            status = false;
+            MONGOC_ERROR("Error updating message sent state: %d, %s", err.code, err.message);
+        }
+        bson_destroy(state_doc);
+        bson_destroy(selector);
         mongoc_collection_destroy(coll);
         callback(status);
     });
