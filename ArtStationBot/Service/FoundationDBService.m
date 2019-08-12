@@ -84,6 +84,36 @@ static FoundationDBService *fdb;
 
 #pragma mark Read
 
+- (void)getUser:(NSUInteger)userId callback:(void (^)(User *))callback {
+    dispatch_async(self.dispatchQueue, ^{
+        mongoc_cursor_t *cursor;
+        const bson_t *doc;
+        mongoc_client_t *client = mongoc_client_pool_pop(pool);
+        mongoc_collection_t *users_coll = mongoc_client_get_collection(client, dbName, users_coll_name);
+        bson_t *query = BCON_NEW("_id", BCON_INT64((int64_t)userId));
+        cursor = mongoc_collection_find_with_opts(users_coll, query, NULL, NULL);
+        char *str;
+        User *user;
+        NSData *data;
+        NSError *err;
+        NSDictionary *userDict;
+        while (mongoc_cursor_next(cursor, &doc)) {
+            user = [User new];
+            str = bson_as_canonical_extended_json(doc, NULL);
+            //MONGOC_INFO("str: %s", str);
+            data = [NSData dataWithBytes:str length:(NSUInteger)strlen(str)];
+            bson_free(str);
+            userDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
+            user = [ModelUtils.shared userFromDictionary:userDict convertType:ConvertTypeBSON];
+        }
+        mongoc_client_pool_push(pool, client);
+        bson_destroy(query);
+        mongoc_cursor_destroy(cursor);
+        mongoc_collection_destroy(users_coll);
+        callback(user);
+    });
+}
+
 - (void)getUsersWithOffset:(NSUInteger)userId limit:(NSUInteger)limit callback:(void (^) (NSArray<User *> *users))callback {
     dispatch_async(self.dispatchQueue, ^{
         mongoc_cursor_t *cursor;
@@ -134,21 +164,26 @@ static FoundationDBService *fdb;
         NSData *data;
         NSError *err;
         NSDictionary *userDict;
+        NSUInteger len = mongoc_cursor_get_limit(cursor);
+        NSUInteger __block count = 0;
         while (mongoc_cursor_next(cursor, &doc)) {
             user = [User new];
             str = bson_as_canonical_extended_json(doc, NULL);
             //MONGOC_INFO("str: %s", str);
-            bson_free(str);
             data = [NSData dataWithBytes:str length:(NSUInteger)strlen(str)];
+            bson_free(str);
             userDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
-            user = [ModelUtils.shared userFromDictionary:userDict convertType:ConvertTypeBSON];
-            if (user) [users addObject:user];
+            NSUInteger userId = (NSUInteger)[[(NSMutableDictionary *)[userDict valueForKey:@"_id"] objectForKey:@"$numberLong"] integerValue];
+            [self getUser:userId callback:^(User *user) {
+                ++count;
+                if (user) [users addObject:user];
+                if (count == len) callback(users);
+            }];
         }
         mongoc_client_pool_push(pool, client);
         bson_destroy(query);
         mongoc_cursor_destroy(cursor);
         mongoc_collection_destroy(users_coll);
-        callback(users);
     });
 }
 

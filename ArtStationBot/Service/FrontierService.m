@@ -11,6 +11,9 @@
 
 static FrontierService *_frontierService;
 
+@interface FrontierService () <WebKitControllerDelegate>
+@end
+
 @interface FrontierService ()
 
 @property (nonatomic, readwrite) dispatch_queue_t dispatchQueue;
@@ -28,8 +31,9 @@ static FrontierService *_frontierService;
 @property (nonatomic, readwrite) NSUInteger crawlerBatchCount;  /* Used to choose different delay for each batch run */
 
 /* Messenger */
-@property (atomic, readwrite) NSMutableDictionary<UserMessageKey *, UserMessageState *> *messageTable;  /* skillId, user */
-@property (atomic, readwrite) NSMutableDictionary<UserMessageKey *, UserMessageState *> *messengerRunTable;  /* skillId, user */
+@property (atomic, readwrite) NSMutableDictionary<UserMessageKey *, UserMessageState *> *messageTable;  /* Message schedule queue (table) - skillId, user */
+@property (atomic, readwrite) NSMutableDictionary<UserMessageKey *, UserMessageState *> *messengerRunTable;  /*  skillId, user */
+@property (atomic, readwrite) NSMutableArray<UserMessageState *> *messageStartQueue; /* Sending message proccessing queu, but not yet ran */
 @property (atomic, readwrite) GKARC4RandomSource *messengerARC4RandomSource;
 @property (atomic, readwrite) GKGaussianDistribution *messengerGaussianDistribution;
 @property (atomic, readwrite) NSUInteger messengerTotalDelay;
@@ -71,6 +75,7 @@ static FrontierService *_frontierService;
     /* messenger */
     self.messageTable = [NSMutableDictionary new];
     self.messengerRunTable = [NSMutableDictionary new];
+    self.messageStartQueue = [NSMutableArray new];
     self.messengerARC4RandomSource = [GKARC4RandomSource new];
     [self.messengerARC4RandomSource dropValuesWithCount:764];
     self.messengerMeanList = [NSMutableArray new];
@@ -231,9 +236,10 @@ static FrontierService *_frontierService;
     self.isMessengerPaused = NO;
     if (!StateData.shared.skills || StateData.shared.skills.count == 0) {
         [self checkSkills:^(BOOL status) {
-            //[self updateMessageForSkill:StateData.shared.skills.firstObject message:@"Message to 2D Animation user"];
             if (status) [self sendMessage];
         }];
+    } else {
+        [self sendMessage];
     }
 }
 
@@ -282,10 +288,16 @@ static FrontierService *_frontierService;
 - (void)performMessaging:(UserMessageKey *)key {
     UserMessageState *state = [self.messageTable objectForKey:key];
     if (state) {
-        // TODO: send message, once send, remove the user from message run table, queue next batch
-        [NSNotificationCenter.defaultCenter postNotificationName:ASNotification.sendMessage object:self userInfo:@{@"key": key, @"state": state}];
-        [self.messengerRunTable setObject:state forKey:key];
-        [self.messageTable removeObjectForKey:key];
+        // TODO: queue next batch
+        WebKitWindowController *wkwc = [UI createWebKitWindow];
+        [wkwc setShouldCascadeWindows:YES];
+        state.webKitWC = wkwc;
+        [self.messageStartQueue addObject:state];
+        wkwc.delegate = self;
+        [wkwc.vc setCredentials:StateData.shared.senderDetails.artStationEmail :StateData.shared.senderDetails.password];
+        [wkwc.vc setShouldSignIn:YES];
+        wkwc.vc.seedURL = state.user.artstationProfileURL;
+        [wkwc show];
     }
 }
 
@@ -302,18 +314,8 @@ static FrontierService *_frontierService;
     }
 }
 
-- (void)sendMessageACKDidReceive:(NSNotification *)notif {
-    debug(@"send message ack");
-}
-
 - (void)pauseMessenger {
     self.isMessengerPaused = YES;
-}
-
-- (void)updateMessageForSkill:(Skill *)skill message:(NSString *)message {
-    [self.fdbService updateMessage:message forSkill:skill callback:^(bool status) {
-        debug(@"Message update status for skill %@: %d", skill.name, status);
-    }];
 }
 
 - (void)updateSenderDetails:(SenderDetails *)sender callback:(void (^)(bool status))callback {
@@ -328,6 +330,23 @@ static FrontierService *_frontierService;
     [self.fdbService upsertSender:sender callback:^(bool status) {
         callback(status);
     }];
+}
+
+- (void)webKitWindowDidLoad {
+    while (self.messageStartQueue.count != 0) {
+        UserMessageState *state = [self.messageStartQueue firstObject];
+        [self.messageStartQueue removeObjectAtIndex:0];
+        WebKitWindowController *wkwc = (WebKitWindowController *)state.webKitWC;
+        UserMessageKey *key = [UserMessageKey new];
+        key.userId = @(state.user.userId);
+        key.skillId = @(state.skill.skillId);
+        [wkwc.vc sendMessage:key state:state callback:^(BOOL status) {
+            debug(@"Message send ack status: %hhd", status);
+            [wkwc close];
+            [self.messageTable removeObjectForKey:key];
+        }];
+        [self.messengerRunTable setObject:state forKey:key];
+    }
 }
 
 @end

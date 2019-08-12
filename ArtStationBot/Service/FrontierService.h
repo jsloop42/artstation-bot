@@ -29,7 +29,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)performFetch:(NSNumber *)index;
 - (void)startMessenger;
 - (void)pauseMessenger;
-- (void)updateMessageForSkill:(Skill *)skill message:(NSString *)message;
 - (void)updateSenderDetails:(SenderDetails *)sender callback:(void (^)(bool status))callback;
 @end
 

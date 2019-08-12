@@ -8,6 +8,8 @@
 import Foundation
 import AppKit
 
+@objc
+@objcMembers
 class UI: NSObject {
     private static var enStringBundle: Bundle?
 

@@ -9,11 +9,19 @@ import Foundation
 import AppKit
 import DLLogger
 
+@objc
+protocol WebKitControllerDelegate {
+    func webKitWindowDidLoad()
+}
+
+@objc
+@objcMembers
 class WebKitWindowController: NSWindowController {
     private let log = Logger()
     lazy var windowName: String = { NSStringFromClass(type(of: self)) }()
     lazy var win: NSWindow = { return UI.createWindow() }()
     lazy var vc: WebKitViewController = { return WebKitViewController() }()
+    var delegate: WebKitControllerDelegate?
 
     override init(window: NSWindow?) {
         super.init(window: window)
@@ -27,6 +35,16 @@ class WebKitWindowController: NSWindowController {
 
     override func windowDidLoad() {
         self.log.debug("webkit window did load")
+        super.windowDidLoad()
+    }
+
+    func getWindow() -> NSWindow {
+        return self.win
+    }
+
+
+    func getViewController() -> WebKitViewController {
+        return self.vc
     }
 
     func initUI() {
@@ -40,5 +58,6 @@ class WebKitWindowController: NSWindowController {
 
     func show() {
         self.showWindow(NSApp)
+        self.delegate?.webKitWindowDidLoad()
     }
 }

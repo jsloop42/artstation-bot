@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
 #import "User.h"
 #import "Skill.h"
 
@@ -21,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readwrite) Skill *skill;
 @property (nonatomic, readwrite) BOOL isMessaged;
 @property (nonatomic, readwrite) NSDate *messagedAt;
+@property (nonatomic, readwrite) NSWindowController *webKitWC;
 @end
 
 NS_ASSUME_NONNULL_END

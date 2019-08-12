@@ -110,6 +110,9 @@ class MainWindowController: NSWindowController {
     func show() {
         self.showWindow(NSApp)
         self.webkitWindow.vc.setShouldSignIn(false)
+//        self.dbService.getUsersForSkill("2D Animation", limit: 10, isMessaged: false) { users in
+//            self.log.debug("users: \(users)")
+//        }
     }
 
     func initEvents() {
