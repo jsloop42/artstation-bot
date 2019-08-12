@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <capability name="System colors introduced in macOS 10.13" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="c22-O7-iKe" customClass="SettingsView" customModule="ArtStationBot" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="2843" height="426"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <box boxType="custom" borderType="none" cornerRadius="4" translatesAutoresizingMaskIntoConstraints="NO" id="2fO-lR-Nai">
+                    <rect key="frame" x="16" y="8" width="2811" height="410"/>
+                    <view key="contentView" wantsLayer="YES" id="BpU-RP-yat" userLabel="Box View">
+                        <rect key="frame" x="0.0" y="0.0" width="2811" height="410"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hWm-fL-Mud" userLabel="Sender Details">
+                                <rect key="frame" x="-2" y="393" width="2815" height="17"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Sender Details" id="kSP-Ng-a0d">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <stackView distribution="fillEqually" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dFI-Z0-cSP">
+                                <rect key="frame" x="0.0" y="363" width="2811" height="22"/>
+                                <subviews>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NvL-Je-bHd" userLabel="Sender's ArtStation Email Text Field" customClass="ASTextField" customModule="ArtStationBot" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="544" height="22"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="ArtStation Email" drawsBackground="YES" usesSingleLineMode="YES" id="Z1A-La-1ya">
+                                            <font key="font" usesAppearanceFont="YES"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="click:" target="c22-O7-iKe" id="uaX-ul-Sy0"/>
+                                            <outlet property="nextKeyView" destination="Ywc-y3-xuh" id="g8e-OR-roe"/>
+                                        </connections>
+                                    </textField>
+                                    <secureTextField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ywc-y3-xuh" customClass="ASSecureTextField" customModule="ArtStationBot" customModuleProvider="target">
+                                        <rect key="frame" x="552" y="0.0" width="544" height="22"/>
+                                        <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Password" drawsBackground="YES" usesSingleLineMode="YES" id="Qxp-zE-uri">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <allowedInputSourceLocales>
+                                                <string>NSAllRomanInputSourcesLocaleIdentifier</string>
+                                            </allowedInputSourceLocales>
+                                        </secureTextFieldCell>
+                                        <connections>
+                                            <outlet property="nextKeyView" destination="Jic-BC-me4" id="cKX-q8-LtM"/>
+                                        </connections>
+                                    </secureTextField>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Jic-BC-me4" userLabel="Sender Name Text Field" customClass="ASTextField" customModule="ArtStationBot" customModuleProvider="target">
+                                        <rect key="frame" x="1104" y="0.0" width="543" height="22"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Name (Optional)" drawsBackground="YES" id="9SZ-vK-VX0">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <outlet property="nextKeyView" destination="4Se-AH-1RT" id="Wy2-wG-o0N"/>
+                                        </connections>
+                                    </textField>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4Se-AH-1RT" userLabel="Sender Contact Email Text Field" customClass="ASTextField" customModule="ArtStationBot" customModuleProvider="target">
+                                        <rect key="frame" x="1655" y="0.0" width="544" height="22"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Contact Email (Optional)" drawsBackground="YES" id="tyZ-Cy-vTV">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <outlet property="nextKeyView" destination="nRn-OL-I44" id="0s1-3F-8h7"/>
+                                        </connections>
+                                    </textField>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nRn-OL-I44" userLabel="Sender URL Text Field" customClass="ASTextField" customModule="ArtStationBot" customModuleProvider="target">
+                                        <rect key="frame" x="2207" y="0.0" width="544" height="22"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Website (Optional)" drawsBackground="YES" id="PMA-tA-lsX">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <outlet property="nextKeyView" destination="aI3-0r-FSf" id="air-aT-mDp"/>
+                                        </connections>
+                                    </textField>
+                                    <button toolTip="Edit" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aI3-0r-FSf">
+                                        <rect key="frame" x="2753" y="-6" width="34" height="32"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="22" id="eUy-3g-4wO"/>
+                                        </constraints>
+                                        <buttonCell key="cell" type="push" alternateTitle="Edit" bezelStyle="rounded" image="edit" imagePosition="overlaps" alignment="center" alternateImage="edit" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ZBT-FK-xD8">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <outlet property="nextKeyView" destination="PHB-8m-ZqM" id="RWP-XX-ibb"/>
+                                        </connections>
+                                    </button>
+                                    <button toolTip="Cancel" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PHB-8m-ZqM" userLabel="Cancel Edit Btn">
+                                        <rect key="frame" x="2783" y="-6" width="34" height="32"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="22" id="vFt-se-01K"/>
+                                        </constraints>
+                                        <buttonCell key="cell" type="push" bezelStyle="rounded" image="cancel" imagePosition="only" alignment="center" alternateImage="cancel" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4JR-1r-exh">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                    </button>
+                                </subviews>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                            <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="Z9A-8G-iDu">
+                                <rect key="frame" x="0.0" y="352" width="2811" height="5"/>
+                            </box>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Xzx-RV-ccq">
+                                <rect key="frame" x="-2" y="329" width="2815" height="17"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Message For Skill" id="H9X-wm-fhV">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="q4t-Qr-5qU" userLabel="TV View">
+                                <rect key="frame" x="0.0" y="33" width="2811" height="288"/>
+                                <subviews>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="afA-0y-OAz">
+                                        <rect key="frame" x="0.0" y="0.0" width="2811" height="288"/>
+                                    </customView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="afA-0y-OAz" secondAttribute="trailing" id="9A9-Fi-xka"/>
+                                    <constraint firstItem="afA-0y-OAz" firstAttribute="top" secondItem="q4t-Qr-5qU" secondAttribute="top" id="J9j-eY-DUt"/>
+                                    <constraint firstItem="afA-0y-OAz" firstAttribute="leading" secondItem="q4t-Qr-5qU" secondAttribute="leading" id="bLr-XR-WfQ"/>
+                                    <constraint firstItem="afA-0y-OAz" firstAttribute="centerY" secondItem="q4t-Qr-5qU" secondAttribute="centerY" id="nU1-mT-18j"/>
+                                </constraints>
+                            </customView>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aFd-iC-Kue" userLabel="Status Bar Label">
+                                <rect key="frame" x="-2" y="8" width="2815" height="17"/>
+                                <shadow key="shadow">
+                                    <color key="color" name="findHighlightColor" catalog="System" colorSpace="catalog"/>
+                                </shadow>
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" allowsUndo="NO" usesSingleLineMode="YES" id="mV4-TM-4oX">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Z9A-8G-iDu" secondAttribute="trailing" id="2gc-4Q-PGl"/>
+                            <constraint firstAttribute="trailing" secondItem="hWm-fL-Mud" secondAttribute="trailing" id="6kr-am-Cul"/>
+                            <constraint firstItem="dFI-Z0-cSP" firstAttribute="top" secondItem="hWm-fL-Mud" secondAttribute="bottom" constant="8" id="Dcg-3n-qaR"/>
+                            <constraint firstItem="dFI-Z0-cSP" firstAttribute="leading" secondItem="BpU-RP-yat" secondAttribute="leading" id="DwT-ZJ-Iqk"/>
+                            <constraint firstItem="q4t-Qr-5qU" firstAttribute="leading" secondItem="BpU-RP-yat" secondAttribute="leading" id="K7B-cJ-He2"/>
+                            <constraint firstItem="Xzx-RV-ccq" firstAttribute="top" secondItem="Z9A-8G-iDu" secondAttribute="bottom" constant="8" id="Kfz-pN-ap7"/>
+                            <constraint firstItem="hWm-fL-Mud" firstAttribute="leading" secondItem="BpU-RP-yat" secondAttribute="leading" id="MWt-VK-8Lb"/>
+                            <constraint firstAttribute="trailing" secondItem="Xzx-RV-ccq" secondAttribute="trailing" id="PfH-Mj-Mes"/>
+                            <constraint firstItem="aFd-iC-Kue" firstAttribute="top" secondItem="q4t-Qr-5qU" secondAttribute="bottom" constant="8" id="S4v-O7-y29"/>
+                            <constraint firstItem="Z9A-8G-iDu" firstAttribute="top" secondItem="dFI-Z0-cSP" secondAttribute="bottom" constant="8" id="VRx-2C-eqP"/>
+                            <constraint firstAttribute="trailing" secondItem="q4t-Qr-5qU" secondAttribute="trailing" id="WhI-4P-vkD"/>
+                            <constraint firstItem="Z9A-8G-iDu" firstAttribute="leading" secondItem="BpU-RP-yat" secondAttribute="leading" id="crT-e3-gCh"/>
+                            <constraint firstAttribute="trailing" secondItem="dFI-Z0-cSP" secondAttribute="trailing" id="dJu-aF-Dth"/>
+                            <constraint firstItem="aFd-iC-Kue" firstAttribute="leading" secondItem="BpU-RP-yat" secondAttribute="leading" id="drZ-9D-uHP"/>
+                            <constraint firstItem="q4t-Qr-5qU" firstAttribute="top" secondItem="Xzx-RV-ccq" secondAttribute="bottom" constant="8" id="e3x-zY-lnW"/>
+                            <constraint firstItem="hWm-fL-Mud" firstAttribute="top" secondItem="BpU-RP-yat" secondAttribute="top" id="eCB-Uz-8eZ"/>
+                            <constraint firstAttribute="trailing" secondItem="aFd-iC-Kue" secondAttribute="trailing" id="fVb-QG-6f1"/>
+                            <constraint firstAttribute="bottom" secondItem="aFd-iC-Kue" secondAttribute="bottom" constant="8" id="u32-tA-Hpt"/>
+                            <constraint firstItem="Xzx-RV-ccq" firstAttribute="leading" secondItem="BpU-RP-yat" secondAttribute="leading" id="xqD-zl-5xl"/>
+                        </constraints>
+                    </view>
+                </box>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="2fO-lR-Nai" secondAttribute="trailing" constant="16" id="LCc-Vo-yiG"/>
+                <constraint firstItem="2fO-lR-Nai" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="8" id="aHV-iP-NJM"/>
+                <constraint firstItem="2fO-lR-Nai" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="16" id="piy-rv-D5m"/>
+                <constraint firstAttribute="bottom" secondItem="2fO-lR-Nai" secondAttribute="bottom" constant="8" id="syB-Yi-j5Z"/>
+            </constraints>
+            <connections>
+                <outlet property="cancelEditBtn" destination="PHB-8m-ZqM" id="3or-By-R0p"/>
+                <outlet property="credsEditBtn" destination="aI3-0r-FSf" id="jP7-NS-nhp"/>
+                <outlet property="emailTextField" destination="NvL-Je-bHd" id="Iqg-Bf-cqI"/>
+                <outlet property="passwordTextField" destination="Ywc-y3-xuh" id="GDK-MX-SYS"/>
+                <outlet property="senderContactEmailTextField" destination="4Se-AH-1RT" id="FNF-Eu-qGd"/>
+                <outlet property="senderNameTextField" destination="Jic-BC-me4" id="bbi-tL-NBF"/>
+                <outlet property="senderURLTextField" destination="nRn-OL-I44" id="bAH-c1-kN4"/>
+                <outlet property="statusBarLabel" destination="aFd-iC-Kue" id="eYH-0L-4Lv"/>
+                <outlet property="tableViewContainer" destination="afA-0y-OAz" id="IIS-yB-FCv"/>
+            </connections>
+            <point key="canvasLocation" x="138.5" y="154"/>
+        </customView>
+    </objects>
+    <resources>
+        <image name="cancel" width="22" height="22"/>
+        <image name="edit" width="24" height="24"/>
+    </resources>
+</document>

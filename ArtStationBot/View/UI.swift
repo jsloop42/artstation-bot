@@ -8,7 +8,9 @@
 import Foundation
 import AppKit
 
-class UI {
+@objc
+@objcMembers
+class UI: NSObject {
     private static var enStringBundle: Bundle?
 
     static func createMainWindow() {
@@ -40,7 +42,9 @@ class UI {
     static func setWindowBounds(_ window: NSWindow, width: CGFloat? = 500, height: CGFloat? = 500) {
         let w: CGFloat = { if let aw = width { return aw }; return 500 }()
         let h: CGFloat = { if let ah = height { return ah }; return 500 }()
-        window.setFrame(NSMakeRect(NSApp.mainWindow!.frame.maxX, NSApp.mainWindow!.frame.maxY - h, w, h), display: true)
+        if let mainWindow = NSApp.mainWindow {
+            window.setFrame(NSMakeRect(mainWindow.frame.maxX, mainWindow.frame.maxY - h, w, h), display: true)
+        }
     }
 
     static func createToolbar(id: NSToolbar.Identifier) -> NSToolbar {
@@ -50,8 +54,8 @@ class UI {
         return toolbar
     }
 
-    static func createSegmentedControl(labels: [String]) -> NSSegmentedControl {
-        let sc = NSSegmentedControl(labels: labels, trackingMode: .selectOne, target: self, action: nil)
+    static func createSegmentedControl(labels: [String], action: Selector) -> NSSegmentedControl {
+        let sc = NSSegmentedControl(labels: labels, trackingMode: .selectOne, target: nil, action: action)
         sc.setSelected(true, forSegment: 0)
         return sc
     }
@@ -61,6 +65,15 @@ class UI {
         btn.setButtonType(.momentaryPushIn)
         btn.bezelStyle = .texturedRounded
         return btn
+    }
+
+    static func createStackView() -> NSStackView {
+        let sv = NSStackView(frame: NSMakeRect(0, 0, 0, 0))
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        sv.distribution = .fill
+        sv.alignment = .left
+        sv.orientation = .vertical
+        return sv
     }
 
     static func lmsg(_ key: String) -> String {
@@ -89,7 +102,8 @@ class UI {
         if let path = mainBundle.path(forResource: lang, ofType: "lproj") {
             if lang == "en" { self.enStringBundle = Bundle(path: path) }
         }
-    }}
+    }
+}
 
 extension NSWindow {
     public func setFrameOriginToCenterOfScreen() {

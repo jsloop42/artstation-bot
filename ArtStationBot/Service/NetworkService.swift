@@ -55,10 +55,10 @@ class NetworkService: NSObject {
         guard let url: URL = comp.url else { return callback(nil, nil, AppError.urlError) }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.addValue(Constants.contentTypeJSON(), forHTTPHeaderField: "Content-Type")
-        request.addValue(Constants.contentTypeJSON(), forHTTPHeaderField: "Accept")
+        request.addValue(Const.contentTypeJSON(), forHTTPHeaderField: "Content-Type")
+        request.addValue(Const.contentTypeJSON(), forHTTPHeaderField: "Accept")
         request.addValue(self.userAgent, forHTTPHeaderField: "User-Agent")
-        request.addValue(Constants.seedURL(), forHTTPHeaderField: "Origin")
+        request.addValue(Const.seedURL(), forHTTPHeaderField: "Origin")
         request.addValue(self.requestedWith, forHTTPHeaderField: "x-requested-with")
         if let headersDict = headers, headersDict.count > 0 {
             headersDict.keys.forEach { key in
@@ -81,10 +81,10 @@ class NetworkService: NSObject {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = body
-        request.addValue(Constants.contentTypeJSON(), forHTTPHeaderField: "Content-Type")
-        request.addValue(Constants.contentTypeJSON(), forHTTPHeaderField: "Accept")
+        request.addValue(Const.contentTypeJSON(), forHTTPHeaderField: "Content-Type")
+        request.addValue(Const.contentTypeJSON(), forHTTPHeaderField: "Accept")
         request.addValue(self.userAgent, forHTTPHeaderField: "User-Agent")
-        request.addValue(Constants.seedURL(), forHTTPHeaderField: "Origin")
+        request.addValue(Const.seedURL(), forHTTPHeaderField: "Origin")
         request.addValue(self.requestedWith, forHTTPHeaderField: "x-requested-with")
         if let headersDict = headers, headersDict.count > 0 {
             headersDict.keys.forEach { key in

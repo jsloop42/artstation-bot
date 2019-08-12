@@ -16,8 +16,11 @@ static NSString *_searchUsers;
 static NSString *_csrfTokenHeader;
 static NSString *_cfCSRFTokenHeader;
 static NSUInteger _maxUserLimit;
+static NSString *_serviceName;
 
 @implementation Constants
+
+@dynamic serviceName;
 
 + (void)initialize {
     if (self == [self class]) {
@@ -35,6 +38,7 @@ static NSUInteger _maxUserLimit;
     _csrfTokenHeader = @"PUBLIC-CSRF-TOKEN";
     _cfCSRFTokenHeader = @"x-csrf-token";
     _maxUserLimit = 15;
+    _serviceName = @"artstationbot";
 }
 
 + (NSString *)seedURL {
@@ -75,6 +79,33 @@ static NSUInteger _maxUserLimit;
 
 + (NSUInteger)maxUserLimit {
     return _maxUserLimit;
+}
+
++ (NSString *)serviceName {
+    return _serviceName;
+}
+
+@end
+
+@implementation ASNotification
+static NSString *_sendMessage = @"sendMessage";
+static NSString *_sendMessageACK = @"sendMessageACK";
+static NSString *_settingsTableViewShouldReload = @"settingsTableViewShouldReload";
+
+@dynamic sendMessage;
+@dynamic sendMessageACK;
+@dynamic settingsTableViewShouldReload;
+
++ (NSString *)sendMessage {
+    return _sendMessage;
+}
+
++ (NSString *)sendMessageACK {
+    return _sendMessageACK;
+}
+
++ (NSString *)settingsTableViewShouldReload {
+    return _settingsTableViewShouldReload;
 }
 
 @end

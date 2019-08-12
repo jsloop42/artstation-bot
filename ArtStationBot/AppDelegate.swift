@@ -12,16 +12,28 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private let log = Logger()
 
     override init() {
+        _ = FoundationDBService.shared().initDocLayer()
         UI.createMainWindow()
+        StateData.shared().isDarkMode = Utils.isDarkMode()
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        _ = FoundationDBService.shared().initDocLayer()
+        initEvents()
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
     }
 
+    func initEvents() {
+        DistributedNotificationCenter.default().addObserver(self, selector: #selector(themeChanged(_:)),
+                                                            name: NSNotification.Name(rawValue: "AppleInterfaceThemeChangedNotification"), object: nil)
+    }
+
+    @objc func themeChanged(_ notif: NSNotification) {
+        self.log.debug("theme changed")
+        StateData.shared().isDarkMode = Utils.isDarkMode()
+        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: ASNotification.settingsTableViewShouldReload)))
+    }
 
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "ArtStationBot")

@@ -17,9 +17,12 @@ class MainWindowController: NSWindowController {
     private lazy var dbService = { return FoundationDBService.shared() }()
     private lazy var windowName: String = { NSStringFromClass(type(of: self)) }()
     private lazy var win: NSWindow = { return UI.createWindow() }()
+    private lazy var mainWindowVC: MainViewController = { return MainViewController() }()
+    private lazy var settingsWindowVC: SettingsViewController = { return SettingsViewController() }()
     private lazy var toolbar: NSToolbar = { return UI.createToolbar(id: self.toolbarId) }()
     private lazy var segmentedControl: NSSegmentedControl = {
-        return UI.createSegmentedControl(labels: [UI.lmsg("Dashboard"), UI.lmsg("Crawler"), UI.lmsg("Messenger")])
+        return UI.createSegmentedControl(labels: [UI.lmsg("Dashboard"), UI.lmsg("Data"), UI.lmsg("Settings")],
+                                         action: #selector(MainWindowController.segmentedControlDidClick(sender:)))
     }()
     private lazy var toolbarId: NSToolbar.Identifier = { return NSToolbar.Identifier("mainToolbar") }()
     private lazy var toolbarCrawlBtnId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarCrawlButton") }()
@@ -38,12 +41,6 @@ class MainWindowController: NSWindowController {
         btn.toolTip = UI.lmsg("Start Messenger")
         return btn
     }()
-    private lazy var credsBtn: NSButton = {
-        let btn = UI.createButton()
-        btn.title = UI.lmsg("Credential")
-        btn.toolTip = UI.lmsg("Set credentials")
-        return btn
-    }()
     private lazy var dspaceId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarDynamicSpace") }()
     private lazy var dspace: DynamicSpace = { return DynamicSpace(itemIdentifier: self.dspaceId) }()
     private lazy var toolbarItems: [NSToolbarItem.Identifier] = {
@@ -55,6 +52,9 @@ class MainWindowController: NSWindowController {
         xs.insert(self.dspaceId, at: 3)
         return xs
     }()
+    private lazy var webkitWindow: WebKitWindowController = { return UI.createWebKitWindow() }()
+    private var segmentSelectedIndex: Int = 0
+    private var menuObjects: NSArray?
 
     override init(window: NSWindow?) {
         super.init(window: window)
@@ -72,7 +72,7 @@ class MainWindowController: NSWindowController {
     }
 
     func initUI() {
-        self.win.contentViewController = MainViewController()
+        self.win.contentViewController = self.mainWindowVC
         self.shouldCascadeWindows = true
         self.contentViewController = win.contentViewController
         UI.setMainWindowBounds(self.win)
@@ -81,42 +81,72 @@ class MainWindowController: NSWindowController {
         self.toolbar.displayMode = .iconOnly
         self.toolbar.allowsUserCustomization = true
         self.window?.titleVisibility = .hidden
+        self.window?.minSize = NSMakeSize(960, 768)
         //self.window?.title = "ArtStation Bot"
         self.window?.toolbar = self.toolbar
+        initMainMenu()
+        initData()
+    }
+
+    func initMainMenu() {
+        Bundle.main.loadNibNamed("MainMenu", owner: self, topLevelObjects: &menuObjects)
+        guard let results = self.menuObjects else { return }
+        let views = Array<Any>(results).filter { $0 is NSMenu }
+        NSApplication.shared.mainMenu = views.last as? NSMenu
+    }
+
+    func initData() {
+        self.dbService.getSenderDetails { arr in
+            if arr.count > 0 {
+                if let sender = arr.firstObject as? SenderDetails {
+                    let pass = Utils.getPasswordForAccountFromKeychain(name: sender.artStationEmail)
+                    if !pass.isEmpty { sender.password = pass }
+                    StateData.shared().senderDetails = sender
+                }
+            }
+        }
     }
 
     func show() {
         self.showWindow(NSApp)
+        self.webkitWindow.vc.setShouldSignIn(false)
+//        self.dbService.getUsersForSkill("2D Animation", limit: 10, isMessaged: false) { users in
+//            self.log.debug("users: \(users)")
+//        }
     }
 
     func initEvents() {
         self.crawlBtn.action = #selector(crawlButtonDidClick)
+        self.messageBtn.action = #selector(messageButtonDidClick)
+        self.window?.delegate = self
+    }
+
+    @objc func segmentedControlDidClick(sender: NSSegmentedControl) {
+        print("segmented control index: \(sender.selectedSegment)")
+        if self.segmentSelectedIndex == sender.selectedSegment { return }
+        self.segmentSelectedIndex = sender.selectedSegment
+        if sender.selectedSegment == 2 {  // Settings
+            self.window!.contentViewController = self.settingsWindowVC
+            UI.setMainWindowBounds(self.window!)
+        } else if sender.selectedSegment == 1 {  // Data
+
+        } else if sender.selectedSegment == 0 {  // Dashboard
+            self.window!.contentViewController = self.mainWindowVC
+            UI.setMainWindowBounds(self.window!)
+        }
     }
 }
 
 // MARK: - Event handlers
 extension MainWindowController {
     @objc func crawlButtonDidClick() {
-//        self.crawlService.getCSRFToken { token in
-//            self.log.debug("CSRF token: \(token)")
-//            self.crawlService.getFilterList { filters in
-//                self.log.debug("Filters: \(filters)")
-//                self.dbService.insert(filters, callback: { status in
-//                    DispatchQueue.main.async {
-//                        self.log.debug("Filters insert status: \(status)")
-//                    }
-//                })
-//            }
-//        }
-        //self.dbService.test()
-//        self.dbService.getUsersWithOffset(1, limit: 2, callback: { users in
-//            self.log.debug(users)
-//        })
-//        self.crawlService.getUsersForSkill("1", page: 1, max: 15, callback: { userResp  in
-//            self.log.debug("total users count: \(userResp.totalCount)")
-//            self.log.debug("first user's id: \((userResp.usersList.firstObject as! User).userId)")
-//        })
-        self.frontierService.startCrawl()
+        self.frontierService.isCrawlPaused ? self.frontierService.startCrawl() : self.frontierService.pauseCrawl()
+    }
+
+    @objc func messageButtonDidClick() {
+        self.webkitWindow.show()
+        //self.webkitWindow.vc.setShouldSignIn(true)
+        self.frontierService.isMessengerPaused ? self.frontierService.startMessenger() : self.frontierService.pauseMessenger()
     }
 }
 
@@ -136,10 +166,6 @@ extension MainWindowController: NSToolbarDelegate {
             toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
             toolbarItem.label = UI.lmsg("Message")
             toolbarItem.view = self.messageBtn
-        case self.toolbarCredsBtnId:
-            toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
-            toolbarItem.label = UI.lmsg("Credential")
-            toolbarItem.view = self.credsBtn
         case self.dspaceId:
             toolbarItem = self.dspace
         default:
@@ -149,10 +175,21 @@ extension MainWindowController: NSToolbarDelegate {
     }
 
     func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        return [self.toolbarCrawlBtnId, self.toolbarMessageBtnId, self.toolbarCredsBtnId, self.toolbarSegmentedControlId, self.dspaceId, .space, .flexibleSpace]
+        return [self.toolbarCrawlBtnId, self.toolbarMessageBtnId, self.toolbarSegmentedControlId, self.dspaceId, .space, .flexibleSpace]
     }
 
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
         return self.toolbarItems
+    }
+}
+
+extension MainWindowController: NSWindowDelegate {
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        self.log.debug("window should close event")
+        return true
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        self.log.debug("window will close")
     }
 }

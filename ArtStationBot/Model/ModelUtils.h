@@ -12,6 +12,7 @@
 #import "Software.h"
 #import "User.h"
 #import "StateData.h"
+#import "SenderDetails.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -27,6 +28,7 @@ typedef NS_ENUM(NSUInteger, ConvertType) {
 - (Country * _Nullable)countryFromLocation:(NSString *)location;
 - (Skill *)skillFromDictionary:(NSDictionary *)dict;
 - (UserFetchState *)userFetchStateFromDictionary:(NSDictionary *)dict forSkill:(Skill *)skill;
+- (SenderDetails *)senderDetailsFromDictionary:(NSDictionary *)dict;
 - (User *)userFromDictionary:(NSDictionary *)dict convertType:(enum ConvertType)convertType;
 @end
 

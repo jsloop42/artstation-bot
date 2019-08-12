@@ -20,9 +20,16 @@ NS_ASSUME_NONNULL_BEGIN
 #   define error(...) NSLog(__VA_ARGS__)
 #endif
 
-#define Const Constants
+#define Constants Const
+
+@interface ASNotification : NSObject
+@property (class) NSString *sendMessage;
+@property (class) NSString *sendMessageACK;
+@property (class) NSString *settingsTableViewShouldReload;
+@end
 
 @interface Constants : NSObject
+@property (class) NSString *serviceName;
 + (NSString *)seedURL;
 + (NSString *)csrfTokenURL;
 + (NSString *)contentTypeJSON;

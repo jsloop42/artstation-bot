@@ -63,4 +63,43 @@ class Utils: NSObject {
         }
         return ""
     }
+
+    static func getAllAccountsFromKeychain() -> [KeychainAccount] {
+        var kcacc: [KeychainAccount] = []
+        if let accounts = SSKeychain.accounts(forService: Const.serviceName) {
+            for account in accounts {
+                if let acc = account as? NSDictionary {
+                    let kc = KeychainAccount()
+                    kc.accountName = acc[kSSKeychainAccountKey] as? String ?? ""
+                    kc.serviceName = Const.serviceName
+                    kc.password = getPasswordForAccountFromKeychain(name: kc.accountName)
+                    kcacc.append(kc)
+                }
+            }
+        }
+        return kcacc
+    }
+
+    static func setAccountToKeychain(name: String, password: String) -> Bool {
+        return SSKeychain.setPassword(password, forService: Const.serviceName, account: name)
+    }
+
+    static func getPasswordForAccountFromKeychain(name: String) -> String {
+        return SSKeychain.password(forService: Const.serviceName, account: name)
+    }
+
+    static func isValidEmail(_ email: String) -> Bool {
+        return email.range(of: "^(([^<>()\\[\\]\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$", options: .regularExpression, range: nil, locale: nil) != nil
+    }
+
+    static func isDarkMode() -> Bool {
+        if let style = UserDefaults.standard.string(forKey: "AppleInterfaceStyle"), style == "Dark" {
+            return true
+        }
+        return false
+    }
+
+    static func getTimestamp() -> Int64 {
+        return Int64((Date().timeIntervalSince1970 * 1000.0).rounded())
+    }
 }
