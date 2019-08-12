@@ -110,7 +110,7 @@ class WebKitViewController: NSViewController {
         self._shouldSignIn = flag
     }
 
-    func setCredentials(_ username: String, _ password: String) {
+    func setCredentials(_ username: String, password: String) {
         self.state.username = username
         self.state.password = password
     }
@@ -208,7 +208,7 @@ class WebKitViewController: NSViewController {
             } else {
                 self.invokeSendMessage = false
                 self.log.debug("Signed in. Sending message.")
-                var msg = msgState.skill.message
+                var msg = msgState.skill.interpolatedMessage
                 msg = "Hi, How are you doing? Bye"  // TODO: remove test
                 self.execJS(["msg": msg], fnName: "asb.sendMessage")
             }

@@ -33,7 +33,9 @@ static FrontierService *_frontierService;
 /* Messenger */
 @property (atomic, readwrite) NSMutableDictionary<UserMessageKey *, UserMessageState *> *messageTable;  /* Message schedule queue (table) - skillId, user */
 @property (atomic, readwrite) NSMutableDictionary<UserMessageKey *, UserMessageState *> *messengerRunTable;  /*  skillId, user */
-@property (atomic, readwrite) NSMutableArray<UserMessageState *> *messageStartQueue; /* Sending message proccessing queu, but not yet ran */
+/* Send message proccessing queue, but the message is not yet run. The message state has been picked from the messageTable, but not yet ready for sending
+   (waiting for the WebKit window to load), after which it will be added to the message run table */
+@property (atomic, readwrite) NSMutableArray<UserMessageState *> *messageStartQueue;
 @property (atomic, readwrite) GKARC4RandomSource *messengerARC4RandomSource;
 @property (atomic, readwrite) GKGaussianDistribution *messengerGaussianDistribution;
 @property (atomic, readwrite) NSUInteger messengerTotalDelay;
@@ -95,7 +97,7 @@ static FrontierService *_frontierService;
 }
 
 - (void)initEvents {
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(sendMessageACKDidReceive:) name:ASNotification.sendMessageACK object:nil];
+
 }
 
 /** Get random number for crawler with normal distribution characteristics that has a standard deviation from the set mean. */
@@ -288,13 +290,25 @@ static FrontierService *_frontierService;
 - (void)performMessaging:(UserMessageKey *)key {
     UserMessageState *state = [self.messageTable objectForKey:key];
     if (state) {
-        // TODO: queue next batch
+        /* Interpolate message template */
+        MessageTemplateField *field = [MessageTemplateField new];
+        field.usernameOfUser = state.user.username;
+        field.fullNameOfUser = state.user.fullName;
+        field.profileURLOfUser = state.user.artstationProfileURL;
+        field.skillName = state.skill.name;
+        field.nameOfSender = StateData.shared.senderDetails.name;
+        field.urlOfSender = StateData.shared.senderDetails.url;
+        field.emailOfSender = StateData.shared.senderDetails.contactEmail;
+        MessageTemplateRenderer *renderer = [MessageTemplateRenderer new];
+        [renderer setTemplateValue:field];
+        state.skill.interpolatedMessage = [renderer renderTemplate:state.skill.message];
+
         WebKitWindowController *wkwc = [UI createWebKitWindow];
         [wkwc setShouldCascadeWindows:YES];
         state.webKitWC = wkwc;
         [self.messageStartQueue addObject:state];
         wkwc.delegate = self;
-        [wkwc.vc setCredentials:StateData.shared.senderDetails.artStationEmail :StateData.shared.senderDetails.password];
+        [wkwc.vc setCredentials:StateData.shared.senderDetails.artStationEmail password:StateData.shared.senderDetails.password];
         [wkwc.vc setShouldSignIn:YES];
         wkwc.vc.seedURL = state.user.artstationProfileURL;
         [wkwc show];
@@ -344,6 +358,7 @@ static FrontierService *_frontierService;
             debug(@"Message send ack status: %hhd", status);
             [wkwc close];
             [self.messageTable removeObjectForKey:key];
+            [self queueNextMessengerBatch];
         }];
         [self.messengerRunTable setObject:state forKey:key];
     }

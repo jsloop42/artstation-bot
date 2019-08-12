@@ -30,7 +30,6 @@ class SettingsView: NSView {
     }
 
     override func layout() {
-        self.log.debug("layout method")
         super.layout()
     }
 }

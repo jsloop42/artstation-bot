@@ -89,16 +89,20 @@ class SettingsViewController: NSViewController {
     }
 
     func enableEditForAllTextFields() {
-        self.textFields.forEach { tf in tf.isEditable = true }
-        self.sview!.cancelEditBtn.isHidden = false
-        self.sview!.credsEditBtn.isHidden = true
-        self.sview!.emailTextField.becomeFirstResponder()
+        DispatchQueue.main.async {
+            self.textFields.forEach { tf in tf.isEditable = true }
+            self.sview!.cancelEditBtn.isHidden = false
+            self.sview!.credsEditBtn.isHidden = true
+            self.sview!.emailTextField.becomeFirstResponder()
+        }
     }
 
     func disableEditForAllTextFields() {
-        self.textFields.forEach { tf in tf.isEditable = false }
-        self.sview!.cancelEditBtn.isHidden = true
-        self.sview!.credsEditBtn.isHidden = false
+        DispatchQueue.main.async {
+            self.textFields.forEach { tf in tf.isEditable = false }
+            self.sview!.cancelEditBtn.isHidden = true
+            self.sview!.credsEditBtn.isHidden = false
+        }
     }
 
     func initEvents() {

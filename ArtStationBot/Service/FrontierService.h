@@ -13,6 +13,7 @@
 #import "UserMessageState.h"
 #import "SenderDetails.h"
 #import "KeychainAccount.h"
+#import "MessageTemplateRenderer.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
