@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="c22-O7-iKe" customClass="MainView" customModule="ArtStationBot" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="868" height="272"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <splitView dividerStyle="thin" translatesAutoresizingMaskIntoConstraints="NO" id="PiO-Yo-NY1">
+                    <rect key="frame" x="8" y="22" width="852" height="242"/>
+                    <subviews>
+                        <customView id="auJ-Nk-Zwa">
+                            <rect key="frame" x="0.0" y="0.0" width="852" height="121"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <subviews>
+                                <stackView distribution="fillEqually" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JCC-WJ-gbf">
+                                    <rect key="frame" x="0.0" y="0.0" width="852" height="121"/>
+                                    <subviews>
+                                        <box title="Crawler Schedule" translatesAutoresizingMaskIntoConstraints="NO" id="AUL-ly-Jf3">
+                                            <rect key="frame" x="-3" y="4" width="428" height="109"/>
+                                            <view key="contentView" id="35h-cm-qwI">
+                                                <rect key="frame" x="3" y="3" width="422" height="91"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="nch-uh-QrE">
+                                                        <rect key="frame" x="0.0" y="0.0" width="422" height="91"/>
+                                                    </customView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstAttribute="bottom" secondItem="nch-uh-QrE" secondAttribute="bottom" id="5W3-pb-O5F"/>
+                                                    <constraint firstItem="nch-uh-QrE" firstAttribute="top" secondItem="35h-cm-qwI" secondAttribute="top" id="Xtm-Oc-ZO0"/>
+                                                    <constraint firstItem="nch-uh-QrE" firstAttribute="leading" secondItem="35h-cm-qwI" secondAttribute="leading" id="kdL-Js-Zhi"/>
+                                                    <constraint firstAttribute="trailing" secondItem="nch-uh-QrE" secondAttribute="trailing" id="vIl-ja-ru0"/>
+                                                </constraints>
+                                            </view>
+                                        </box>
+                                        <box title="Crawl in Progress" translatesAutoresizingMaskIntoConstraints="NO" id="gXa-eQ-wT4">
+                                            <rect key="frame" x="427" y="4" width="428" height="109"/>
+                                            <view key="contentView" id="Qyp-pq-JId">
+                                                <rect key="frame" x="3" y="3" width="422" height="91"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="VBM-Ta-zx9">
+                                                        <rect key="frame" x="0.0" y="0.0" width="422" height="91"/>
+                                                    </customView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstAttribute="trailing" secondItem="VBM-Ta-zx9" secondAttribute="trailing" id="EqU-P9-SJD"/>
+                                                    <constraint firstItem="VBM-Ta-zx9" firstAttribute="top" secondItem="Qyp-pq-JId" secondAttribute="top" id="Fsf-Mw-51U"/>
+                                                    <constraint firstAttribute="bottom" secondItem="VBM-Ta-zx9" secondAttribute="bottom" id="Lov-Wc-cF4"/>
+                                                    <constraint firstItem="VBM-Ta-zx9" firstAttribute="leading" secondItem="Qyp-pq-JId" secondAttribute="leading" id="Wjc-pK-Sd8"/>
+                                                </constraints>
+                                            </view>
+                                        </box>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="gXa-eQ-wT4" firstAttribute="top" secondItem="JCC-WJ-gbf" secondAttribute="top" constant="8" id="9lT-EA-643"/>
+                                        <constraint firstAttribute="bottom" secondItem="AUL-ly-Jf3" secondAttribute="bottom" constant="8" id="9zQ-7y-Tnq"/>
+                                        <constraint firstAttribute="bottom" secondItem="gXa-eQ-wT4" secondAttribute="bottom" constant="8" id="LkP-9U-9Zo"/>
+                                        <constraint firstItem="AUL-ly-Jf3" firstAttribute="top" secondItem="JCC-WJ-gbf" secondAttribute="top" constant="8" id="Z08-po-RoL"/>
+                                    </constraints>
+                                    <visibilityPriorities>
+                                        <integer value="1000"/>
+                                        <integer value="1000"/>
+                                    </visibilityPriorities>
+                                    <customSpacing>
+                                        <real value="3.4028234663852886e+38"/>
+                                        <real value="3.4028234663852886e+38"/>
+                                    </customSpacing>
+                                </stackView>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="JCC-WJ-gbf" secondAttribute="bottom" id="AlX-Ym-DBs"/>
+                                <constraint firstItem="JCC-WJ-gbf" firstAttribute="leading" secondItem="auJ-Nk-Zwa" secondAttribute="leading" id="b52-Du-8Ce"/>
+                                <constraint firstAttribute="trailing" secondItem="JCC-WJ-gbf" secondAttribute="trailing" id="hKd-uO-f2K"/>
+                                <constraint firstItem="JCC-WJ-gbf" firstAttribute="top" secondItem="auJ-Nk-Zwa" secondAttribute="top" id="niu-Rq-cJM"/>
+                            </constraints>
+                        </customView>
+                        <customView id="FCg-v2-Cnu">
+                            <rect key="frame" x="0.0" y="122" width="852" height="120"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <subviews>
+                                <stackView distribution="fillEqually" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HRc-Rc-ubZ">
+                                    <rect key="frame" x="0.0" y="0.0" width="852" height="120"/>
+                                    <subviews>
+                                        <box title="Messenger Schedule" translatesAutoresizingMaskIntoConstraints="NO" id="uPh-yB-LgE">
+                                            <rect key="frame" x="-3" y="4" width="428" height="108"/>
+                                            <view key="contentView" id="z5e-80-nIe">
+                                                <rect key="frame" x="3" y="3" width="422" height="90"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="jZD-nt-oXN">
+                                                        <rect key="frame" x="0.0" y="0.0" width="422" height="90"/>
+                                                    </customView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="jZD-nt-oXN" firstAttribute="top" secondItem="z5e-80-nIe" secondAttribute="top" id="8uM-NU-6U6"/>
+                                                    <constraint firstAttribute="trailing" secondItem="jZD-nt-oXN" secondAttribute="trailing" id="Bxr-wJ-z60"/>
+                                                    <constraint firstAttribute="bottom" secondItem="jZD-nt-oXN" secondAttribute="bottom" id="Nol-9Q-8XK"/>
+                                                    <constraint firstItem="jZD-nt-oXN" firstAttribute="leading" secondItem="z5e-80-nIe" secondAttribute="leading" id="XQO-EG-nvB"/>
+                                                </constraints>
+                                            </view>
+                                        </box>
+                                        <box title="Message in Progress" translatesAutoresizingMaskIntoConstraints="NO" id="U6K-Tg-Gsy">
+                                            <rect key="frame" x="427" y="4" width="428" height="108"/>
+                                            <view key="contentView" id="6eC-qc-8B9">
+                                                <rect key="frame" x="3" y="3" width="422" height="90"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="aM3-8e-l0f">
+                                                        <rect key="frame" x="0.0" y="0.0" width="422" height="90"/>
+                                                    </customView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="aM3-8e-l0f" firstAttribute="top" secondItem="6eC-qc-8B9" secondAttribute="top" id="H7E-Q3-bO7"/>
+                                                    <constraint firstAttribute="bottom" secondItem="aM3-8e-l0f" secondAttribute="bottom" id="KEX-je-YiE"/>
+                                                    <constraint firstItem="aM3-8e-l0f" firstAttribute="leading" secondItem="6eC-qc-8B9" secondAttribute="leading" id="dwB-vx-Pba"/>
+                                                    <constraint firstAttribute="trailing" secondItem="aM3-8e-l0f" secondAttribute="trailing" id="iCg-uG-9IK"/>
+                                                </constraints>
+                                            </view>
+                                        </box>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="uPh-yB-LgE" secondAttribute="bottom" constant="8" id="2CJ-HA-aBr"/>
+                                        <constraint firstItem="U6K-Tg-Gsy" firstAttribute="top" secondItem="HRc-Rc-ubZ" secondAttribute="top" constant="8" id="6zg-2M-5kI"/>
+                                        <constraint firstItem="uPh-yB-LgE" firstAttribute="top" secondItem="HRc-Rc-ubZ" secondAttribute="top" constant="8" id="HF4-Xz-6bG"/>
+                                        <constraint firstAttribute="bottom" secondItem="U6K-Tg-Gsy" secondAttribute="bottom" constant="8" id="mlG-Zq-5VK"/>
+                                    </constraints>
+                                    <visibilityPriorities>
+                                        <integer value="1000"/>
+                                        <integer value="1000"/>
+                                    </visibilityPriorities>
+                                    <customSpacing>
+                                        <real value="3.4028234663852886e+38"/>
+                                        <real value="3.4028234663852886e+38"/>
+                                    </customSpacing>
+                                </stackView>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="HRc-Rc-ubZ" firstAttribute="leading" secondItem="FCg-v2-Cnu" secondAttribute="leading" id="Miu-jx-kzv"/>
+                                <constraint firstAttribute="bottom" secondItem="HRc-Rc-ubZ" secondAttribute="bottom" id="Zdw-yW-aIW"/>
+                                <constraint firstAttribute="trailing" secondItem="HRc-Rc-ubZ" secondAttribute="trailing" id="p7M-qp-N24"/>
+                                <constraint firstItem="HRc-Rc-ubZ" firstAttribute="top" secondItem="FCg-v2-Cnu" secondAttribute="top" id="uQi-s3-g53"/>
+                            </constraints>
+                        </customView>
+                    </subviews>
+                    <holdingPriorities>
+                        <real value="250"/>
+                        <real value="250"/>
+                    </holdingPriorities>
+                </splitView>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gJ3-Ah-8EG">
+                    <rect key="frame" x="6" y="8" width="856" height="14"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" allowsUndo="NO" id="RRe-ww-gZK">
+                        <font key="font" metaFont="system" size="11"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+            </subviews>
+            <constraints>
+                <constraint firstItem="PiO-Yo-NY1" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="8" id="6sV-yn-SIP"/>
+                <constraint firstAttribute="trailing" secondItem="gJ3-Ah-8EG" secondAttribute="trailing" constant="8" id="8T7-Ih-rIy"/>
+                <constraint firstAttribute="bottom" secondItem="gJ3-Ah-8EG" secondAttribute="bottom" constant="8" id="P8i-kw-Jjh"/>
+                <constraint firstItem="gJ3-Ah-8EG" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="8" id="c1S-83-esP"/>
+                <constraint firstItem="PiO-Yo-NY1" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="8" id="jm0-z4-23M"/>
+                <constraint firstItem="gJ3-Ah-8EG" firstAttribute="top" secondItem="PiO-Yo-NY1" secondAttribute="bottom" id="ob9-2C-nMP"/>
+                <constraint firstAttribute="trailing" secondItem="PiO-Yo-NY1" secondAttribute="trailing" constant="8" id="vX9-rh-TiQ"/>
+            </constraints>
+            <connections>
+                <outlet property="crawlerProgressView" destination="VBM-Ta-zx9" id="4ex-xC-Cir"/>
+                <outlet property="crawlerScheduleView" destination="nch-uh-QrE" id="cSP-Se-7Iw"/>
+                <outlet property="messageProgressView" destination="aM3-8e-l0f" id="7xt-mb-WFW"/>
+                <outlet property="messageScheduleView" destination="jZD-nt-oXN" id="Nfs-Ig-ZAg"/>
+                <outlet property="statusLabel" destination="gJ3-Ah-8EG" id="qHu-JT-dLu"/>
+            </connections>
+            <point key="canvasLocation" x="138.5" y="154"/>
+        </customView>
+    </objects>
+</document>

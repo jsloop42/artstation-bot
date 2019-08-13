@@ -1,0 +1,4 @@
+framework module DLLogger {
+  header "DLLogger-Swift.h"
+  requires objc
+}

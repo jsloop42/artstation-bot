@@ -1,0 +1,25 @@
+/* 
+  Localizable.strings
+  ArtStationBot
+
+  Created by jsloop on 21/07/19.
+*/
+
+"Dashboard" = "Dashboard";
+"Crawler" = "Crawler";
+"Messenger" = "Messenger";
+"Crawl" = "Crawl";
+"Message" = "Message";
+"Credential" = "Credential";
+"Start Crawler" = "Start Crawler";
+"Pause Crawler" = "Pause Crawler";
+"Pausing Crawler" = "Pausing Crawler";
+"Start Messenger" = "Start Messenger";
+"Pause Messenger" = "Pause Messenger";
+"Pausing Messenger" = "Pausing Messenger";
+"Set credentials" = "Set credentials";
+"Sender's ArtStation email address cannot be empty" = "Sender's ArtStation email address cannot be empty";
+"Sender's ArtStation password cannot be empty" = "Sender's ArtStation password cannot be empty";
+"Sender's ArtStation email address is in invalid format" = "Sender's ArtStation email address is in invalid format";
+"Sender's contact email is in invalid format" = "Sender's contact email is in invalid format";
+"Error updating message" = "Error updating message";
