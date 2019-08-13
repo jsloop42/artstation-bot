@@ -48,6 +48,7 @@ class MainViewController: NSViewController {
 
     @objc func updateData() {
         // crawler schedule
+        self.crawlScheduleData.removeAll()
         var keys = self.frontierService.fetchTable.allKeys
         for key in keys {
             if let state = self.frontierService.fetchTable.object(forKey: key) as? UserFetchState {
@@ -57,6 +58,7 @@ class MainViewController: NSViewController {
             }
         }
         // crawl in progress
+        self.crawlProgressData.removeAll()
         keys = self.frontierService.crawlerRunTable.allKeys
         for key in keys {
             if let state = self.frontierService.crawlerRunTable.object(forKey: key) as? UserFetchState {
@@ -67,6 +69,7 @@ class MainViewController: NSViewController {
         }
         // message schedule
         keys = self.frontierService.messageTable.allKeys
+        self.messageScheduleData.removeAll()
         for key in keys {
             if let state = self.frontierService.messageTable.object(forKey: key) as? UserMessageState {
                 let model = self.getModelFromMessageState(state)
@@ -75,6 +78,7 @@ class MainViewController: NSViewController {
             }
         }
         // message in progress
+        self.messageProgressData.removeAll()
         keys = self.frontierService.messengerRunTable.allKeys
         for key in keys {
             if let state = self.frontierService.messengerRunTable.object(forKey: key) as? UserMessageState {

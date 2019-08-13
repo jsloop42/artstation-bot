@@ -21,30 +21,29 @@ class MainWindowController: NSWindowController {
     private lazy var settingsWindowVC: SettingsViewController = { return SettingsViewController() }()
     private lazy var toolbar: NSToolbar = { return UI.createToolbar(id: self.toolbarId) }()
     private lazy var segmentedControl: NSSegmentedControl = {
-        return UI.createSegmentedControl(labels: [UI.lmsg("Dashboard"), UI.lmsg("Data"), UI.lmsg("Settings")],
+        return UI.createSegmentedControl(labels: [UI.lmsg("Dashboard"), UI.lmsg("Settings")],
                                          action: #selector(MainWindowController.segmentedControlDidClick(sender:)))
     }()
     private lazy var toolbarId: NSToolbar.Identifier = { return NSToolbar.Identifier("mainToolbar") }()
     private lazy var toolbarCrawlBtnId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarCrawlButton") }()
     private lazy var toolbarMessageBtnId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarMessageButton") }()
-    private lazy var toolbarCredsBtnId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarCredentialButton") }()
     private lazy var toolbarSegmentedControlId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarSegmentedControl") }()
     private lazy var crawlBtn: NSButton = {
         let btn = UI.createButton()
-        btn.title = UI.lmsg("Crawl")
+        btn.title = UI.lmsg("Start Crawler")
         btn.toolTip = UI.lmsg("Start Crawler")
         return btn
     }()
     private lazy var messageBtn: NSButton = {
         let btn = UI.createButton()
-        btn.title = UI.lmsg("Message")
+        btn.title = UI.lmsg("Start Messenger")
         btn.toolTip = UI.lmsg("Start Messenger")
         return btn
     }()
     private lazy var dspaceId: NSToolbarItem.Identifier = { return NSToolbarItem.Identifier("mainToolbarDynamicSpace") }()
     private lazy var dspace: DynamicSpace = { return DynamicSpace(itemIdentifier: self.dspaceId) }()
     private lazy var toolbarItems: [NSToolbarItem.Identifier] = {
-        var xs = [self.toolbarCrawlBtnId, self.toolbarMessageBtnId, self.toolbarCredsBtnId, self.toolbarSegmentedControlId, .flexibleSpace]
+        var xs = [self.toolbarCrawlBtnId, self.toolbarMessageBtnId, self.toolbarSegmentedControlId, .flexibleSpace]
         if #available(OSX 10.14, *) {
             self.toolbar.centeredItemIdentifier = self.toolbarSegmentedControlId
             return xs
@@ -55,6 +54,10 @@ class MainWindowController: NSWindowController {
     private lazy var webkitWindow: WebKitWindowController = { return UI.createWebKitWindow() }()
     private var segmentSelectedIndex: Int = 0
     private var menuObjects: NSArray?
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 
     override init(window: NSWindow?) {
         super.init(window: window)
@@ -119,17 +122,33 @@ class MainWindowController: NSWindowController {
         self.crawlBtn.action = #selector(crawlButtonDidClick)
         self.messageBtn.action = #selector(messageButtonDidClick)
         self.window?.delegate = self
+        NotificationCenter.default.addObserver(self, selector: #selector(crawlerDidPause(_:)), name: NSNotification.Name(ASNotification.crawlerDidPause),
+                                               object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(crawlerDidPause(_:)), name: NSNotification.Name(ASNotification.messengerDidPause),
+                                               object: nil)
+    }
+
+    @objc func crawlerDidPause(_ notif: Notification) {
+        DispatchQueue.main.async {
+            self.crawlBtn.title = UI.lmsg("Start Crawler")
+            self.crawlBtn.toolTip = UI.lmsg("Start Crawler")
+        }
+    }
+
+    func messengerDidPause(_ notif: Notification) {
+        DispatchQueue.main.async {
+            self.messageBtn.title = UI.lmsg("Start Messenger")
+            self.messageBtn.toolTip = UI.lmsg("Start Messenger")
+        }
     }
 
     @objc func segmentedControlDidClick(sender: NSSegmentedControl) {
         print("segmented control index: \(sender.selectedSegment)")
         if self.segmentSelectedIndex == sender.selectedSegment { return }
         self.segmentSelectedIndex = sender.selectedSegment
-        if sender.selectedSegment == 2 {  // Settings
+        if sender.selectedSegment == 1 {  // Settings
             self.window!.contentViewController = self.settingsWindowVC
             UI.setMainWindowBounds(self.window!)
-        } else if sender.selectedSegment == 1 {  // Data
-
         } else if sender.selectedSegment == 0 {  // Dashboard
             self.window!.contentViewController = self.mainWindowVC
             UI.setMainWindowBounds(self.window!)
@@ -140,13 +159,39 @@ class MainWindowController: NSWindowController {
 // MARK: - Event handlers
 extension MainWindowController {
     @objc func crawlButtonDidClick() {
-        self.frontierService.isCrawlPaused ? self.frontierService.startCrawl() : self.frontierService.pauseCrawl()
+        if self.frontierService.isCrawlPaused {
+            self.frontierService.startCrawl()
+            self.crawlBtn.title = UI.lmsg("Pause Crawler")
+            self.crawlBtn.toolTip = UI.lmsg("Pause Crawler")
+        } else {
+            self.frontierService.pauseCrawl()
+            if self.frontierService.fetchTable.count == 0 && self.frontierService.crawlerRunTable.count == 0 {
+                self.crawlBtn.title = UI.lmsg("Start Crawler")
+                self.crawlBtn.toolTip = UI.lmsg("Start Crawler")
+            } else {
+                self.crawlBtn.title = UI.lmsg("Pausing Crawler")
+                self.crawlBtn.toolTip = UI.lmsg("Pausing Crawler")
+            }
+        }
     }
 
     @objc func messageButtonDidClick() {
         self.webkitWindow.show()
         //self.webkitWindow.vc.setShouldSignIn(true)
-        self.frontierService.isMessengerPaused ? self.frontierService.startMessenger() : self.frontierService.pauseMessenger()
+        if self.frontierService.isMessengerPaused {
+            self.frontierService.startMessenger()
+            self.messageBtn.title = UI.lmsg("Pause Messenger")
+            self.messageBtn.toolTip = UI.lmsg("Pause Messenger")
+        } else {
+            self.frontierService.pauseMessenger()
+            if self.frontierService.messageTable.count == 0 && self.frontierService.messengerRunTable.count == 0 {
+                self.messageBtn.title = UI.lmsg("Start Messenger")
+                self.messageBtn.toolTip = UI.lmsg("Start Messenger")
+            } else {
+                self.messageBtn.title = UI.lmsg("Pausing Messenger")
+                self.messageBtn.toolTip = UI.lmsg("Pausing Messenger")
+            }
+        }
     }
 }
 

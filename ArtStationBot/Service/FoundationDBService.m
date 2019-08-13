@@ -393,7 +393,6 @@ static FoundationDBService *fdb;
         NSMutableArray<Skill *> *skillsList = [[NSMutableArray alloc] initWithArray:StateData.shared.skills copyItems:YES];
         for (skill in skills) {
             [self getSkill:skill.skillId callback:^(Skill * _Nullable aSkill) {
-                debug(@"getskill for skillId: %ld", skill.skillId);
                 if (!aSkill) {
                     shouldExecBulkOp = true;
                     skill_doc = constructSKillBSON(skill, true);

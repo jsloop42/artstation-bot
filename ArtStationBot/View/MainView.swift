@@ -166,29 +166,35 @@ extension MainView: NSTableViewDelegate, NSTableViewDataSource {
 
     func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
         var isMessageTable = false
-        let model: DashboardViewModel = {
+        let model: DashboardViewModel? = {
             if tableView == self.crawlScheduleTableView {
-                return self.crawlerScheduleData[row]
+                if self.crawlerScheduleData.count > row { return self.crawlerScheduleData[row] }
+                return nil
             }
             if tableView == self.crawlProgressTableView {
-                return self.crawlerProgressData[row]
+                if self.crawlerProgressData.count > row { return self.crawlerProgressData[row] }
+                return nil
             }
             if tableView == self.messageScheduleTableView {
                 isMessageTable = true
-                return self.messageScheduleData[row]
+                if self.messageScheduleData.count > row { return self.messageScheduleData[row] }
+                return nil
             }
             isMessageTable = true
-            return self.messageProgressData[row]
+            return self.messageProgressData.count > row ? self.messageProgressData[row] : nil
         }()
         if !isMessageTable { return 44 }
-        let content = model.user.artstationProfileURL
-        let tv = NSTextView()
-        tv.string = content
-        let frame = tv.frame
-        if let last = tableView.tableColumns.last {
-            tv.frame = NSMakeRect(0, 0, last.width, frame.height)
-            tv.sizeToFit()
+        if let aModel = model {
+            let content = aModel.user.artstationProfileURL
+            let tv = NSTextView()
+            tv.string = content
+            let frame = tv.frame
+            if let last = tableView.tableColumns.last {
+                tv.frame = NSMakeRect(0, 0, last.width, frame.height)
+                tv.sizeToFit()
+            }
+            return tv.frame.height < 33 ? 33 : tv.frame.height
         }
-        return tv.frame.height < 33 ? 33 : tv.frame.height
+        return 33
     }
 }

@@ -12,7 +12,11 @@
 "Message" = "Message";
 "Credential" = "Credential";
 "Start Crawler" = "Start Crawler";
+"Pause Crawler" = "Pause Crawler";
+"Pausing Crawler" = "Pausing Crawler";
 "Start Messenger" = "Start Messenger";
+"Pause Messenger" = "Pause Messenger";
+"Pausing Messenger" = "Pausing Messenger";
 "Set credentials" = "Set credentials";
 "Sender's ArtStation email address cannot be empty" = "Sender's ArtStation email address cannot be empty";
 "Sender's ArtStation password cannot be empty" = "Sender's ArtStation password cannot be empty";

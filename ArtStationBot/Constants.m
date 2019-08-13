@@ -92,11 +92,15 @@ static NSString *_sendMessage = @"sendMessage";
 static NSString *_sendMessageACK = @"sendMessageACK";
 static NSString *_settingsTableViewShouldReload = @"settingsTableViewShouldReload";
 static NSString *_dashboardTableViewShouldReload = @"dashboardTableViewShouldReload";
+static NSString *_crawlerDidPause = @"crawlerDidPause";
+static NSString *_messengerDidPause = @"messengerDidPause";
 
 @dynamic sendMessage;
 @dynamic sendMessageACK;
 @dynamic settingsTableViewShouldReload;
 @dynamic dashboardTableViewShouldReload;
+@dynamic crawlerDidPause;
+@dynamic messengerDidPause;
 
 + (NSString *)sendMessage {
     return _sendMessage;
@@ -112,6 +116,14 @@ static NSString *_dashboardTableViewShouldReload = @"dashboardTableViewShouldRel
 
 + (NSString *)dashboardTableViewShouldReload {
     return _dashboardTableViewShouldReload;
+}
+
++ (NSString *)crawlerDidPause {
+    return _crawlerDidPause;
+}
+
++ (NSString *)messengerDidPause {
+    return _messengerDidPause;
 }
 
 @end

@@ -233,6 +233,8 @@ static FrontierService *_frontierService;
         self.crawlerGaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.crawlerARC4RandomSource mean:mean deviation:deviation];
         debug(@"Queueing the next batch: %ld", self.crawlerBatchCount);
         [self crawlNextBatch:StateData.shared.skills];
+    } else if (self.fetchTable.count == 0 && self.crawlerRunTable.count == 0 && self.isCrawlPaused) {
+        [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.crawlerDidPause object:self]];
     }
 }
 
@@ -259,7 +261,6 @@ static FrontierService *_frontierService;
     skill = StateData.shared.skills.firstObject;
         [self.fdbService getUsersForSkill:skill.name limit:[Const maxUserLimit] isMessaged:NO callback:^(NSArray<User *> * _Nonnull users) {
             debug(@"Get users for skill callback %ld", users.count);
-            // TODO: schedule sending message
             User *user = nil;
             UserMessageState *state = nil;
             UserMessageKey *key = nil;
@@ -334,7 +335,10 @@ static FrontierService *_frontierService;
         self.messengerGaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.messengerARC4RandomSource mean:mean deviation:deviation];
         debug(@"Queueing the next messenger batch: %ld", self.messengerBatchCount);
         [self sendMessage];
+    } else if ([self.messengerRunTable count] == 0 && self.isMessengerPaused) {
+        [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.messengerDidPause object:self]];
     }
+
 }
 
 - (void)pauseMessenger {
@@ -371,7 +375,10 @@ static FrontierService *_frontierService;
                     debug(@"Sent message updated status: %d", status);
                 }];
             }
+            debug(@"message runtable count: %ld", self.messengerRunTable.count);
             [self.messengerRunTable removeObjectForKey:key];
+            debug(@"key removed from message runtable");
+            debug(@"message runtable count: %ld", self.messengerRunTable.count);
             [self queueNextMessengerBatch];
             [NSNotificationCenter.defaultCenter
              postNotification:[NSNotification notificationWithName:ASNotification.dashboardTableViewShouldReload object:self]];
