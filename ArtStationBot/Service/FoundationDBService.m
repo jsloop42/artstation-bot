@@ -187,6 +187,36 @@ static FoundationDBService *fdb;
     });
 }
 
+- (void)getSkill:(NSUInteger)skillId callback:(void (^)(Skill * _Nullable))callback {
+    dispatch_async(self.dispatchQueue, ^{
+        mongoc_cursor_t *cursor;
+        const bson_t *doc;
+        mongoc_client_t *client = mongoc_client_pool_pop(pool);
+        mongoc_collection_t *skills_coll = mongoc_client_get_collection(client, dbName, skills_coll_name);
+        bson_t *query = BCON_NEW("_id", BCON_INT64((int64_t)skillId));
+        cursor = mongoc_collection_find_with_opts(skills_coll, query, NULL, NULL);
+        char *str;
+        Skill *skill;
+        NSData *data;
+        NSError *err;
+        NSDictionary *skillDict;
+        while (mongoc_cursor_next(cursor, &doc)) {
+            skill = [Skill new];
+            str = bson_as_canonical_extended_json(doc, NULL);
+            //MONGOC_INFO("str: %s", str);
+            data = [NSData dataWithBytes:str length:(NSUInteger)strlen(str)];
+            bson_free(str);
+            skillDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
+            skill = [ModelUtils.shared skillFromDictionary:skillDict];
+        }
+        mongoc_client_pool_push(pool, client);
+        bson_destroy(query);
+        mongoc_cursor_destroy(cursor);
+        mongoc_collection_destroy(skills_coll);
+        callback(skill);
+    });
+}
+
 - (void)getSkills:(void (^)(void))callback {
     dispatch_async(self.dispatchQueue, ^{
         mongoc_cursor_t *cursor;
@@ -194,8 +224,8 @@ static FoundationDBService *fdb;
         char *str;
         mongoc_client_t *client = mongoc_client_pool_pop(pool);
         mongoc_collection_t *coll = mongoc_client_get_collection(client, dbName, skills_coll_name);
-        bson_t query = BSON_INITIALIZER;
-        cursor = mongoc_collection_find_with_opts(coll, &query, NULL, NULL);
+        bson_t *query = BCON_NEW("$query", "{", "}", "$orderby", "{", "name", BCON_INT32(1), "}");
+        cursor = mongoc_collection_find_with_opts(coll, query, NULL, NULL);
         NSMutableArray<Skill *> *skills = [NSMutableArray new];
         NSError *err;
         NSMutableDictionary *dict;
@@ -208,7 +238,7 @@ static FoundationDBService *fdb;
             [skills addObject:skill];
         }
         mongoc_client_pool_push(pool, client);
-        bson_destroy(&query);
+        bson_destroy(query);
         mongoc_cursor_destroy(cursor);
         mongoc_collection_destroy(coll);
         StateData.shared.skills = skills;
@@ -289,17 +319,17 @@ static FoundationDBService *fdb;
         callback(isSuccess);
     });
     dispatch_async(self.dispatchQueue, ^{
-        bool ret;
         if ([filters.skills count] > 0) {
             debug(@"Upserting skills");
-            ret = [self upsertSkills:filters.skills];
-            if (!ret) {
-                [lock lock];
-                isSuccess = false;
-                [lock unlock];
-            }
+            [self upsertSkills:filters.skills callback:^(bool status) {
+                if (!status) {
+                    [lock lock];
+                    isSuccess = false;
+                    [lock unlock];
+                }
+                dispatch_group_leave(group);
+            }];
         }
-        dispatch_group_leave(group);
     });
     dispatch_group_enter(group);
     dispatch_async(self.dispatchQueue, ^{
@@ -343,30 +373,56 @@ static FoundationDBService *fdb;
     });
 }
 
-- (bool)upsertSkills:(NSMutableArray<Skill *> *)skills {
-    Skill *skill;
-    bson_t *skill_doc;
-    bson_t reply;
-    bson_error_t err;
-    bool ret;
-    bson_t opts = BSON_INITIALIZER;
-    BSON_APPEND_BOOL(&opts, "ordered", false);
-    mongoc_client_t *client = mongoc_client_pool_pop(pool);
-    mongoc_collection_t *skills_coll = mongoc_client_get_collection(client, dbName, skills_coll_name);
-    mongoc_bulk_operation_t *bulk = mongoc_collection_create_bulk_operation_with_opts(skills_coll, &opts);
-    bson_destroy(&opts);
-    for (skill in skills) {
-        skill_doc = constructSKillBSON(skill, true);
-        mongoc_bulk_operation_update_one(bulk, BCON_NEW("_id", BCON_INT64((int64_t)skill.skillId)), skill_doc, true);
-        bson_destroy(skill_doc);
-    }
-    ret = mongoc_bulk_operation_execute(bulk, &reply, &err);
-    mongoc_client_pool_push(pool, client);
-    mongoc_collection_destroy(skills_coll);
-    bson_destroy(&reply);
-    mongoc_bulk_operation_destroy(bulk);
-    if (!ret) [self fail:err];
-    return true;
+- (void)upsertSkills:(NSMutableArray<Skill *> *)skills callback:(void (^)(bool status))callback {
+    dispatch_async(self.dispatchQueue, ^{
+        bool __block status = true;
+        Skill *skill;
+        int __block count = 0;
+        int len = (int)skills.count;
+        bool __block shouldExecBulkOp = false;
+        bson_t __block *skill_doc;
+        bson_t __block reply;
+        bson_error_t __block  err;
+        bool __block ret = true;
+        bson_t __block opts = BSON_INITIALIZER;
+        BSON_APPEND_BOOL(&opts, "ordered", false);
+        mongoc_client_t __block *client = mongoc_client_pool_pop(pool);
+        mongoc_collection_t __block *skills_coll = mongoc_client_get_collection(client, dbName, skills_coll_name);
+        mongoc_bulk_operation_t __block *bulk = mongoc_collection_create_bulk_operation_with_opts(skills_coll, &opts);
+        bson_destroy(&opts);
+        NSMutableArray<Skill *> *skillsList = [[NSMutableArray alloc] initWithArray:StateData.shared.skills copyItems:YES];
+        for (skill in skills) {
+            [self getSkill:skill.skillId callback:^(Skill * _Nullable aSkill) {
+                if (!aSkill) {
+                    shouldExecBulkOp = true;
+                    skill_doc = constructSKillBSON(skill, true);
+                    mongoc_bulk_operation_update_one(bulk, BCON_NEW("_id", BCON_INT64((int64_t)skill.skillId)), skill_doc, true);
+                    bson_destroy(skill_doc);
+                } else {
+                    NSUInteger idx = [StateData.shared.skills indexOfObject:skill];
+                    [skillsList replaceObjectAtIndex:idx withObject:aSkill];
+                }
+                ++count;
+                if (count == len) {
+                    if (shouldExecBulkOp) {
+                        ret = mongoc_bulk_operation_execute(bulk, &reply, &err);
+                        bson_destroy(&reply);
+                    }
+                    mongoc_client_pool_push(pool, client);
+                    mongoc_collection_destroy(skills_coll);
+                    mongoc_bulk_operation_destroy(bulk);
+                    if (!ret) status = false;
+                    [skillsList sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+                        Skill *aSkill = (Skill *)obj1;
+                        Skill *bSkill = (Skill *)obj2;
+                        return [aSkill.name compare:bSkill.name options:NSCaseInsensitiveSearch];
+                    }];
+                    StateData.shared.skills = skillsList;
+                    callback(status);
+                }
+            }];
+        }
+    });
 }
 
 - (bool)upsertSoftware:(NSMutableArray<Software *> *)software {

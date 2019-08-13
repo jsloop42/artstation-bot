@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Skill : NSObject
+@interface Skill : NSObject<NSCopying>
 @property (nonatomic, readwrite) NSUInteger skillId;
 @property (nonatomic, readwrite) NSString *name;
 /** The message associated with the skill. */

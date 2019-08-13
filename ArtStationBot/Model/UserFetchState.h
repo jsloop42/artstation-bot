@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readwrite) NSString *skillName;
 @property (nonatomic, readwrite) NSUInteger page;
 @property (nonatomic, readwrite) NSUInteger totalCount;
+@property (nonatomic, readwrite) NSDate *scheduledTime;
 @end
 
 NS_ASSUME_NONNULL_END
