@@ -172,8 +172,6 @@ static FrontierService *_frontierService;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self scheduleFetch:skillId];
             });
-        } else {
-            debug(@"All users fetched for skill: %@", skill.name);
         }
     }
     [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.dashboardTableViewShouldReload object:self]];

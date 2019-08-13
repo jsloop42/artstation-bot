@@ -14,6 +14,7 @@
 #import "SenderDetails.h"
 #import "KeychainAccount.h"
 #import "MessageTemplateRenderer.h"
+#import "Constants.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

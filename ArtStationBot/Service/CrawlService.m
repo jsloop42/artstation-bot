@@ -47,7 +47,6 @@
         if (data) {
             resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
             this->_csrfToken = resp[@"public_csrf_token"];
-            debug(@"CSRF token:  %@", this->_csrfToken);
             callback(this->_csrfToken);
         } else {
             error(@"Error getting CSRF token: %@", error);
@@ -125,7 +124,6 @@
 }
 
 - (void)getUsersForSkill:(NSString *)skillId page:(NSUInteger)page max:(NSUInteger)max callback:(void (^) (UserSearchResponse *))callback {
-    debug(@"Fetching users for skill: %@ for page: %ld", skillId, page);
     [self getCSRFToken:^(NSString * _Nonnull csrfToken) {
         NSMutableDictionary *dict = [NSMutableDictionary new];
         [dict setValue:@"" forKey:@"query"];
