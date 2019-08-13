@@ -23,11 +23,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (bool)initDocLayer;
 - (void)getUsersWithOffset:(NSUInteger)userId limit:(NSUInteger)limit callback:(void (^) (NSArray<User *> *users))callback;
 - (void)getUsersForSkill:(NSString *)skillName limit:(NSUInteger)limit isMessaged:(BOOL)isMessaged callback:(void (^) (NSArray<User *> *users))callback;
+- (void)getSkill:(NSUInteger)skillId callback:(void (^)(Skill * _Nullable))callback;
 - (void)getSkills:(void (^)(void))callback;
 - (void)getCrawlerState:(void(^)(CrawlerState *state))callback;
 - (void)getSenderDetails:(void(^)(NSMutableArray<SenderDetails *> *senders))callback;
 - (void)insertFilters:(Filters *)filters callback:(void (^)(bool status))callback;
-- (bool)upsertSkills:(NSMutableArray<Skill *> *)skills;
+- (void)upsertSkills:(NSMutableArray<Skill *> *)skills callback:(void (^)(bool status))callback;
 - (bool)upsertSoftware:(NSMutableArray<Software *> *)software;
 - (bool)upsertAvailabilities:(NSMutableArray<Availability *> *)availabilities;
 - (bool)upsertCountries:(NSMutableArray<Country *> *)countries;

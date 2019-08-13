@@ -9,4 +9,14 @@
 
 @implementation Skill
 
+- (nonnull id)copyWithZone:(nullable NSZone *)zone {
+    Skill *skill = [Skill new];
+    skill.skillId = self.skillId;
+    skill.name = self.name;
+    skill.message = self.message;
+    skill.originalMessage = self.originalMessage;
+    skill.interpolatedMessage = self.interpolatedMessage;
+    return skill;
+}
+
 @end
