@@ -25,7 +25,6 @@ class WebKitWindowController: NSWindowController {
 
     override init(window: NSWindow?) {
         super.init(window: window)
-        //self.windowFrameAutosaveName = self.windowName
         self.initUI()
     }
 
@@ -34,7 +33,6 @@ class WebKitWindowController: NSWindowController {
     }
 
     override func windowDidLoad() {
-        self.log.debug("webkit window did load")
         super.windowDidLoad()
     }
 

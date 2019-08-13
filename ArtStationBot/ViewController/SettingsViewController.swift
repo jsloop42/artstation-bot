@@ -298,7 +298,6 @@ extension SettingsViewController: NSTextViewDelegate {
     }
 
     func textView(_ textView: NSTextView, shouldChangeTextIn affectedCharRange: NSRange, replacementString: String?) -> Bool {
-        self.log.debug("should change")
         if replacementString == "\n" { // reload to update the cell height
             self.shouldReloadCell = true
         } else {

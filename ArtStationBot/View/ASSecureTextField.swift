@@ -30,6 +30,5 @@ class ASSecureTextField: NSSecureTextField {
     }
 
     @objc func didClick(_ event: NSEvent) {
-        self.log.debug("secure text field did click")
     }
 }

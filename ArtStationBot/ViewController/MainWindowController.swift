@@ -61,7 +61,6 @@ class MainWindowController: NSWindowController {
 
     override init(window: NSWindow?) {
         super.init(window: window)
-        //self.windowFrameAutosaveName = self.windowName
         initUI()
         initEvents()
     }
@@ -85,7 +84,6 @@ class MainWindowController: NSWindowController {
         self.toolbar.allowsUserCustomization = true
         self.window?.titleVisibility = .hidden
         self.window?.minSize = NSMakeSize(960, 768)
-        //self.window?.title = "ArtStation Bot"
         self.window?.toolbar = self.toolbar
         initMainMenu()
         initData()
@@ -113,9 +111,6 @@ class MainWindowController: NSWindowController {
     func show() {
         self.showWindow(NSApp)
         self.webkitWindow.vc.setShouldSignIn(false)
-//        self.dbService.getUsersForSkill("2D Animation", limit: 10, isMessaged: false) { users in
-//            self.log.debug("users: \(users)")
-//        }
     }
 
     func initEvents() {
@@ -143,7 +138,6 @@ class MainWindowController: NSWindowController {
     }
 
     @objc func segmentedControlDidClick(sender: NSSegmentedControl) {
-        print("segmented control index: \(sender.selectedSegment)")
         if self.segmentSelectedIndex == sender.selectedSegment { return }
         self.segmentSelectedIndex = sender.selectedSegment
         if sender.selectedSegment == 1 {  // Settings
@@ -177,7 +171,7 @@ extension MainWindowController {
 
     @objc func messageButtonDidClick() {
         self.webkitWindow.show()
-        //self.webkitWindow.vc.setShouldSignIn(true)
+        self.webkitWindow.vc.setShouldSignIn(true)
         if self.frontierService.isMessengerPaused {
             self.frontierService.startMessenger()
             self.messageBtn.title = UI.lmsg("Pause Messenger")

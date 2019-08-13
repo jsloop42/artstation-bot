@@ -12,7 +12,6 @@
 #import "mongoc/mongoc.h"
 #pragma clang diagnostic pop
 #import "Constants.h"
-//#import "bson/bcon.h"
 
 static const char *dbName = "artstation";
 static const char *skills_coll_name = "skills";
@@ -100,7 +99,6 @@ static FoundationDBService *fdb;
         while (mongoc_cursor_next(cursor, &doc)) {
             user = [User new];
             str = bson_as_canonical_extended_json(doc, NULL);
-            //MONGOC_INFO("str: %s", str);
             data = [NSData dataWithBytes:str length:(NSUInteger)strlen(str)];
             bson_free(str);
             userDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
@@ -132,14 +130,11 @@ static FoundationDBService *fdb;
         while (mongoc_cursor_next(cursor, &doc)) {
             user = [User new];
             str = bson_as_canonical_extended_json(doc, NULL);
-            //MONGOC_INFO("str: %s", str);
             data = [NSData dataWithBytes:str length:(NSUInteger)strlen(str)];
             bson_free(str);
             userDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
             user = [ModelUtils.shared userFromDictionary:userDict convertType:ConvertTypeBSON];
-            //debug(@"user obj: %@", user);
             if (user) [users addObject:user];
-            //debug(@"user dict: %@", userDict);
         }
         mongoc_client_pool_push(pool, client);
         bson_destroy(query);
@@ -169,7 +164,6 @@ static FoundationDBService *fdb;
         while (mongoc_cursor_next(cursor, &doc)) {
             user = [User new];
             str = bson_as_canonical_extended_json(doc, NULL);
-            //MONGOC_INFO("str: %s", str);
             data = [NSData dataWithBytes:str length:(NSUInteger)strlen(str)];
             bson_free(str);
             userDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
@@ -203,7 +197,6 @@ static FoundationDBService *fdb;
         while (mongoc_cursor_next(cursor, &doc)) {
             skill = [Skill new];
             str = bson_as_canonical_extended_json(doc, NULL);
-            //MONGOC_INFO("str: %s", str);
             data = [NSData dataWithBytes:str length:(NSUInteger)strlen(str)];
             bson_free(str);
             skillDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
@@ -315,12 +308,10 @@ static FoundationDBService *fdb;
     dispatch_group_t group = dispatch_group_create();
     dispatch_group_enter(group);
     dispatch_group_notify(group, self.dispatchQueue, ^{
-        debug(@"Filters upsert complete");
         callback(isSuccess);
     });
     dispatch_async(self.dispatchQueue, ^{
         if ([filters.skills count] > 0) {
-            debug(@"Upserting skills");
             [self upsertSkills:filters.skills callback:^(bool status) {
                 if (!status) {
                     [lock lock];
@@ -335,7 +326,6 @@ static FoundationDBService *fdb;
     dispatch_async(self.dispatchQueue, ^{
         bool ret;
         if ([filters.software count] > 0) {
-            debug(@"Upserting software");
             ret = [self upsertSoftware:filters.software];
             if (!ret) {
                 [lock lock];
@@ -349,7 +339,6 @@ static FoundationDBService *fdb;
     dispatch_async(self.dispatchQueue, ^{
         bool ret;
         if ([filters.availabilities count] > 0) {
-            debug(@"Upserting availabilities");
             ret = [self upsertAvailabilities:filters.availabilities];
             if (!ret) {
                 [lock lock];
@@ -362,7 +351,6 @@ static FoundationDBService *fdb;
     dispatch_async(self.dispatchQueue, ^{
         bool ret;
         if ([filters.countries count] > 0) {
-            debug(@"Upserting countries");
             ret = [self upsertCountries:filters.countries];
             if (!ret) {
                 [lock lock];
@@ -527,30 +515,6 @@ static FoundationDBService *fdb;
         mongoc_collection_destroy(sender_coll);
         callback(status);
     });
-}
-
-- (void)test {
-    User *user = [User new];
-    user.userId = 1;
-    user.username = @"Jane Doe";
-    user.isStaff = YES;
-    user.skills = [NSMutableArray new];
-    Skill *skill = [Skill new];
-    skill.name = @"2D Art";
-    [user.skills addObject:skill];
-    Software *software = [Software new];
-    software.name = @"Houdini";
-    user.software = [NSMutableArray new];
-    [user.software addObject:software];
-    SampleProject *proj = [SampleProject new];
-    proj.sampleProjectId = 1;
-    proj.url = @"https://example.com";
-    proj.smallerSquareCoverURL = @"https://example.com/cover.jpg";
-    proj.title = @"Example project";
-    user.sampleProjects = [NSMutableArray new];
-    [user.sampleProjects addObject:proj];
-    user.location = @"Oxford, United Kingdom";
-    [self insertUser:user];
 }
 
 - (void)insertUser:(User *)user {

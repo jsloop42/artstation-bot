@@ -75,7 +75,7 @@ static FrontierService *_frontierService;
     self.messengerARC4RandomSource = [GKARC4RandomSource new];
     [self.messengerARC4RandomSource dropValuesWithCount:764];
     self.messengerMeanList = [NSMutableArray new];
-    [self.messengerMeanList addObject:@[@(5), @(1)]];
+    //[self.messengerMeanList addObject:@[@(5), @(1)]];
     [self.messengerMeanList addObject:@[@(25), @(15)]];
     [self.messengerMeanList addObject:@[@(35), @(15)]];
     NSMutableArray *marr = self.messengerMeanList[0];
@@ -117,13 +117,9 @@ static FrontierService *_frontierService;
 - (void)startCrawl {
     self.isCrawlPaused = NO;
     [self.crawlerService getFilterList:^(Filters * _Nonnull filters) {
-        debug(@"Filters list fetched");
         [self.fdbService insertFilters:filters callback:^(bool status) {
-            debug(@"Filters list updated");
-            debug(@"Skills state updated with count: %ld", StateData.shared.skills.count);
             [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.settingsTableViewShouldReload object:self]];
             [self.fdbService getCrawlerState:^(CrawlerState * _Nonnull state) {
-                debug(@"Crawler state obtained with fetch user count: %ld", state.fetchState.count);
                 self.crawlerService.crawlerState = state;
                 [self crawlNextBatch:filters.skills];
             }];
@@ -155,34 +151,30 @@ static FrontierService *_frontierService;
 
 - (void)crawlNextBatch:(NSMutableArray<Skill *> *)skills {
     Skill *skill;
-    NSUInteger count = 0;  // TODO: test remove later
     NSUInteger page = 1;
     NSUInteger skillId;
     UserFetchState *fetchState;
     for (skill in skills) {
-        //if (count < 2) {  // TODO: remove this
-            skillId = skill.skillId;
-            page = 1;
-            fetchState = [self.crawlerService.crawlerState.fetchState objectForKey:@(skillId)];
-            if (!fetchState) {
-                fetchState = [UserFetchState new];
-            } else {
-                page = fetchState.page + 1;
-            }
-            if (fetchState.page <= ceil(fetchState.totalCount / [Const maxUserLimit] * 1.0)) {
-                fetchState.page = page;
-                fetchState.skillId = [NSString stringWithFormat:@"%ld", skillId];
-                fetchState.skillName = skill.name;
-                fetchState.scheduledTime = [NSDate dateWithTimeInterval:self.crawlerTotalDelay + 60 sinceDate:[NSDate new]];  // initial data
-                [self.fetchTable setObject:fetchState forKey:@(skillId)];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self scheduleFetch:skillId];
-                });
-            } else {
-                debug(@"All users fetched for skill: %@", skill.name);
-            }
-        //}
-        count++;
+        skillId = skill.skillId;
+        page = 1;
+        fetchState = [self.crawlerService.crawlerState.fetchState objectForKey:@(skillId)];
+        if (!fetchState) {
+            fetchState = [UserFetchState new];
+        } else {
+            page = fetchState.page + 1;
+        }
+        if (fetchState.page <= ceil(fetchState.totalCount / [Const maxUserLimit] * 1.0)) {
+            fetchState.page = page;
+            fetchState.skillId = [NSString stringWithFormat:@"%ld", skillId];
+            fetchState.skillName = skill.name;
+            fetchState.scheduledTime = [NSDate dateWithTimeInterval:self.crawlerTotalDelay + 60 sinceDate:[NSDate new]];  // initial data
+            [self.fetchTable setObject:fetchState forKey:@(skillId)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self scheduleFetch:skillId];
+            });
+        } else {
+            debug(@"All users fetched for skill: %@", skill.name);
+        }
     }
     [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.dashboardTableViewShouldReload object:self]];
 }
@@ -190,9 +182,7 @@ static FrontierService *_frontierService;
 /** Schedules a fetch with a delay with the past scheduled delays taken in account. The overlap of two fetches is minimal. */
 - (void)scheduleFetch:(NSUInteger)index {
     NSUInteger rand = [self crawlerRandom];
-    debug(@"rand: %ld", rand);
     self.crawlerTotalDelay += rand;
-    debug(@"craweler total delay: %ld", self.crawlerTotalDelay);
     UserFetchState *fetchState = [self.fetchTable objectForKey:@(index)];
     fetchState.scheduledTime = [NSDate dateWithTimeInterval:self.crawlerTotalDelay sinceDate:[NSDate new]];
     [self.fetchTable setObject:fetchState forKey:@(index)];
@@ -201,7 +191,6 @@ static FrontierService *_frontierService;
 
 /** Performs crawl with the state taken from fetch table corresponding to the given skill id as index. */
 - (void)performFetch:(NSNumber *)index {
-    debug(@"perform fetch %@", index);
     UserFetchState *fetchState = [self.fetchTable objectForKey:index];
     if (fetchState) {
         [self.crawlerService getUsersForSkill:fetchState.skillId page:fetchState.page max:[Const maxUserLimit] callback:^(UserSearchResponse * _Nonnull resp) {
@@ -210,7 +199,6 @@ static FrontierService *_frontierService;
                     User *user;
                     for (user in resp.usersList) {
                         [self.fdbService insertUser:user callback:^(bool status) {
-                            debug(@"insert status for %lu: %d", (unsigned long)user.userId, status);
                             [self.crawlerRunTable removeObjectForKey:index];
                             [NSNotificationCenter.defaultCenter
                              postNotification:[NSNotification notificationWithName:ASNotification.dashboardTableViewShouldReload object:self]];
@@ -223,7 +211,6 @@ static FrontierService *_frontierService;
         [self.fetchTable removeObjectForKey:index];  /* clear the state from fetch table */
         [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.dashboardTableViewShouldReload object:self]];
     }
-    debug(@"fetch table count: %ld", [self.fetchTable count]);
     /* Queue the next batch */
     if ([self.fetchTable count] == 0 && !self.isCrawlPaused) {
         ++self.crawlerBatchCount;
@@ -231,7 +218,6 @@ static FrontierService *_frontierService;
         int mean = [(NSNumber *)meanArr[0] intValue];
         int deviation = [(NSNumber *)meanArr[1] intValue];
         self.crawlerGaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.crawlerARC4RandomSource mean:mean deviation:deviation];
-        debug(@"Queueing the next batch: %ld", self.crawlerBatchCount);
         [self crawlNextBatch:StateData.shared.skills];
     } else if (self.fetchTable.count == 0 && self.crawlerRunTable.count == 0 && self.isCrawlPaused) {
         [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.crawlerDidPause object:self]];
@@ -257,10 +243,8 @@ static FrontierService *_frontierService;
  */
 - (void)sendMessage {
     Skill *skill;
-    //for (skill in StateData.shared.skills) {  // TODO: uncomment
-    skill = StateData.shared.skills.firstObject;
+    for (skill in StateData.shared.skills) {
         [self.fdbService getUsersForSkill:skill.name limit:[Const maxUserLimit] isMessaged:NO callback:^(NSArray<User *> * _Nonnull users) {
-            debug(@"Get users for skill callback %ld", users.count);
             User *user = nil;
             UserMessageState *state = nil;
             UserMessageKey *key = nil;
@@ -270,7 +254,7 @@ static FrontierService *_frontierService;
                     state = [UserMessageState new];
                     state.skill = skill;
                     state.user = user;
-                    state.scheduledTime = [NSDate dateWithTimeInterval:self.messengerTotalDelay + 60 sinceDate:[NSDate new]];  // inital data
+                    state.scheduledTime = [NSDate dateWithTimeInterval:self.messengerTotalDelay + 60 sinceDate:[NSDate new]];  // initial data
                     key = [UserMessageKey new];
                     key.skillId = @(skill.skillId);
                     key.userId = @(user.userId);
@@ -282,14 +266,12 @@ static FrontierService *_frontierService;
                 count++;
             }
         }];
-    //}
+    }
 }
 
 - (void)scheduleMessaging:(UserMessageKey *)key {
     NSUInteger rand = [self messengerRandom];
-    debug(@"rand: %ld", rand);
     self.messengerTotalDelay += rand;
-    debug(@"total messenger delay: %ld", self.messengerTotalDelay);
     UserMessageState *state = [self.messageTable objectForKey:key];
     state.scheduledTime = [NSDate dateWithTimeInterval:self.messengerTotalDelay sinceDate:[NSDate new]];
     [self.messageTable setObject:state forKey:key];
@@ -333,7 +315,6 @@ static FrontierService *_frontierService;
         int mean = [(NSNumber *)meanArr[0] intValue];
         int deviation = [(NSNumber *)meanArr[1] intValue];
         self.messengerGaussianDistribution = [[GKGaussianDistribution alloc] initWithRandomSource:self.messengerARC4RandomSource mean:mean deviation:deviation];
-        debug(@"Queueing the next messenger batch: %ld", self.messengerBatchCount);
         [self sendMessage];
     } else if ([self.messengerRunTable count] == 0 && self.isMessengerPaused) {
         [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.messengerDidPause object:self]];
@@ -368,17 +349,11 @@ static FrontierService *_frontierService;
         key.userId = @(state.user.userId);
         key.skillId = @(state.skill.skillId);
         [wkwc.vc sendMessage:key state:state callback:^(BOOL status) {
-            debug(@"Message send ack status: %hhd", status);
             [wkwc close];
             if (status) {
-                [self.fdbService updateMessageState:state.skill forUser:state.user.userId isMessaged:YES callback:^(bool status) {
-                    debug(@"Sent message updated status: %d", status);
-                }];
+                [self.fdbService updateMessageState:state.skill forUser:state.user.userId isMessaged:YES callback:^(bool status) {}];
             }
-            debug(@"message runtable count: %ld", self.messengerRunTable.count);
             [self.messengerRunTable removeObjectForKey:key];
-            debug(@"key removed from message runtable");
-            debug(@"message runtable count: %ld", self.messengerRunTable.count);
             [self queueNextMessengerBatch];
             [NSNotificationCenter.defaultCenter
              postNotification:[NSNotification notificationWithName:ASNotification.dashboardTableViewShouldReload object:self]];

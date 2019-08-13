@@ -189,8 +189,7 @@ class WebKitViewController: NSViewController {
           5. Notifiy ack
         */
         self.state.callback = callback
-        //let profileURL = state.user.artstationProfileURL
-        let profileURL = "https://artstation.com/foobar42" // TODO: remove test
+        let profileURL = state.user.artstationProfileURL
         if let url = URL(string: profileURL) {
             self.state.addCurrentPage(.profile)
             self.state.key = key
@@ -202,14 +201,11 @@ class WebKitViewController: NSViewController {
     func profileURLDidLoad() {
         if let msgState = self.state.messageState {
             if !self.state.getIsSignedIn() {
-                self.log.debug("Not signed in. Signing in..")
                 self.invokeSendMessage = true
                 self.signIn()
             } else {
                 self.invokeSendMessage = false
-                self.log.debug("Signed in. Sending message.")
-                var msg = msgState.skill.interpolatedMessage
-                msg = "Hi, How are you doing? Bye"  // TODO: remove test
+                let msg = msgState.skill.interpolatedMessage
                 self.execJS(["msg": msg], fnName: "asb.sendMessage")
             }
         }
@@ -242,16 +238,7 @@ extension WebKitViewController: WKScriptMessageHandler {
 }
 
 extension WebKitViewController: WKNavigationDelegate, WKUIDelegate {
-    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        self.log.debug("webview is loading")
-    }
-
-    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        self.log.debug("webview did fail to provision")
-    }
-
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        self.log.debug("webview did finish")
         switch self.state.getCurrentPage() {
         case .home:
             if !self.state.getIsSignedIn() && self._shouldSignIn { self.signIn() }
@@ -261,14 +248,6 @@ extension WebKitViewController: WKNavigationDelegate, WKUIDelegate {
         case .profile:
             self.profileURLDidLoad()
         }
-    }
-
-    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        self.log.debug("webview did fail")
-    }
-
-    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        self.log.debug("webview did commit")
     }
 }
 

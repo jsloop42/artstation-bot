@@ -114,7 +114,6 @@ extension MainView: NSTableViewDelegate, NSTableViewDataSource {
         if textView == nil {
             textView = NSTextView(frame: NSMakeRect(0, 0, column.width, 44))
             textView!.identifier = NSUserInterfaceItemIdentifier(rawValue: cellId)
-            //textView!.delegate = self
         }
         let columnId = column.identifier.rawValue
         textView!.isEditable = false

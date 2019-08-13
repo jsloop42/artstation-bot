@@ -30,6 +30,5 @@ class ASTextField: NSTextField {
     }
 
     @objc func didClick(_ event: NSEvent) {
-        self.log.debug("did click")
     }
 }

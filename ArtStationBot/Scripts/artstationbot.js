@@ -56,7 +56,7 @@ asb.sendMessage = function(data) {
         if (cb) { cb.checked = true; }
         textarea.value = data.msg;
         textarea.dispatchEvent(new Event("change"));  // Trigger field processing so that angular js adds the right directives
-        //document.querySelector("form[name=messageForm] div.btn-toolbar button[type='submit']").click();  // Send message  // TODO: uncomment
+        document.querySelector("form[name=messageForm] div.btn-toolbar button[type='submit']").click();  // Send message
         asb.msg.postMessage({"id": "send-message", "status": true, "msg": data.msg});
     } catch (e) {
         asb.msg.postMessage({"id": "send-message", "status": false});
@@ -66,5 +66,3 @@ asb.sendMessage = function(data) {
 asb.hello = function(name) {
     asb.msg.postMessage({"id": "greet", "status": true, "msg": "hello to " + name});
 }
-
-//asb.greet()

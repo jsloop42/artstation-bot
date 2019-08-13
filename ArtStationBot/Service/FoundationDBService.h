@@ -35,7 +35,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)upsertSender:(SenderDetails *)sender callback:(void (^)(bool status))callback;
 - (void)insertUser:(User *)user;
 - (void)insertUser:(User *)user callback:(void  (^ _Nullable)(bool status))callback;
-- (void)test;
 - (void)updateCrawlerState:(NSString *)skillName page:(NSUInteger)page totalCount:(NSUInteger)totalCount callback:(void (^)(bool status))callback;
 - (void)updateMessage:(NSString *)message forSkill:(Skill *)skill callback:(void (^)(bool status))callback;
 - (void)updateMessageState:(Skill *)skill forUser:(NSUInteger)userId isMessaged:(BOOL)isMessaged callback:(void (^)(bool status))callback;
