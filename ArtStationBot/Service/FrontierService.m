@@ -317,7 +317,6 @@ static FrontierService *_frontierService;
     } else if ([self.messengerRunTable count] == 0 && self.isMessengerPaused) {
         [NSNotificationCenter.defaultCenter postNotification:[NSNotification notificationWithName:ASNotification.messengerDidPause object:self]];
     }
-
 }
 
 - (void)pauseMessenger {

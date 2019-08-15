@@ -94,7 +94,7 @@ class SettingsViewController: NSViewController {
         DispatchQueue.main.async {
             self.textFields.forEach { tf in tf.isEditable = true }
             self.sview!.cancelEditBtn.isHidden = false
-            self.sview!.credsEditBtn.isHidden = true
+            self.sview!.credsEditBtn.isHidden = false
             self.sview!.emailTextField.becomeFirstResponder()
         }
     }
@@ -124,11 +124,13 @@ class SettingsViewController: NSViewController {
         if isInEditMode {  // => update button did click
             self.updateSenderDetails { status in
                 if status {
-                    self.disableEditForAllTextFields()
-                    self.sview!.credsEditBtn.isHidden = false
-                    self.sview!.credsEditBtn.image = NSImage(named: "edit")
-                    self.sview!.passwordTextField.stringValue = ""  // clear password from the field
-                    self.isInEditMode = false
+                    DispatchQueue.main.async {
+                        self.disableEditForAllTextFields()
+                        self.sview!.credsEditBtn.isHidden = false
+                        self.sview!.credsEditBtn.image = NSImage(named: "edit")
+                        self.sview!.passwordTextField.stringValue = ""  // clear password from the field
+                        self.isInEditMode = false
+                    }
                 }
             }
         } else {

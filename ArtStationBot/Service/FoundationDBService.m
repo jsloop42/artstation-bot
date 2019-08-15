@@ -171,7 +171,7 @@ static FoundationDBService *fdb;
             [self getUser:userId callback:^(User *user) {
                 ++count;
                 if (user) [users addObject:user];
-                if (count == len) callback(users);
+                if (count == len) { callback(users); return; }
             }];
         }
         mongoc_client_pool_push(pool, client);

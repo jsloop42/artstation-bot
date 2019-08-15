@@ -258,6 +258,10 @@ extension WebKitViewController {
         self.state.addCurrentPage(.signIn)
         if !self.state.username.isEmpty && !self.state.password.isEmpty {
             self.execJS(["username": self.state.username, "password": self.state.password], fnName: "asb.signIn");
+        } else if let sender = StateData.shared().senderDetails {
+            self.state.username = sender.artStationEmail
+            self.state.password = sender.password
+            self.signIn()
         } else {
             self.log.error("Artstation sender credentials cannot be empty")
         }
