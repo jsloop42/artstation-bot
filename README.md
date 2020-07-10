@@ -4,7 +4,7 @@
 
 ### Installation
 
-- Install [FoundationDB v6.1.8](https://www.foundationdb.org/downloads/6.1.8/macOS/installers/FoundationDB-6.1.8.pkg) and the [Document Layer v1.6.3](https://www.foundationdb.org/downloads/1.6.3/macOS/installers/FoundationDB-Document-Layer-1.6.3.pkg). Check if the instllation was successful by running `fdbcli` in the Terminal.
+- Install [FoundationDB v6.1.8](https://www.foundationdb.org/downloads/6.1.8/macOS/installers/FoundationDB-6.1.8.pkg) and the [Document Layer v1.6.3](https://www.foundationdb.org/downloads/1.6.3/macOS/installers/FoundationDB-Document-Layer-1.6.3.pkg). Check if the installation was successful by running `fdbcli` in the Terminal.
 	
 - Install MongoDB C driver libraries and shell
 
